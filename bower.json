@@ -1,15 +1,14 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
+  "name": "myradio.link",
+  "description": "Podcast PlaylistS",
   "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
+  "homepage": "git@github.com:Intai/myradio-link.git",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "angular": "1.2.x",
-    "angular-route": "1.2.x",
-    "angular-loader": "1.2.x",
-    "angular-mocks": "~1.2.x",
-    "html5-boilerplate": "~4.3.0"
+    "angular": "1.4.x",
+    "angular-route": "1.4.x",
+    "angular-loader": "1.4.x",
+    "angular-mocks": "~1.4.x"
   }
 }
