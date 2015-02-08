@@ -1,4 +1,5 @@
 {
+  "esnext": true,
   "globalstrict": true,
   "globals": {
     "angular": false,
@@ -8,6 +9,7 @@
     "beforeEach": false,
     "afterEach": false,
     "module": false,
-    "inject": false
+    "inject": false,
+    "alert": false
   }
 }

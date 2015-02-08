@@ -24,19 +24,16 @@ gulp.task('less', function() {
 });
 
 gulp.task('traceur', function () {
-  var bowerFiles = require('main-bower-files'),
-      filter = $.filter('!traceur-runtime.js');
+  var bowerFiles = require('main-bower-files');
 
   return gulp.src([files + '.js', '!*.js'])
+    .pipe($.sourcemaps.init())
+    .pipe($.traceur())
     .pipe($.addSrc($.traceur.RUNTIME_PATH))
     .pipe($.addSrc(bowerFiles()))
-    .pipe($.sourcemaps.init())
     .pipe($.order([
       'traceur-runtime.js',
       'app.js' ]))
-    .pipe(filter)
-    .pipe($.traceur())
-    .pipe(filter.restore())
     .pipe($.concat('app.js'))
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('build'))
