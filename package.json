@@ -30,6 +30,7 @@
     "gulp-jshint": "*",
     "gulp-less": "*",
     "gulp-traceur": "*",
+    "gulp-sequence": "*",
     "gulp-livereload": "*",
     "gulp-sourcemaps": "*",
     "main-bower-files": "*",

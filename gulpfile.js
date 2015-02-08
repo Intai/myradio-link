@@ -1,31 +1,23 @@
 'use strict';
 
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
+var gulp = require('gulp'),
+    $ = require('gulp-load-plugins')(),
+    files = './!(build|node_modules|bower_components)/**/*';
 
 gulp.task('csslint', function () {
-  return gulp.src(['**/*.less'])
-    .pipe($.filter(['**',
-      '!build/**',
-      '!node_modules/**',
-      '!bower_components/**' ]))
+  return gulp.src([files + '.less'])
     .pipe($.csslint())
     .pipe($.csslint.reporter());
 });
 
 gulp.task('jshint', function () {
-  return gulp.src('**/*.js')
-    .pipe($.filter(['**',
-      '!*.js',
-      '!build/**',
-      '!node_modules/**',
-      '!bower_components/**' ]))
+  return gulp.src(files + '.js')
     .pipe($.jshint())
     .pipe($.jshint.reporter($.jshintStylish));
 });
 
 gulp.task('less', function() {
-  gulp.src('**/*.less')
+  gulp.src(files + '.less')
     .pipe($.less())
     .pipe(gulp.dest('build'))
     .pipe($.livereload());
@@ -35,12 +27,7 @@ gulp.task('traceur', function () {
   var bowerFiles = require('main-bower-files'),
       filter = $.filter('!traceur-runtime.js');
 
-  return gulp.src('**/*.js')
-    .pipe($.filter(['**',
-      '!*.js',
-      '!build/**',
-      '!node_modules/**',
-      '!bower_components/**' ]))
+  return gulp.src([files + '.js', '!*.js'])
     .pipe($.addSrc($.traceur.RUNTIME_PATH))
     .pipe($.addSrc(bowerFiles()))
     .pipe($.sourcemaps.init())
@@ -57,9 +44,7 @@ gulp.task('traceur', function () {
   });
 
   gulp.task('clean', function () {
-    require('del')('build', function (err, deletedFiles) {
-      console.log('Files deleted:', deletedFiles.join(', '));
-    });
+    require('del').sync('build');
   });
 
   gulp.task('connect', function () {
@@ -88,20 +73,13 @@ gulp.task('traceur', function () {
   gulp.task('watch', ['connect', 'serve'], function () {
     $.livereload.listen();
 
-    gulp.watch(['**/*.html'])
+    gulp.watch([files + '.html'])
       .on('change', function(file) {
         $.livereload.changed(file.path);
       });
 
-    gulp.watch(['**/*.less',
-      '!build/**',
-      '!node_modules/**',
-      '!bower_components/**'], ['less']);
-
-    gulp.watch(['**/*.js',
-      '!build/**',
-      '!node_modules/**',
-      '!bower_components/**'], ['traceur']);
+    gulp.watch([files + '.less'], ['less']);
+    gulp.watch([files + '.js'], ['traceur']);
   });
 
-  gulp.task('default', ['csslint', 'jshint', 'less', 'traceur', 'watch']);
+  gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'less', 'traceur'], 'watch'));
