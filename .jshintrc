@@ -1,6 +1,5 @@
 {
   "esnext": true,
-  "globalstrict": true,
   "globals": {
     "angular": false,
     "describe": false,
