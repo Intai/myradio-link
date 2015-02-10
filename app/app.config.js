@@ -1,7 +1,7 @@
-/*angular
+var config = () => {
+
+};
+
+angular
   .module('app')
   .config(config);
-
-function config() {
-
-}*/

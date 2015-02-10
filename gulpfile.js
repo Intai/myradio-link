@@ -35,11 +35,10 @@ gulp.task('traceur', function () {
 gulp.task('browserify', function () {
   var browserify = require('browserify'),
       source = require('vinyl-source-stream'),
-      buffer = require('vinyl-buffer'),
-      glob = require('glob');
+      buffer = require('vinyl-buffer');
 
   var bundler = browserify({
-    entries: glob.sync('./build/app/**/*.js')
+    entries: './build/app/app.module.js'
   });
 
   return bundler
@@ -100,8 +99,11 @@ gulp.task('watch', ['connect', 'serve'], function () {
     });
 
   gulp.watch([files + '.less'], ['less']);
-  gulp.watch([files + '.js'], ['build']);
+  gulp.watch([files + '.js'], function() {
+    // wrap in a function because an instance 
+    // of sequence can't be executed repeatedly.
+    $.sequence('traceur', 'browserify', 'concat')();
+  });
 });
 
-gulp.task('build', $.sequence('traceur', 'browserify', 'concat'));
-gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'less', 'build'], 'watch'));
+gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'less', 'traceur'], 'browserify', 'concat', 'watch'));

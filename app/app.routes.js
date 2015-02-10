@@ -1,11 +1,10 @@
-
-var config = (...deps) => {
-    deps[0]
+var routes = ($routeProvider) => {
+    $routeProvider
         .otherwise({redirectTo: '/login'});
 };
 
-config.$inject = ['$routeProvider'];
+routes.$inject = ['$routeProvider'];
 
 angular
   .module('app')
-  .config(config);
+  .config(routes);
