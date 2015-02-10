@@ -8,6 +8,7 @@
   "devDependencies": {
     "bower": "*",
     "shelljs": "*",
+    "glob": "*",
     "del": "*",
 
     "http-server": "*",
@@ -36,6 +37,9 @@
     "main-bower-files": "*",
     "gulp-load-plugins": "*",
     "jshint-stylish": "*",
+    "browserify": "*",
+    "vinyl-buffer": "*",
+    "vinyl-source-stream": "*",
     "opn": "*"
   },
   "scripts": {

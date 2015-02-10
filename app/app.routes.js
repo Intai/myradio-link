@@ -1,5 +1,6 @@
+
 var config = (...deps) => {
-    deps.$routeProvider
+    deps[0]
         .otherwise({redirectTo: '/login'});
 };
 
