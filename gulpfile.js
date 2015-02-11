@@ -28,7 +28,8 @@ gulp.task('traceur', function () {
     .pipe($.sourcemaps.init())
     .pipe($.traceur({
       modules: 'commonjs' }))
-    .pipe($.sourcemaps.write('.'))
+    .pipe($.sourcemaps.write('.', {
+      sourceMappingURLPrefix: '/build' }))
     .pipe(gulp.dest('build'));
 });
 
@@ -38,13 +39,19 @@ gulp.task('browserify', function () {
       buffer = require('vinyl-buffer');
 
   var bundler = browserify({
-    entries: './build/app/app.module.js'
+    entries: './build/app/app.module.js',
+    debug: true
   });
 
   return bundler
     .bundle()
     .pipe(source('modules.js'))
     .pipe(buffer())
+    .pipe($.sourcemaps.init({
+      loadMaps: true }))
+    .pipe($.uglify({
+      compress: false }))
+    .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('build'));
 });
 
@@ -58,7 +65,12 @@ gulp.task('concat', function() {
       'traceur-runtime.js',
       'angular*.js',
       'app/**' ]))
+    .pipe($.sourcemaps.init({
+      loadMaps: true }))
     .pipe($.concat('app.js'))
+    .pipe($.uglify({
+      compress: false }))
+    .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('build'))
     .pipe($.livereload());
 });

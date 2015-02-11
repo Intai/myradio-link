@@ -30,6 +30,7 @@
     "gulp-csslint": "*",
     "gulp-jshint": "*",
     "gulp-less": "*",
+    "gulp-uglify": "*",
     "gulp-traceur": "*",
     "gulp-sequence": "*",
     "gulp-livereload": "*",
