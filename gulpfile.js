@@ -88,16 +88,17 @@ gulp.task('clean', function () {
 });
 
 gulp.task('connect', function () {
-  var connect = require('connect'),
-      serveIndex = require('serve-index'),
+  var express = require('express'),
       serveStatic = require('serve-static'),
       livereload = require('connect-livereload');
 
-  var app = connect()
+  var app = express()
     .use(livereload({
       port: 35729 }))
-    .use(serveIndex('.'))
-    .use(serveStatic('.'));
+    .use(serveStatic('.'))
+    .use(function(req, res) {
+      res.sendfile('app/index.html');
+    });
 
   require('http').createServer(app)
     .listen(3000)

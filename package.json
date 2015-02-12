@@ -12,7 +12,7 @@
     "del": "*",
 
     "http-server": "*",
-    "connect": "*",
+    "express": "*",
     "serve-index": "*",
     "serve-static": "*",
     "connect-livereload": "*",
