@@ -1,6 +1,9 @@
 var routes = ($routeProvider) => {
-    $routeProvider
-        .otherwise({redirectTo: '/login'});
+  $routeProvider
+    .when('/login', {
+        templateUrl: 'authenticate/views/login.html',
+    })
+    .otherwise({redirectTo: '/login'});
 };
 
 routes.$inject = ['$routeProvider'];

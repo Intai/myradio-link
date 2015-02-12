@@ -56,8 +56,9 @@ gulp.task('browserify', function () {
 });
 
 gulp.task('templates', function () {
-  gulp.src(files + '.html')
-  .pipe($.angularTemplatecache())
+  gulp.src(files + '.html', {cwd: 'app'})
+  .pipe($.angularTemplatecache({
+    standalone: true }))
   .pipe(gulp.dest('build'));
 });
 
