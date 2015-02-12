@@ -69,7 +69,8 @@ gulp.task('concat', function() {
     .pipe($.addSrc(bowerFiles()))
     .pipe($.order([
       'traceur-runtime.js',
-      'angular*.js',
+      'angular.js',
+      'angular-*.js',
       'app/**' ]))
     .pipe($.sourcemaps.init({
       loadMaps: true }))
