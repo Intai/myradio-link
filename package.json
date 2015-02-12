@@ -41,6 +41,7 @@
     "browserify": "*",
     "vinyl-buffer": "*",
     "vinyl-source-stream": "*",
+    "gulp-angular-templatecache": "*",
     "opn": "*"
   },
   "scripts": {

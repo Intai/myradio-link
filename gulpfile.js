@@ -55,6 +55,12 @@ gulp.task('browserify', function () {
     .pipe(gulp.dest('build'));
 });
 
+gulp.task('templates', function () {
+  gulp.src(files + '.html')
+  .pipe($.angularTemplatecache())
+  .pipe(gulp.dest('build'));
+});
+
 gulp.task('concat', function() {
   var bowerFiles = require('main-bower-files');
 
@@ -112,10 +118,10 @@ gulp.task('watch', ['connect', 'serve'], function () {
 
   gulp.watch([files + '.less'], ['less']);
   gulp.watch([files + '.js'], function() {
-    // wrap in a function because an instance 
+    // wrap in a function because an instance
     // of sequence can't be executed repeatedly.
-    $.sequence('traceur', 'browserify', 'concat')();
+    $.sequence('traceur', 'browserify', 'templates', 'concat')();
   });
 });
 
-gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'less', 'traceur'], 'browserify', 'concat', 'watch'));
+gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'less', 'traceur'], 'browserify', 'templates', 'concat', 'watch'));
