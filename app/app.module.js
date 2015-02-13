@@ -1,6 +1,11 @@
 var app = angular
   .module('app', [
-    'ngRoute']);
+    'ngRoute',
+    'app.templates',
+    'app.core',
+    'app.playback',
+    'app.subscribe',
+    'app.authenticate']);
 
 import consts from './app.constants';
 import config from './app.config';

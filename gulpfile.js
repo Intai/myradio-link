@@ -56,10 +56,12 @@ gulp.task('browserify', function () {
 });
 
 gulp.task('templates', function () {
-  gulp.src(files + '.html', {cwd: 'app'})
-  .pipe($.angularTemplatecache({
-    standalone: true }))
-  .pipe(gulp.dest('build'));
+  return gulp.src(files + '.html', {cwd: 'app'})
+    .pipe($.angularTemplatecache({
+      root: '/',
+      module: 'app.templates',
+      standalone: true }))
+    .pipe(gulp.dest('build'));
 });
 
 gulp.task('concat', function() {
@@ -72,7 +74,7 @@ gulp.task('concat', function() {
       'traceur-runtime.js',
       'angular.js',
       'angular-*.js',
-      'app/**' ]))
+      'templates.js' ]))
     .pipe($.sourcemaps.init({
       loadMaps: true }))
     .pipe($.concat('app.js'))
@@ -97,7 +99,7 @@ gulp.task('connect', function () {
       port: 35729 }))
     .use(serveStatic('.'))
     .use(function(req, res) {
-      res.sendfile('app/index.html');
+      res.sendFile(__dirname + '/app/index.html');
     });
 
   require('http').createServer(app)

@@ -1,7 +1,7 @@
 var routes = ($routeProvider) => {
   $routeProvider
     .when('/login', {
-        templateUrl: 'authenticate/views/login.html',
+        templateUrl: '/authenticate/views/login.html'
     })
     .otherwise({redirectTo: '/login'});
 };
