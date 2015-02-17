@@ -8,6 +8,7 @@ class Anchor {
     this.controller = AnchorController;
     this.controllerAs = 'vm';
     this.bindToController = true;
+    this.require = 'rdAnimate';
     this.scope = {
         href: '@'
     };
@@ -20,9 +21,9 @@ class Anchor {
 
 class AnchorController {
 
-    constructor() {
+  constructor() {
 
-    }
+  }
 }
 
 var core = angular
