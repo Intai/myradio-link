@@ -1,5 +1,6 @@
 {
   "esnext": true,
+  "laxbreak": true,
   "globals": {
     "angular": false,
     "describe": false,
