@@ -15,6 +15,19 @@ class Animate {
 class AnimateController {
 
   constructor($element, $attrs, browser) {
+    // setup class variables.
+    this.initVars(...arguments);
+    // setup public functions.
+    this.initPublicFuncs();
+    // setup initial keyframes.
+    this.addFrame($attrs.keyframes);
+  }
+
+  /**
+   * Class Variables
+   */
+  
+  initVars($element, $attrs, browser) {
     /**
      * jQuery element to be aniamted.
      * @type {object}
@@ -74,11 +87,13 @@ class AnimateController {
      * @type {integer}
      */
     this.timer = null;
+  }
 
-    /**
-     * Public
-     */
-
+  /**
+   * Public
+   */
+  
+  initPublicFuncs() {
     /**
      * Add a css class as keyframe.
      * @param {string} className
@@ -104,7 +119,7 @@ class AnimateController {
      */
     this.start = _.partial(this._start,
       this.state, this.timer, _.partial(this._tick,
-        this.el, this.state, this.frames, timer));
+        this.el, this.state, this.frames, this.timer));
 
     /**
      * Stop the animation.
@@ -148,7 +163,8 @@ class AnimateController {
    */
 
   _addFrame(frames, className) {
-    frames.push(className);
+    var classNames = className.split(',');
+    frames.push(...classNames);
   }
 
   _reset(el, state, frames, index) {
