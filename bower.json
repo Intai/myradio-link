@@ -10,6 +10,7 @@
     "angular-route": "1.4.x",
     "angular-loader": "1.4.x",
     "angular-animate": "1.4.x",
+    "underscore": "*",
     "firebase": "*"
   }
 }

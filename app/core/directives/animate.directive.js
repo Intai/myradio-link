@@ -15,132 +15,211 @@ class Animate {
 class AnimateController {
 
   constructor($element, $attrs, browser) {
+    /**
+     * jQuery element to be aniamted.
+     * @type {object}
+     */
     this.el = $element;
-    this.isLoop = false;
-    this.isReverse = false;
-    this.isBackward = false;
-    this.isRunning = false;
+
+    /**
+     * Current state of the animation.
+     * @type {object}
+     */
+    this.state = {
+      /**
+       * Whether css transition is supported.
+       * @type {bool}
+       */
+      isEnabled: browser.supportCssTransition(),
+
+      /**
+       * Whether to loop the animation.
+       * @type {bool}
+       */
+      isLoop: false,
+
+      /**
+       * Whether to reverse the animation.
+       * @type {bool}
+       */
+      isReverse: false,
+
+      /**
+       * Whether currently animating backward.
+       * @type {bool}
+       */
+      isBackward: false,
+
+      /**
+       * Whether currently animating.
+       * @type {bool}
+       */
+      isRunning: false,
+
+      /**
+       * Index of the current keyframe.
+       * @type {integer}
+       */
+      curr: -1
+    };
+
+    /**
+     * Keyframes.
+     * @type {array}
+     */
     this.frames = [];
-    this.curr = -1;
+
+    /**
+     * Timer to loop the animation.
+     * @type {integer}
+     */
     this.timer = null;
-    this.isEnabled = browser
-      .supportCssTransition();
+
+    /**
+     * Add a css class as keyframe.
+     * @param {string} className 
+     */
+    this.addFrame = _.partial(this._addFrame, this.frames);
+
+    /**
+     * Reset the animation to a keyframe.
+     * @param  {integer} index
+     */
+    this.reset = _.partial(this._reset, this.el, this.state, this.frames);
+
+    /**
+     * Remove all the keyframes.
+     */
+    this.clear = _.partial(this._clear, this.el, this.state, this.frames);
+
+    /**
+     * Start the animation.
+     */
+    this.start = _.partial(this._start, this.state, this.timer, 
+      _.partial(this._tick, this.el, this.state, this.frames, timer));
+
+    /**
+     * Stop the animation.
+     */
+    this.stop = _.partial(this._stop, this.state, this.timer);
+
+    /**
+     * Restart the animation.
+     */
+    this.restart = _.compose(this.stop, this.start);
   }
 
-  addFrame(className) {
-    this.frames.push(className);
+  get loop() {
+    return this.state.isLoop;
   }
 
-  reset(index) {
-    if (this.frames.length > 0) {
-      if (this.curr >= 0) {
-        this.el.removeClass(this.frames[this.curr]);
+  set loop(isLoop) {
+    this.state.isLoop = (isLoop && isLoop !== 'false');
+  }
+
+  get reverse() {
+    return this.state.isReverse;
+  }
+
+  set reverse(isReverse) {
+    this.isReverse = (isReverse && isReverse != 'false');
+
+    // if setting reverse on the last frame, animate backward.
+    if (this.isReverse && this.curr == (this.frames.length - 1)) {
+      this.isBackward = true;
+    }
+  }
+
+  _addFrame(frames, className) {
+    frames.push(className);
+  }
+
+  _reset(el, state, frames, index) {
+    if (frames.length > 0) {
+      if (state.curr >= 0) {
+        el.removeClass(frames[state.curr]);
       }
 
       // reset to a specific frame.
       if (typeof(index) != 'undefined') {
         index = parseInt(index);
-        if (index in this.frames) {
-          this.el.addClass(this.frames[index]);
-          this.curr = index;
+        if (index in frames) {
+          el.addClass(frames[index]);
+          state.curr = index;
         }
       }
       // reset to initial state.
       else {
-        this.isBackward = false;
-        this.curr = -1;
+        state.isBackward = false;
+        state.curr = -1;
       }
     }
   }
 
-  clear() {
-    if (this.frames.length > 0) {
-      if (this.curr >= 0) {
-        this.el.removeClass(this.frames[this.curr]);
+  _clear(el, state, frames) {
+    if (frames.length > 0) {
+      if (state.curr >= 0) {
+        el.removeClass(frames[state.curr]);
       }
 
       // remove all frames.
-      this.isBackward = false;
-      this.frames = [];
-      this.curr = -1;
+      state.isBackward = false;
+      state.curr = -1;
+      frames = [];
     }
   }
 
-  loop(isLoop) {
-    this.isLoop = (typeof(isLoop) != 'undefined')
-      ? (isLoop && isLoop != 'false')
-      : true;
-  }
-
-  reverse(isReverse) {
-    this.isReverse = (typeof(isReverse) != 'undefined')
-      ? (isReverse && isReverse != 'false')
-      : true;
-
-    // if setting reverse on the last frame, animate backward.
-    if (this.isReverse) {
-      if (this.curr == (this.frames.length - 1)) {
-        this.isBackward = true;
-      }
-    }
-  }
-
-  start() {
-    if (!this.isEnabled) {
+  _start(state, timer, tick) {
+    if (!state.isEnabled) {
       return;
     }
 
-    if (!this.isRunning) {
+    if (!state.isRunning) {
       // start the animation.
-      this.isRunning = true;
-      this.timer = setTimeout(() => this.tick, 10);
+      state.isRunning = true;
+      timer = setTimeout(() => tick(), 10);
     }
   }
 
-  stop() {
+  _stop(state, timer) {
     // stop after the current frame finishes.
-    clearTimeout(this.timer);
-    this.isRunning = false;
+    clearTimeout(timer);
+    state.isRunning = false;
   }
 
-  restart() {
-    this.stop();
-    this.start();
-  }
-
-  _tick() {
-    clearTimeout(this.timer);
+  _tick(el, state, frames, timer) {
+    clearTimeout(timer);
     var next = -1;
 
     // animating backward.
-    if (this.isBackward) {
+    if (state.isBackward) {
       // next frame.
-      if (this.curr > 0) {
-        next = this.curr - 1;
+      if (state.curr > 0) {
+        next = state.curr - 1;
       }
       else {
-        if (this.isLoop && this.frames.length > 1) {
+        if (state.isLoop && frames.length > 1) {
           // loop to the second frame.
           next = 1;
         }
         // switch to forward.
-        this.isBackward = false;
+        state.isBackward = false;
       }
     }
     // forward.
     else {
       // next frame.
-      if (this.curr < this.frames.length - 1) {
-        next = this.curr + 1;
+      if (state.curr < frames.length - 1) {
+        next = state.curr + 1;
       }
-      else if (this.frames.length > 1) {
+      else if (frames.length > 1) {
         // switch to backward.
-        if (this.isReverse) {
-          next = this.frames.length - 2;
-          this.isBackward = true;
+        if (state.isReverse) {
+          next = frames.length - 2;
+          state.isBackward = true;
         }
         // loop to the first frame.
-        else if (this.isLoop) {
+        else if (state.isLoop) {
           next = 0;
         }
       }
@@ -148,33 +227,33 @@ class AnimateController {
 
     if (next >= 0) {
       // apply the next frame.
-      this.el.addClass(this.frames[next]);
-      if (this.curr >= 0) {
-        this.el.removeClass(this.frames[this.curr]);
+      el.addClass(frames[next]);
+      if (state.curr >= 0) {
+        el.removeClass(frames[state.curr]);
       }
       // set as the current frame.
-      this.curr = next;
+      state.curr = next;
 
       // schedule at the end of the frame.
-      var duration = this._getCurrDuration();
+      var duration = this._getCurrDuration(el);
       if (duration > 0) {
-        this.timer = setTimeout(() => this.tick,
+        timer = setTimeout(() => this._tick(...arguments),
           duration + MIN_DURATION);
       }
       else {
-        this.timer = setTimeout(() => this.tick, 0);
+        timer = setTimeout(() => this._tick(...arguments), 0);
       }
     }
     else {
       // the end of animation.
-      this.isRunning = false;
+      state.isRunning = false;
     }
   }
 
-  _getCurrDuration() {
+  _getCurrDuration(el) {
     // get arrays of transition properties.
-    var duration = this._getCurrTransProp('transition-duration');
-    var delay = this._getCurrTransProp('transition-delay');
+    var duration = this._getCurrTransProp(el, 'transition-duration');
+    var delay = this._getCurrTransProp(el, 'transition-delay');
 
     // get the maximum duration and delay combined.
     var max = 0;
@@ -188,12 +267,12 @@ class AnimateController {
     return max;
   }
 
-  _getCurrTransProp(name) {
+  _getCurrTransProp(el, name) {
     var property =
-      this.el.css(name)
-        || this.el.css('-o-' + name)
-        || this.el.css('-moz-' + name)
-        || this.el.css('-webkit-' + name);
+      el.css(name)
+        || el.css('-o-' + name)
+        || el.css('-moz-' + name)
+        || el.css('-webkit-' + name);
 
     // split the property string (e.g. 100ms, 1s, 0.5s)
     // into an array of milliseconds.
@@ -218,6 +297,8 @@ class AnimateController {
 
 AnimateController.$inject = ['$element', '$attrs', 'browser'];
 
-var core = angular
+angular
   .module('app.core')
   .directive('rdAnimate', Animate.factory);
+
+export default AnimateController;

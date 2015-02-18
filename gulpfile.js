@@ -74,7 +74,8 @@ gulp.task('concat', function() {
       'traceur-runtime.js',
       'angular.js',
       'angular-*.js',
-      'templates.js' ]))
+      'templates.js',
+      'underscore.js' ]))
     .pipe($.sourcemaps.init({
       loadMaps: true }))
     .pipe($.concat('app.js'))
