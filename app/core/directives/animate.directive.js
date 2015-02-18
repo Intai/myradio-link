@@ -76,38 +76,51 @@ class AnimateController {
     this.timer = null;
 
     /**
-     * Add a css class as keyframe.
-     * @param {string} className 
+     * Public
      */
-    this.addFrame = _.partial(this._addFrame, this.frames);
+
+    /**
+     * Add a css class as keyframe.
+     * @param {string} className
+     */
+    this.addFrame = _.partial(this._addFrame,
+      this.frames);
 
     /**
      * Reset the animation to a keyframe.
-     * @param  {integer} index
+     * @param {integer} index
      */
-    this.reset = _.partial(this._reset, this.el, this.state, this.frames);
+    this.reset = _.partial(this._reset,
+      this.el, this.state, this.frames);
 
     /**
      * Remove all the keyframes.
      */
-    this.clear = _.partial(this._clear, this.el, this.state, this.frames);
+    this.clear = _.partial(this._clear,
+      this.el, this.state, this.frames);
 
     /**
      * Start the animation.
      */
-    this.start = _.partial(this._start, this.state, this.timer, 
-      _.partial(this._tick, this.el, this.state, this.frames, timer));
+    this.start = _.partial(this._start,
+      this.state, this.timer, _.partial(this._tick,
+        this.el, this.state, this.frames, timer));
 
     /**
      * Stop the animation.
      */
-    this.stop = _.partial(this._stop, this.state, this.timer);
+    this.stop = _.partial(this._stop,
+      this.state, this.timer);
 
     /**
      * Restart the animation.
      */
     this.restart = _.compose(this.stop, this.start);
   }
+
+  /**
+   * Getters/Setters
+   */
 
   get loop() {
     return this.state.isLoop;
@@ -129,6 +142,10 @@ class AnimateController {
       this.isBackward = true;
     }
   }
+
+  /**
+   * Private
+   */
 
   _addFrame(frames, className) {
     frames.push(className);
