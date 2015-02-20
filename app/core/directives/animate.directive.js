@@ -1,9 +1,12 @@
+import browser from '../services/browser.service';
+import common from '../services/common.service';
+
 class Animate {
 
   constructor() {
     this.restrict = 'A';
     this.controller = AnimateController;
-    this.controllerAs = 'vm';
+    this.controllerAs = 'animate';
     this.bindToController = true;
   }
 
@@ -14,7 +17,7 @@ class Animate {
 
 class AnimateController {
 
-  constructor($element, $attrs, browser) {
+  constructor($element, $attrs) {
     // setup class variables.
     this.initVars(...arguments);
     // setup public functions.
@@ -26,8 +29,8 @@ class AnimateController {
   /**
    * Class Variables
    */
-  
-  initVars($element, $attrs, browser) {
+
+  initVars($element, $attrs) {
     /**
      * jQuery element to be aniamted.
      * @type {object}
@@ -92,45 +95,59 @@ class AnimateController {
   /**
    * Public
    */
-  
+
   initPublicFuncs() {
     /**
      * Add a css class as keyframe.
      * @param {string} className
      */
-    this.addFrame = _.partial(this._addFrame,
-      this.frames);
+    this.addFrame = common.chain(_.partial(this._addFrame,
+      this.frames));
 
     /**
      * Reset the animation to a keyframe.
      * @param {integer} index
      */
-    this.reset = _.partial(this._reset,
-      this.el, this.state, this.frames);
+    this.reset = common.chain(_.partial(this._reset,
+      this.el, this.state, this.frames));
 
     /**
      * Remove all the keyframes.
      */
-    this.clear = _.partial(this._clear,
-      this.el, this.state, this.frames);
+    this.clear = common.chain(_.partial(this._clear,
+      this.el, this.state, this.frames));
 
     /**
      * Start the animation.
      */
-    this.start = _.partial(this._start,
+    this.start = common.chain(_.partial(this._start,
       this.state, this.timer, _.partial(this._tick,
-        this.el, this.state, this.frames, this.timer));
+        this.el, this.state, this.frames, this.timer)));
 
     /**
      * Stop the animation.
      */
-    this.stop = _.partial(this._stop,
-      this.state, this.timer);
+    this.stop = common.chain(_.partial(this._stop,
+      this.state, this.timer));
 
     /**
      * Restart the animation.
      */
-    this.restart = _.compose(this.stop, this.start);
+    this.restart = common.chain(_.compose(this.stop, this.start));
+
+    /**
+     * Loop the animation.
+     * @type {bool} isLoop
+     */
+    this.setLoop = common.chain(_.partial(this._setLoop,
+      this.state));
+
+    /**
+     * Reverse the animation.
+     * @type {bool} isReverse
+     */
+    this.setReverse = common.chain(_.partial(this._setReverse,
+      this.state, this.frames));
   }
 
   /**
@@ -141,21 +158,8 @@ class AnimateController {
     return this.state.isLoop;
   }
 
-  set loop(isLoop) {
-    this.state.isLoop = (isLoop && isLoop !== 'false');
-  }
-
   get reverse() {
     return this.state.isReverse;
-  }
-
-  set reverse(isReverse) {
-    this.isReverse = (isReverse && isReverse != 'false');
-
-    // if setting reverse on the last frame, animate backward.
-    if (this.isReverse && this.curr == (this.frames.length - 1)) {
-      this.isBackward = true;
-    }
   }
 
   /**
@@ -210,7 +214,7 @@ class AnimateController {
     if (!state.isRunning) {
       // start the animation.
       state.isRunning = true;
-      timer = setTimeout(() => tick(), 10);
+      timer = setTimeout(() => tick.call(this), 10);
     }
   }
 
@@ -326,9 +330,22 @@ class AnimateController {
 
     return ret;
   }
+
+  _setLoop(state, isLoop) {
+    state.isLoop = (isLoop && isLoop !== 'false');
+  }
+
+  _setReverse(state, frames, isReverse) {
+    state.isReverse = (isReverse && isReverse != 'false');
+
+    // if setting reverse on the last frame, animate backward.
+    if (state.isReverse && state.curr == (frames.length - 1)) {
+      state.isBackward = true;
+    }
+  }
 }
 
-AnimateController.$inject = ['$element', '$attrs', 'browser'];
+AnimateController.$inject = ['$element', '$attrs'];
 
 angular
   .module('app.core')

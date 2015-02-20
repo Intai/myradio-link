@@ -10,8 +10,8 @@ class GoogleService {
       .catch(error => {});
   }
 
-  static factory(firebase) {
-    return new GoogleService(firebase);
+  static factory() {
+    return new GoogleService(...arguments);
   }
 }
 
