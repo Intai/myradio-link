@@ -11,7 +11,8 @@ class Anchor {
     this.require = 'rdAnimate';
     this.link = AnchorLink.factory;
     this.scope = {
-        href: '@'
+        href: '@',
+        implicit: '&'
     };
   }
 

@@ -119,16 +119,16 @@ gulp.task('serve', ['connect'], function () {
 gulp.task('watch', ['connect', 'serve'], function () {
   $.livereload.listen();
 
-  gulp.watch([files + '.html'])
-    .on('change', function(file) {
-      $.livereload.changed(file.path);
-    });
-
   gulp.watch([files + '.scss'], ['sass']);
   gulp.watch([files + '.js'], function() {
     // wrap in a function because an instance
     // of sequence can't be executed repeatedly.
     $.sequence('traceur', 'browserify', 'templates', 'concat')();
+  });
+
+  // need to recompile htmls into js.
+  gulp.watch([files + '.html'], function() {
+    $.sequence('templates', 'concat')();
   });
 });
 
