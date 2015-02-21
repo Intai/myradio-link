@@ -5,7 +5,7 @@ var gulp = require('gulp'),
     files = './!(build|node_modules|bower_components)/**/*';
 
 gulp.task('csslint', function () {
-  return gulp.src([files + '.less'])
+  return gulp.src([files + '.css'])
     .pipe($.csslint())
     .pipe($.csslint.reporter());
 });
@@ -16,9 +16,11 @@ gulp.task('jshint', function () {
     .pipe($.jshint.reporter($.jshintStylish));
 });
 
-gulp.task('less', function() {
-  return gulp.src(files + '.less')
-    .pipe($.less())
+gulp.task('sass', function() {
+  return gulp.src('app/app.module.scss')
+    .pipe($.sass())
+    .pipe($.minifyCss())
+    .pipe($.rename('app.css'))
     .pipe(gulp.dest('build'))
     .pipe($.livereload());
 });
@@ -122,7 +124,7 @@ gulp.task('watch', ['connect', 'serve'], function () {
       $.livereload.changed(file.path);
     });
 
-  gulp.watch([files + '.less'], ['less']);
+  gulp.watch([files + '.scss'], ['sass']);
   gulp.watch([files + '.js'], function() {
     // wrap in a function because an instance
     // of sequence can't be executed repeatedly.
@@ -130,4 +132,4 @@ gulp.task('watch', ['connect', 'serve'], function () {
   });
 });
 
-gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'less', 'traceur'], 'browserify', 'templates', 'concat', 'watch'));
+gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'sass', 'traceur'], 'browserify', 'templates', 'concat', 'watch'));

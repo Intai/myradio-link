@@ -1,0 +1,62 @@
+$grey: #333;
+$offgrey: #444;
+$lightgrey: #ccc;
+$white: #f2f2f2;
+$offwhite: #e2e2e2;
+
+$serif: Times New Roman, Times, Serif;
+$sansserif: Lucida Grande, Helvetica, Arial, Sans-Serif;
+
+$prefixes: webkit moz ms o;
+
+@mixin prefix($property, $value) {
+  #{$property}: $value;
+  @each $prefix in $prefixes {
+    -#{$prefix}-#{$property}: #{$value};
+  }
+}
+
+@mixin transition-prefix($value) {
+  transition: $value;
+  @each $prefix in $prefixes {
+    -#{$prefix}-transition: -#{$prefix}-#{$value};
+  }
+}
+
+header, footer, article, hgroup, section, menu, nav, figure, figcaption, aside, details, output {
+  display: block;
+}
+
+input, textarea, select, button {
+  font-family: $sansserif;
+}
+
+body {
+  @include prefix(touch-callout, none);
+  @include prefix(user-select, text);
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  min-height: 100%;
+  background: $white;
+  font-family: $serif;
+}
+
+input {
+  -webkit-tap-highlight-color: rgba(242,242,242,0.1);
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+a:link,
+a:active,
+a:visited {
+  color: inherit;
+}
+
+@import "core/core.module";

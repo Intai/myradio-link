@@ -1,0 +1,16 @@
+.anchor {
+  @include prefix(transition, opacity 100ms ease-out);
+  opacity: 1;
+
+  &.implicit {
+    text-decoration: none;
+  }
+}
+
+.anchor-state-up {
+  @include prefix(transition-duration, 500ms);
+}
+
+.anchor-state-down {
+  opacity: 0.1;
+}

@@ -8,7 +8,7 @@
   "devDependencies": {
     "bower": "*",
     "shelljs": "*",
-    "glob": "*",
+    "glob": "4.3.*",
     "del": "*",
 
     "http-server": "*",
@@ -22,6 +22,7 @@
     "karma-junit-reporter": "*",
 
     "gulp": "*",
+    "gulp-rename": "*",
     "gulp-add-src": "*",
     "gulp-order": "*",
     "gulp-filter": "*",
@@ -29,8 +30,9 @@
     "gulp-concat": "*",
     "gulp-csslint": "*",
     "gulp-jshint": "*",
-    "gulp-less": "*",
+    "gulp-sass": "*",
     "gulp-uglify": "*",
+    "gulp-minify-css": "*",
     "gulp-traceur": "*",
     "gulp-sequence": "*",
     "gulp-livereload": "*",
