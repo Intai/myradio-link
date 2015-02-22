@@ -102,52 +102,52 @@ class AnimateController {
      * Add a css class as keyframe.
      * @param {string} className
      */
-    this.addFrame = common.chain(_.partial(this._addFrame,
+    this.addFrame = common.chainable(_.partial(this._addFrame,
       this.frames));
 
     /**
      * Reset the animation to a keyframe.
      * @param {integer} index
      */
-    this.reset = common.chain(_.partial(this._reset,
+    this.reset = common.chainable(_.partial(this._reset,
       this.el, this.state, this.frames));
 
     /**
      * Remove all the keyframes.
      */
-    this.clear = common.chain(_.partial(this._clear,
+    this.clear = common.chainable(_.partial(this._clear,
       this.el, this.state, this.frames));
 
     /**
      * Start the animation.
      */
-    this.start = common.chain(_.partial(this._start,
+    this.start = common.chainable(_.partial(this._start,
       this.state, this.timer, _.partial(this._tick,
         this.el, this.state, this.frames, this.timer)));
 
     /**
      * Stop the animation.
      */
-    this.stop = common.chain(_.partial(this._stop,
+    this.stop = common.chainable(_.partial(this._stop,
       this.state, this.timer));
 
     /**
      * Restart the animation.
      */
-    this.restart = common.chain(_.compose(this.start, this.stop));
+    this.restart = common.chainable(_.compose(this.start, this.stop));
 
     /**
      * Loop the animation.
      * @type {bool} isLoop
      */
-    this.setLoop = common.chain(_.partial(this._setLoop,
+    this.setLoop = common.chainable(_.partial(this._setLoop,
       this.state));
 
     /**
      * Reverse the animation.
      * @type {bool} isReverse
      */
-    this.setReverse = common.chain(_.partial(this._setReverse,
+    this.setReverse = common.chainable(_.partial(this._setReverse,
       this.state, this.frames));
   }
 

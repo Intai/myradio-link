@@ -8,7 +8,7 @@ class CommonService {
    * Wrap a function to be chainable.
    * @param {function} func
    */
-  chain(func) {
+  chainable(func) {
     return function() {
       func.apply(this, arguments);
       return this;
