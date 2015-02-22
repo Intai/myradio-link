@@ -1,5 +1,6 @@
 import browser from '../services/browser.service';
 import common from '../services/common.service';
+import config from '../services/config.service';
 
 class Animate {
 
@@ -35,7 +36,7 @@ class AnimateController {
      * jQuery element to be aniamted.
      * @type {object}
      */
-    this.el = $element;
+    this.el = $($element);
 
     /**
      * Current state of the animation.
@@ -133,7 +134,7 @@ class AnimateController {
     /**
      * Restart the animation.
      */
-    this.restart = common.chain(_.compose(this.stop, this.start));
+    this.restart = common.chain(_.compose(this.start, this.stop));
 
     /**
      * Loop the animation.
@@ -275,7 +276,7 @@ class AnimateController {
       var duration = this._getCurrDuration(el);
       if (duration > 0) {
         timer = setTimeout(() => this._tick(...arguments),
-          duration + MIN_DURATION);
+          duration + config.CORE_ANIMATE_MIN_DURATION);
       }
       else {
         timer = setTimeout(() => this._tick(...arguments), 0);
