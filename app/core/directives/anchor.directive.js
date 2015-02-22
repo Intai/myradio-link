@@ -66,7 +66,7 @@ class AnchorLink {
    * Private
    */
 
-  _onDown(animate, e) {
+  _onDown(animate) {
     animate
       .reset(0)
       .setReverse(false)

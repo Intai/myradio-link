@@ -1,11 +1,22 @@
+$color-foreground: #2c3e50;
+$color-off-foreground: #2980b9;
+$color-light-foreground: #3498db;
+$color-background: #ecf0f1;
+$color-alert: #e74c3c;
+
 $grey: #333;
 $offgrey: #444;
 $lightgrey: #ccc;
+
 $white: #f2f2f2;
 $offwhite: #e2e2e2;
 
 $serif: Times New Roman, Times, Serif;
 $sansserif: Lucida Grande, Helvetica, Arial, Sans-Serif;
+
+@mixin font-size($percent) {
+  font-size: $percent * 0.16px;
+}
 
 $prefixes: webkit moz ms o;
 

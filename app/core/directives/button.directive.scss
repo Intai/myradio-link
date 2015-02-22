@@ -1,0 +1,25 @@
+.btn {
+  @include prefix(transition, "color 100ms ease-out, background-color 100ms ease-out");
+  @include font-size(100);
+  display: inline-block;
+  color: $color-foreground;
+  background-color: $color-background;
+  border: 1px solid $color-foreground;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
+
+  &:focus {
+    outline:0;
+  }
+}
+
+.btn-state-up {
+  @include prefix(transition-duration, 500ms);
+}
+
+.btn-state-down {
+  background-color: $color-off-foreground;
+  border-color: $color-off-foreground;
+  color: $color-background;
+}
