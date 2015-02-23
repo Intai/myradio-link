@@ -90,7 +90,7 @@ class AnimateController {
      * Timer to loop the animation.
      * @type {integer}
      */
-    this.timer = null;
+    this.timer = {id: null};
   }
 
   /**
@@ -215,18 +215,18 @@ class AnimateController {
     if (!state.isRunning) {
       // start the animation.
       state.isRunning = true;
-      timer = setTimeout(() => tick.call(this), 10);
+      timer.id = setTimeout(() => tick.call(this), 10);
     }
   }
 
   _stop(state, timer) {
     // stop after the current frame finishes.
-    clearTimeout(timer);
+    clearTimeout(timer.id);
     state.isRunning = false;
   }
 
   _tick(el, state, frames, timer) {
-    clearTimeout(timer);
+    clearTimeout(timer.id);
     var next = -1;
 
     // animating backward.
@@ -275,11 +275,11 @@ class AnimateController {
       // schedule at the end of the frame.
       var duration = this._getCurrDuration(el);
       if (duration > 0) {
-        timer = setTimeout(() => this._tick(...arguments),
+        timer.id = setTimeout(() => this._tick(...arguments),
           duration + config.CORE_ANIMATE_MIN_DURATION);
       }
       else {
-        timer = setTimeout(() => this._tick(...arguments), 0);
+        timer.id = setTimeout(() => this._tick(...arguments), 0);
       }
     }
     else {
