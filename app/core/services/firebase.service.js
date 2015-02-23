@@ -27,3 +27,5 @@ class FirebaseService {
 angular
   .module('app.core')
   .factory('firebase', FirebaseService.factory);
+
+export default FirebaseService.factory();

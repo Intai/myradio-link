@@ -31,4 +31,4 @@ angular
   .module('app.core')
   .factory('browser', BrowserService.factory);
 
-export default new BrowserService();
+export default BrowserService.factory();

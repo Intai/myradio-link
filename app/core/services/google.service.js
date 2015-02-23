@@ -1,22 +1,22 @@
+import firebase from './firebase.service';
+
 class GoogleService {
 
-  constructor(firebase) {
-    this.firebase = firebase;
-  }
+  constructor() {}
 
   authPopup() {
-    this.firebase.authWithOAuthPopup('google')
+    firebase.authWithOAuthPopup('google')
       .then(authData => {})
       .catch(error => {});
   }
 
   static factory() {
-    return new GoogleService(...arguments);
+    return new GoogleService();
   }
 }
-
-GoogleService.factory.$inject = ['firebase'];
 
 angular
   .module('app.core')
   .factory('google', GoogleService.factory);
+
+export default GoogleService.factory();

@@ -13,4 +13,4 @@ angular
   .module('app.core')
   .factory('config', ConfigService.factory);
 
-export default new ConfigService();
+export default ConfigService.factory();

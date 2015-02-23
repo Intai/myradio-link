@@ -24,4 +24,4 @@ angular
   .module('app.core')
   .factory('common', CommonService.factory);
 
-export default new CommonService();
+export default CommonService.factory();
