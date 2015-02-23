@@ -1,0 +1,27 @@
+.btn-icon {
+  @include transition-prefix("transform 100ms ease-out, background-color 100ms ease-out, color 100ms ease-out");
+  @include prefix(transform, scale3d(1,1,2));
+  @include font-size(100);
+  display: inline-block;
+  color: $color-foreground;
+  background-color: $color-background;
+  border: 1px solid $color-foreground;
+  border-radius: 50%;
+  padding: 10px;
+  margin: 10px;
+
+  &:focus {
+    outline:0;
+  }
+}
+
+.btn-icon-state-up {
+  @include prefix(transition-duration, 500ms);
+}
+
+.btn-icon-state-down {
+  @include prefix(transform, scale3d(2,2,2));
+  background-color: $color-off-foreground;
+  border-color: $color-off-foreground;
+  color: $color-background;
+}

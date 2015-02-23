@@ -84,4 +84,5 @@ angular
   .module('app.core')
   .directive('rdButton', Button.factory);
 
+export default Button;
 export {ButtonController, ButtonLink};

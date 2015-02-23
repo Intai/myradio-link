@@ -352,4 +352,5 @@ angular
   .module('app.core')
   .directive('rdAnimate', Animate.factory);
 
-export default AnimateController;
+export default Animate;
+export {AnimateController};

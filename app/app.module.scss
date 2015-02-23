@@ -11,6 +11,10 @@ $lightgrey: #ccc;
 $white: #f2f2f2;
 $offwhite: #e2e2e2;
 
+$fa-font-path: "./fonts";
+$fa-font-size-base: 16px;
+@import "../bower_components/fontawesome/scss/font-awesome";
+
 $serif: Times New Roman, Times, Serif;
 $sansserif: Lucida Grande, Helvetica, Arial, Sans-Serif;
 

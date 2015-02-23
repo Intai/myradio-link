@@ -2,6 +2,7 @@
 
 var gulp = require('gulp'),
     $ = require('gulp-load-plugins')(),
+    bowerFiles = require('main-bower-files'),
     files = './!(build|node_modules|bower_components)/**/*';
 
 gulp.task('csslint', function () {
@@ -23,6 +24,12 @@ gulp.task('sass', function() {
     .pipe($.rename('app.css'))
     .pipe(gulp.dest('build'))
     .pipe($.livereload());
+});
+
+gulp.task('font', function() {
+  return gulp.src(bowerFiles())
+    .pipe($.filter('**/*.{otf,eot,svg,ttf,woff,woff2}'))
+    .pipe(gulp.dest('build/fonts'));
 });
 
 gulp.task('traceur', function () {
@@ -67,11 +74,10 @@ gulp.task('templates', function () {
 });
 
 gulp.task('concat', function() {
-  var bowerFiles = require('main-bower-files');
-
   return gulp.src(['build/*.js', '!build/app.js'])
     .pipe($.addSrc($.traceur.RUNTIME_PATH))
     .pipe($.addSrc(bowerFiles()))
+    .pipe($.filter('**/*.js'))
     .pipe($.order([
       'traceur-runtime.js',
       'angular.js',
@@ -132,4 +138,4 @@ gulp.task('watch', ['connect', 'serve'], function () {
   });
 });
 
-gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'sass', 'traceur'], 'browserify', 'templates', 'concat', 'watch'));
+gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'sass', 'font', 'traceur'], 'browserify', 'templates', 'concat', 'watch'));

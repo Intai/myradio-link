@@ -1,5 +1,5 @@
 .btn {
-  @include prefix(transition, "color 100ms ease-out, background-color 100ms ease-out");
+  @include prefix(transition, "background-color 100ms ease-out, color 100ms ease-out");
   @include font-size(100);
   display: inline-block;
   color: $color-foreground;

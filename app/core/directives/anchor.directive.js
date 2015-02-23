@@ -88,4 +88,5 @@ angular
   .module('app.core')
   .directive('rdAnchor', Anchor.factory);
 
+export default Anchor;
 export {AnchorController, AnchorLink};
