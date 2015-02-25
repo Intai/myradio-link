@@ -43,6 +43,19 @@ class PlaylistService {
       });
   }
 
+  _getList(data, name) {
+    return (name in data)
+      ? data[name] : [];
+  }
+
+  _addEpisode(data, episode) {
+
+  }
+
+  _sort(data) {
+
+  }
+
   _sync(path, data) {
     firebase.setData(path, data);
   }
