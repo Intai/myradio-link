@@ -19,6 +19,41 @@ class FirebaseService {
     });
   }
 
+  unauth() {
+    this.firebase.unauth();
+  }
+
+  setData(path, data) {
+    if (path instanceof Array) {
+      path = path.join('/');
+    }
+
+    this.firebase.child(path)
+      .set(data);
+  }
+
+  onValue(path) {
+    if (path instanceof Array) {
+      path = path.join('/');
+    }
+
+    return new Promise((resolve, reject) => {
+      this.firebase.child(path)
+        .on('value',
+          snapshot => resolve(snapshot.val()),
+          errorObject => reject(errorObject));
+    });
+  }
+
+  offValue(path) {
+    this.firebase.child(path)
+      .off('value');
+  }
+
+  get authData() {
+    return this.firebase.getAuth();
+  }
+
   static factory() {
     return new FirebaseService();
   }
