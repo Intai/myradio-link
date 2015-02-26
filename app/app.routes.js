@@ -8,8 +8,10 @@ var routes = ($routeProvider, $locationProvider) => {
     })
     .when('/:list?', {
       templateUrl: '/playback/views/list.html',
+      controller: 'ListController',
+      controllerAs: 'vm',
       resolve: {
-        firebase: firebase.onAuth
+        firebase: () => firebase.onAuth()
       }
     })
     .otherwise({
