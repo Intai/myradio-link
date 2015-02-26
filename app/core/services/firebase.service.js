@@ -32,6 +32,18 @@ class FirebaseService {
       .set(data);
   }
 
+  onAuth() {
+    return new Promise((resolve, reject) => {
+      this.firebase.onAuth((authData) => {
+        if (authData) {
+          resolve(authData);
+        } else {
+          reject();
+        }
+      });
+    });
+  }
+
   onValue(path) {
     if (path instanceof Array) {
       path = path.join('/');

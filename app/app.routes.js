@@ -1,17 +1,21 @@
-var routes = ($routeProvider) => {
+var routes = ($routeProvider, $locationProvider) => {
   $routeProvider
     .when('/login', {
         templateUrl: '/authenticate/views/login.html'
     })
-    .when('/:list', {
-        templateUrl: '/playback/views/list.html'
-    })
     .otherwise({
-        redirectTo: '/login'
+        templateUrl: '/playback/views/list.html',
+        resolve: {}
     });
+
+  // enable pushState.
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false
+  });
 };
 
-routes.$inject = ['$routeProvider'];
+routes.$inject = ['$routeProvider', '$locationProvider'];
 
 angular
   .module('app')
