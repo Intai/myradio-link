@@ -12,6 +12,10 @@ class PlaylistService {
     this.initEvents();
   }
 
+  /**
+   * Class Variables
+   */
+
   initVars() {
     /**
      * Path to playlists for the current user.
@@ -31,6 +35,10 @@ class PlaylistService {
      */
     this.order = 'asc';
   }
+
+  /**
+   * Public
+   */
 
   initPublicFuncs() {
     /**
@@ -69,6 +77,10 @@ class PlaylistService {
       this.listsPath, this.lists));
   }
 
+  /**
+   * Event Bindings
+   */
+
   initEvents() {
     // retrieve playlists for the current user.
     firebase.onValue(this.listsPath)
@@ -76,6 +88,10 @@ class PlaylistService {
         _.extend(this.lists, value);
       });
   }
+
+  /**
+   * Private
+   */
 
   _addList(lists, name) {
     if (!(name in lists)) {

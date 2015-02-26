@@ -5,9 +5,7 @@ class GoogleService {
   constructor() {}
 
   authPopup() {
-    firebase.authWithOAuthPopup('google')
-      .then(authData => {})
-      .catch(error => {});
+    return firebase.authWithOAuthPopup('google');
   }
 
   static factory() {

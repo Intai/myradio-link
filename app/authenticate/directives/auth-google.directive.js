@@ -7,6 +7,7 @@ class AuthGoogle {
     this.controller = AuthGoogleController;
     this.controllerAs = 'auth';
     this.bindToController = true;
+    this.require = 'rdAuthGoogle';
     this.link = AuthGoogleLink.factory;
   }
 
@@ -15,13 +16,47 @@ class AuthGoogle {
   }
 }
 
-class AuthGoogleController {}
+class AuthGoogleController {
+
+  constructor() {
+    // setup public functions.
+    this.initPublicFuncs(...arguments);
+  }
+
+  /**
+   * Public
+   */
+
+  initPublicFuncs($scope, $location, $attrs) {
+    /**
+     * Authenticate with google through popup.
+     */
+    this.authPopup = _.partial(this._authPopup, 
+      $scope, $location, $attrs.href);
+  }
+
+  /**
+   * Private
+   */
+
+  _authPopup($scope, $location, redirect) {
+    // authenticate with google.
+    google.authPopup()
+      .then(() => {
+        if (redirect) {
+          // redirect after authenticated successfully.
+          $location.path(redirect).replace();
+          $scope.$apply();
+        }
+      });
+  }
+}
 
 class AuthGoogleLink {
 
-  constructor(scope, element, attrs) {
+  constructor(scope, element, attrs, authGoogle) {
     // setup class variables.
-    this.initVars(element);
+    this.initVars(element, authGoogle);
     // setup event bindings.
     this.initEvents();
   }
@@ -30,12 +65,18 @@ class AuthGoogleLink {
    * Class Variables
    */
 
-  initVars(element, animate) {
+  initVars(element, authGoogle) {
     /**
      * jQuery element to be aniamted.
      * @type {object}
      */
     this.el = element;
+
+    /**
+     * AuthGoogle directive controller.
+     * @type {object}
+     */
+    this.authGoogle = authGoogle;
   }
 
   /**
@@ -45,22 +86,15 @@ class AuthGoogleLink {
   initEvents() {
     this.el
       // triggered by user interaction.
-      .on('click', this._onClick);
-  }
-
-  /**
-   * Private
-   */
-
-  _onClick() {
-    // authenticate with google.
-    google.authPopup();
+      .on('click', this.authGoogle.authPopup);
   }
 
   static factory() {
     return new AuthGoogleLink(...arguments);
   }
 }
+
+AuthGoogleController.$inject = ['$scope', '$location', '$attrs'];
 
 angular
   .module('app.core')
