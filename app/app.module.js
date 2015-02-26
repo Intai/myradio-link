@@ -9,11 +9,10 @@ var app = angular
 
 import consts from './app.constants';
 import config from './app.config';
-import routes from './app.routes';
-
 import core from './core/core.module';
 import authenticate from './authenticate/authenticate.module';
 import subscribe from './subscribe/subscribe.module';
 import playback from './playback/playback.module';
+import routes from './app.routes';
 
 export default app;

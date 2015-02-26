@@ -21,7 +21,7 @@ class PlaylistService {
      * Path to playlists for the current user.
      * @type {array}
      */
-    this.listsPath = ['playlist', firebase.authData.uid];
+    this.listsPath = ['playlist'];
 
     /**
      * Playlists.
@@ -45,15 +45,15 @@ class PlaylistService {
      * Add a new playlist.
      * @param {string} name
      */
-    this.addList = common.chainable(_.partial(this._addList,
-      this.lists));
+    this.addList = common.chainable((name) => this._addList(
+      this.lists, name));
 
     /**
      * Get a playlist by name.
      * @param {string} name
      */
-    this.getList = _.partial(this._getList, 
-      this.lists);
+    this.getList = (name) => this._getList(
+      this.lists, name);
 
     /**
      * Add a new episode.
@@ -73,7 +73,7 @@ class PlaylistService {
     /**
      * Synchronise playlists to server.
      */
-    this.sync = common.chainable(_.partial(this._sync,
+    this.sync = common.chainable(() => this._sync(
       this.listsPath, this.lists));
   }
 
@@ -82,6 +82,19 @@ class PlaylistService {
    */
 
   initEvents() {
+    // after authenticated.
+    firebase.onAuth()
+      .then(_.bind(this.initListsPath, this))
+      .then(_.bind(this.initOnValue, this))
+      .catch(() => {});
+  }
+
+  initListsPath(authData) {
+    // path to retrieve user's playlists.
+    this.listsPath = ['playlist', authData.uid];
+  }
+
+  initOnValue() {
     // retrieve playlists for the current user.
     firebase.onValue(this.listsPath)
       .then(value => {
@@ -109,8 +122,8 @@ class PlaylistService {
   }
 
   _addEpisodeToList(order, list, episode) {
-    var index = _.findLastIndex(list, 
-      _.partial(this._isEpisodeHigherOrder, 
+    var index = _.findLastIndex(list,
+      _.partial(this._isEpisodeHigherOrder,
         order, episode));
 
     list.splice(index + 1, 0, episode);
@@ -122,7 +135,7 @@ class PlaylistService {
 
     // todo:
     // according to sort-before rules
-    // then timestamp 
+    // then timestamp
 
     if (order === 'dsc') {
       return (timestamp1 < timestamp2);
@@ -141,7 +154,7 @@ class PlaylistService {
       var episodes = list.splice(0, list.length);
 
       // add episodes back one by one to be ordered.
-      var addEpisode = _.partial(this._addEpisodeToList, 
+      var addEpisode = _.partial(this._addEpisodeToList,
         order, list);
       _.each(episodes, addEpisode, this);
     }
