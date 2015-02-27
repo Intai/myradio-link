@@ -4,6 +4,18 @@ class GoogleService {
 
   constructor() {}
 
+  loadApi(name, version) {
+    return new Promise((resolve, reject) => {
+      google.load(name, version, {
+        callback: resolve
+      });
+    });
+  }
+
+  loadFeedsApi() {
+    return this.loadApi('feeds', '1');
+  }
+
   authPopup() {
     return firebase.authWithOAuthPopup('google');
   }
@@ -15,6 +27,6 @@ class GoogleService {
 
 angular
   .module('app.core')
-  .factory('google', GoogleService.factory);
+  .factory('googleApi', GoogleService.factory);
 
 export default GoogleService.factory();

@@ -1,12 +1,14 @@
+import config from '../../core/services/config.service';
+
 class PlaylistController {
 
-  constructor($routeParams, defaults) {
+  constructor($routeParams) {
     // playlist name from url or defaults.
-    this.listName = $routeParams.list || defaults.PLAYLIST;
+    this.listName = $routeParams.list || config.defaults.PLAYLIST;
   }
 }
 
-PlaylistController.$inject = ['$routeParams', 'defaults'];
+PlaylistController.$inject = ['$routeParams'];
 
 angular
   .module('app.playback')

@@ -276,7 +276,7 @@ class AnimateController {
       var duration = this._getCurrDuration(el);
       if (duration > 0) {
         timer.id = setTimeout(() => this._tick(...arguments),
-          duration + config.CORE_ANIMATE_MIN_DURATION);
+          duration + config.numbers.ANIMATE_MIN_DURATION);
       }
       else {
         timer.id = setTimeout(() => this._tick(...arguments), 0);

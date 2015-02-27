@@ -9,6 +9,6 @@ import browser from './services/browser.service';
 import common from './services/common.service';
 import config from './services/config.service';
 import firebase from './services/firebase.service';
-import google from './services/google.service';
+import googleApi from './services/google.service';
 
 export default core;

@@ -1,4 +1,4 @@
-import google from '../../core/services/google.service';
+import googleApi from '../../core/services/google.service';
 
 class AuthGoogle {
 
@@ -41,7 +41,7 @@ class AuthGoogleController {
 
   _authPopup($scope, $location, redirect) {
     // authenticate with google.
-    google.authPopup()
+    googleApi.authPopup()
       .then(() => {
         if (redirect) {
           // redirect after authenticated successfully.
