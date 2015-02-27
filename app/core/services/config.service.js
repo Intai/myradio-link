@@ -20,7 +20,7 @@ class ConfigService {
      * Urls.
      */
     this.urls = {
-      ITUNES_SEARCH: 'https://itunes.apple.com/search?media=podcast&term='
+      ITUNES_SEARCH_PODCAST: 'https://itunes.apple.com/search?media=podcast&term='
     };
   }
 

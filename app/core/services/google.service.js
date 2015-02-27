@@ -2,8 +2,6 @@ import firebase from './firebase.service';
 
 class GoogleService {
 
-  constructor() {}
-
   loadApi(name, version) {
     return new Promise((resolve, reject) => {
       google.load(name, version, {

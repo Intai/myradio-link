@@ -10,5 +10,6 @@ import common from './services/common.service';
 import config from './services/config.service';
 import firebase from './services/firebase.service';
 import googleApi from './services/google.service';
+import appleApi from './services/apple.service';
 
 export default core;
