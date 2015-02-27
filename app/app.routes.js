@@ -6,9 +6,17 @@ var routes = ($routeProvider, $locationProvider) => {
     .when('/login', {
         templateUrl: '/authenticate/views/login.html'
     })
+    .when('/:list?/subscription', {
+      templateUrl: '/subscribe/views/list.html',
+      controller: 'SubscriptionController',
+      controllerAs: 'vm',
+      resolve: {
+        firebase: () => firebase.onAuth()
+      }
+    })
     .when('/:list?', {
       templateUrl: '/playback/views/list.html',
-      controller: 'ListController',
+      controller: 'PlaylistController',
       controllerAs: 'vm',
       resolve: {
         firebase: () => firebase.onAuth()

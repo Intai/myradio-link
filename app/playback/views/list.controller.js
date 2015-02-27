@@ -1,12 +1,15 @@
-class ListController {
+class PlaylistController {
 
-  constructor() {
-
+  constructor($routeParams, defaults) {
+    // playlist name from url or defaults.
+    this.listName = $routeParams.list || defaults.PLAYLIST;
   }
 }
 
+PlaylistController.$inject = ['$routeParams', 'defaults'];
+
 angular
   .module('app.playback')
-  .controller('ListController', ListController);
+  .controller('PlaylistController', PlaylistController);
 
-export default ListController;
+export default PlaylistController;
