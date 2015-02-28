@@ -1,5 +1,6 @@
 var playback = angular
-  .module('app.playback', []);
+  .module('app.playback', [
+    'ngAnimate']);
 
 import playlist from './services/playlist.service';
 import listView from './views/list.controller';

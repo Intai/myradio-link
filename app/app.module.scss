@@ -38,6 +38,21 @@ $prefixes: webkit moz ms o;
   }
 }
 
+@mixin keyframes-prefix($name) {
+  @-webkit-keyframes #{$name} {
+    $prefix: '-webkit-'; @content;
+  }
+  @-moz-keyframes #{$name} {
+    $prefix: '-moz-'; @content;
+  }
+  @-o-keyframes #{$name} {
+    $prefix: '-o-'; @content;
+  }
+  @keyframes #{$name} {
+    $prefix: ''; @content;
+  }
+}
+
 header, footer, article, hgroup, section, menu, nav, figure, figcaption, aside, details, output {
   display: block;
 }
@@ -72,6 +87,30 @@ a:link,
 a:active,
 a:visited {
   color: inherit;
+}
+
+@include keyframes-prefix(fade-in) {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@include keyframes-prefix(fade-out) {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.page {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  &.ng-enter {
+    @include prefix(animation, fade-in 300ms ease-out);
+  }
+
+  &.ng-leave {
+    @include prefix(animation, fade-out 300ms ease-out);
+  }
 }
 
 @import "core/core.module";
