@@ -67,7 +67,7 @@ class TextInputLink {
   */
 
   initEvents() {
-    this.el
+    this.el.find('input')
       // focus state.
       .on('focus', _.partial(this._onFocus, this.animate))
       // lose focus.
@@ -79,11 +79,21 @@ class TextInputLink {
   */
 
   _onFocus(animate) {
-
+    animate
+      .reset(0)
+      .setReverse(false)
+      .restart();
   }
 
-  _onBlur(animate) {
+  _onBlur(animate, e) {
+    var input = $(e.target);
 
+    animate
+      .setReverse(true)
+      .start();
+
+    input.siblings('label')
+      .toggleClass('has-value', input.val() !== '');
   }
 
   static factory(...args) {

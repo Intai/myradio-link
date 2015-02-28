@@ -22,6 +22,10 @@ $sansserif: Lucida Grande, Helvetica, Arial, Sans-Serif;
   font-size: $percent * 0.16px;
 }
 
+@function font-size($percent) {
+  @return $percent * 0.16px;
+}
+
 $prefixes: webkit moz ms o;
 
 @mixin prefix($property, $value) {
