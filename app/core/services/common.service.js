@@ -1,9 +1,5 @@
 class CommonService {
 
-  constructor() {
-
-  }
-
   /**
    * Wrap a function to be chainable.
    * @param {function} func
@@ -13,6 +9,31 @@ class CommonService {
       func.apply(this, arguments);
       return this;
     };
+  }
+
+  /**
+   * Build url path or get params.
+   * @param {string} url
+   * @param {object} params
+   */
+  buildUrl(url, params) {
+    var pathParams = [];
+
+    // replace all params in path.
+    for (let param in params) {
+      url = url.replace(':' + param, params[param]);
+      pathParams.push(param);
+    }
+
+    // delete all params replaced in path.
+    for (let key of pathParams) {
+      delete params[key];
+    }
+
+    // remove all unknown params in path.
+    url = url.replace(/\/:[^/]+/i, '');
+
+    return url;
   }
 
   static factory() {

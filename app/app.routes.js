@@ -1,4 +1,28 @@
+import common from './core/services/common.service';
 import firebase from './core/services/firebase.service';
+import subscribe from './subscribe/services/subscribe.service';
+import playlist from './playback/services/playlist.service';
+
+var routeResolve = (func, redirect) => {
+  // eavesdrop the promise result.
+  var channelResolve = function($location, $route) {
+    return new Promise((resolve, reject) => {
+      func().then(resolve)
+        // if rejected.
+        .catch(() => {
+          // redirect to a fallback url.
+          $location.path(common.buildUrl(redirect, $route.current.pathParams));
+          // reject with a specific message to
+          // skip redirection in $routeChangeError.
+          reject('resolved.redirect');
+        });
+    });
+  };
+
+  channelResolve.$inject = ['$location', '$route'];
+
+  return channelResolve;
+};
 
 var routes = ($routeProvider, $locationProvider) => {
 
@@ -11,7 +35,19 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'SubscriptionController',
       controllerAs: 'vm',
       resolve: {
-        firebase: () => firebase.onAuth()
+        subscribe: routeResolve(() =>
+          subscribe.onNonEmpty(), '/:list/subscription/add'),
+        firebase: routeResolve(() =>
+          firebase.onAuth(), '/login')
+      }
+    })
+    .when('/:list?/subscription/add', {
+      templateUrl: '/subscribe/views/add.html',
+      controller: 'SubscriptionAddController',
+      controllerAs: 'vm',
+      resolve: {
+        firebase: routeResolve(() =>
+          firebase.onAuth(), '/login')
       }
     })
     .when('/:list?', {
@@ -19,7 +55,10 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'PlaylistController',
       controllerAs: 'vm',
       resolve: {
-        firebase: () => firebase.onAuth()
+        playlist: routeResolve(() =>
+          playlist.onNonEmpty(), '/:list/subscription'),
+        firebase: routeResolve(() =>
+          firebase.onAuth(), '/login')
       }
     })
     .otherwise({
@@ -34,10 +73,13 @@ var routes = ($routeProvider, $locationProvider) => {
 };
 
 var routeError = ($rootScope, $location) => {
-  $rootScope.$on('$routeChangeError', () => {
-    // default to login if there is routing
-    // dependency failed to be resolved.
-    $location.path('/login');
+  $rootScope.$on('$routeChangeError', (e, current, previous, rejection) => {
+    // if hasn't been redirected in routeResolve.
+    if (rejection !== 'resolved.redirect') {
+      // default to homepage if there is routing
+      // dependency failed to be resolved.
+      $location.path('/');
+    }
   });
 };
 

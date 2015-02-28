@@ -31,7 +31,7 @@ class AuthGoogleController {
     /**
      * Authenticate with google through popup.
      */
-    this.authPopup = _.partial(this._authPopup, 
+    this.authPopup = _.partial(this._authPopup,
       $scope, $location, $attrs.href);
   }
 

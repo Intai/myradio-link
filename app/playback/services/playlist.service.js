@@ -34,6 +34,12 @@ class PlaylistService {
      * @type {string}
      */
     this.order = 'asc';
+
+    /**
+     * Whether playlists have been retrieved.
+     * @type {bool}
+     */
+    this.isListsLoaded = false;
   }
 
   /**
@@ -86,7 +92,7 @@ class PlaylistService {
     firebase.onAuth()
       .then(_.bind(this.initListsPath, this))
       .then(_.bind(this.initOnValue, this))
-      .catch(() => {});
+      .catch(_.bind(this.catchOnValue, this));
   }
 
   initListsPath(authData) {
@@ -97,14 +103,55 @@ class PlaylistService {
   initOnValue() {
     // retrieve playlists for the current user.
     firebase.onValue(this.listsPath)
-      .then(value => {
-        _.extend(this.lists, value);
-      });
+      .then(_.bind(this.resolveOnValue, this))
+      .catch(_.bind(this.catchOnValue, this));
+  }
+
+  resolveOnValue(value) {
+    // if there is no playlist.
+    if (_.isEmpty(value)) {
+      // not non-empty.
+      this._rejectOnNonEmpty();
+    }
+    else {
+      // otherwise update the playlists
+      // and notify listeners on onNonEmpty.
+      _.extend(this.lists, value);
+      this._resolveOnNonEmpty();
+    }
+
+    this.isListsLoaded = true;
+  }
+
+  catchOnValue() {
+    // empty playlists.
+    this._rejectOnNonEmpty();
+    this.isListsLoaded = true;
+  }
+
+  onNonEmpty() {
+    // if the playlists have been retrieved.
+    if (this.isListsLoaded) {
+      // return a resolved promise if not empty.
+      return (_.isEmpty(this.lists))
+        ? Promise.reject()
+        : Promise.resolve();
+    }
+
+    // wait for lists to be retrieved.
+    return new Promise((resolve, reject) => {
+      this._resolveOnNonEmpty = _.compose(this._resolveOnNonEmpty, resolve);
+      this._rejectOnNonEmpty = _.compose(this._rejectOnNonEmpty, reject);
+    });
   }
 
   /**
    * Private
    */
+
+  _resolveOnNonEmpty() {}
+
+  _rejectOnNonEmpty() {}
 
   _addList(lists, name) {
     if (!(name in lists)) {
