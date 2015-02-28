@@ -1,0 +1,14 @@
+<div class="text-input-wrap" rd-animate>
+  <label for="{{input.name}}" class="text-input-label" ng-transclude></label>
+  <input type="{{input.type}}"
+    id="{{input.name}}"
+    name="{{input.name}}"
+    ng-class="{'text-input':true, 'has-icon':input.icon}"
+    ng-required="{{input.required}}"
+    placeholder="{{input.placeholder}}"
+    autocomplete="{{input.autocomplete}}" />
+
+  <rd-button ng-if="input.icon" class="text-input-icon">
+    <span class="fa fa-{{input.icon}}"></span>
+  </rd-button>
+</div>

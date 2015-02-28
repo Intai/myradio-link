@@ -24,7 +24,7 @@ class AnimateController {
     // setup public functions.
     this.initPublicFuncs();
     // setup initial keyframes.
-    this.addFrame($attrs.keyframes);
+    this.addFrame($attrs.keyframes || '');
   }
 
   /**
