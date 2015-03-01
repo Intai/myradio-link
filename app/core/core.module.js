@@ -6,6 +6,7 @@ import button from './directives/button.directive';
 import icon from './directives/button-icon.directive';
 import textinput from './directives/text-input.directive';
 import animate from './directives/animate.directive';
+import dispatcher from './services/dispatcher.service';
 import browser from './services/browser.service';
 import common from './services/common.service';
 import config from './services/config.service';

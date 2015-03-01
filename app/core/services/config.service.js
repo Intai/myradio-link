@@ -22,6 +22,13 @@ class ConfigService {
     this.urls = {
       ITUNES_SEARCH_PODCAST: 'https://itunes.apple.com/search?media=podcast&term='
     };
+
+    /**
+     * Dispatcher actions.
+     */
+    this.actions = {
+      SEARCH_PODCAST: 'SEARCH_PODCAST'
+    };
   }
 
   static factory() {

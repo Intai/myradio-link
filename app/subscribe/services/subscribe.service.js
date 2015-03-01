@@ -13,20 +13,20 @@ class SubscribeService {
   }
 
   /**
-  * Class Variables
-  */
+   * Class Variables
+   */
 
   initVars() {
     /**
-    * Path to subscription lists for the current user.
-    * @type {array}
-    */
+     * Path to subscription lists for the current user.
+     * @type {array}
+     */
     this.listsPath = ['subscription'];
 
     /**
-    * Subscription lists.
-    * @type {object}
-    */
+     * Subscription lists.
+     * @type {object}
+     */
     this.lists = {};
 
     /**

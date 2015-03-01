@@ -3,6 +3,7 @@ var subscribe = angular
     'ngAnimate']);
 
 import searchForm from './directives/search.directive';
+import search from './services/search.service';
 import listView from './views/list.controller';
 import addView from './views/add.controller';
 

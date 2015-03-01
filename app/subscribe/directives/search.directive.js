@@ -1,3 +1,6 @@
+import dispatcher from '../../core/services/dispatcher.service';
+import config from '../../core/services/config.service';
+
 class SearchForm {
 
   constructor() {
@@ -29,26 +32,26 @@ class SearchFormLink {
   }
 
   /**
-  * Class Variables
-  */
+   * Class Variables
+   */
 
   initVars(element, animate) {
     /**
-    * jQuery element to be aniamted.
-    * @type {object}
-    */
+     * jQuery element to be aniamted.
+     * @type {object}
+     */
     this.el = element;
 
     /**
-    * Animate directive controller.
-    * @type {object}
-    */
+     * Animate directive controller.
+     * @type {object}
+     */
     this.animate = animate;
   }
 
   /**
-  * Event Bindings
-  */
+   * Event Bindings
+   */
 
   initEvents() {
     this.el
@@ -57,16 +60,20 @@ class SearchFormLink {
   }
 
   /**
-  * Private
-  */
+   * Private
+   */
 
   _onSubmit(animate, e) {
     var form = $(e.target),
-        [{'value': value}] = form.serializeArray();
+        [{value}] = form.serializeArray();
 
-    // todo
-    // dispatch value as search term
-    //
+    if (value) {
+      // dispatch the search term submitted.
+      dispatcher.dispatch({
+        actionType: config.actions.SEARCH_PODCAST,
+        searchTerm: value
+      });
+    }
   }
 
   static factory(...args) {
