@@ -3,11 +3,8 @@
     Search for Podcasts
   </rd-text-input>
 
-  <ul ng-repeat="feed in form.feeds">
-    <li data-url="{{feed.feedUrl}}">
-      <img ng-src="{{feed.artworkUrl100}}" />
-      <span class="title">{{feed.trackName}}</span>
-      <span class="">{{feed.artistName}}</span>
-    <li>
+  <ul>
+    <rd-search-item ng-repeat="feed in form.feeds"
+      feed="feed"></rd-search-item>
   </ul>
 </form>

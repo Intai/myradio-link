@@ -1,6 +1,6 @@
 import config from '../../core/services/config.service';
 
-class AddController {
+class SearchController {
 
   constructor($routeParams) {
     // playlist name from url or defaults.
@@ -8,10 +8,10 @@ class AddController {
   }
 }
 
-AddController.$inject = ['$routeParams'];
+SearchController.$inject = ['$routeParams'];
 
 angular
   .module('app.subscribe')
-  .controller('SubscriptionAddController', AddController);
+  .controller('SearchController', SearchController);
 
-export default AddController;
+export default SearchController;

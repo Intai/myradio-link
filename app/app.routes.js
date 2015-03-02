@@ -42,8 +42,17 @@ var routes = ($routeProvider, $locationProvider) => {
       }
     })
     .when('/:list?/subscription/add', {
-      templateUrl: '/subscribe/views/add.html',
-      controller: 'SubscriptionAddController',
+      templateUrl: '/subscribe/views/search.html',
+      controller: 'SearchController',
+      controllerAs: 'vm',
+      resolve: {
+        firebase: routeResolve(() =>
+          firebase.onAuth(), '/login')
+      }
+    })
+    .when('/:list?/subscription/add/:token', {
+      templateUrl: '/subscribe/views/subscribe.html',
+      controller: 'SubscribeController',
       controllerAs: 'vm',
       resolve: {
         firebase: routeResolve(() =>
