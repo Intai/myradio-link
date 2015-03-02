@@ -8,6 +8,8 @@ class AppleService {
 
       $.ajax({
         url: url,
+        type: 'get',
+        dataType: 'jsonp',
         success: resolve,
         error: reject
       });

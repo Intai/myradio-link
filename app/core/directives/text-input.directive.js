@@ -13,6 +13,7 @@ class TextInput {
     this.scope = {
       type: '@',
       name: '@',
+      value: '@',
       required: '@',
       placeholder: '@',
       autocomplete: '@',

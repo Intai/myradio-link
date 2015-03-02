@@ -1,10 +1,12 @@
 <div class="text-input-wrap"
   rd-animate keyframes="text-input-blur, text-input-focus">
 
-  <label for="{{input.name}}" class="text-input-label" ng-transclude></label>
+  <label for="{{input.name}}" ng-transclude
+    ng-class="{'text-input-label':true, 'has-value':input.value}"></label>
   <input type="{{input.type}}"
     id="{{input.name}}"
     name="{{input.name}}"
+    value="{{input.value}}"
     ng-class="{'text-input':true, 'has-icon':input.icon}"
     ng-required="{{input.required}}"
     placeholder="{{input.placeholder}}"

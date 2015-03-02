@@ -217,7 +217,7 @@ class PlaylistService {
 }
 
 angular
-  .module('app.core')
+  .module('app.playback')
   .factory('playlists', PlaylistService.factory);
 
 export default PlaylistService.factory();

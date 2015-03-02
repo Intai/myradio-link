@@ -1,5 +1,7 @@
 import dispatcher from '../../core/services/dispatcher.service';
 import config from '../../core/services/config.service';
+import common from '../../core/services/common.service';
+import search from '../services/search.service';
 
 class SearchForm {
 
@@ -13,6 +15,10 @@ class SearchForm {
     this.bindToController = true;
     this.require = 'rdAnimate';
     this.link = SearchFormLink.factory;
+    this.scope = {
+      term: '@',
+      feeds: '@'
+    };
   }
 
   static factory() {
@@ -20,13 +26,27 @@ class SearchForm {
   }
 }
 
-class SearchFormController {}
+class SearchFormController {
+
+  constructor() {
+    // if there is no search term specified.
+    if (!this.term) {
+      // get the current search term.
+      this.term = common.getBaconPropValue(search.termProperty);
+    }
+
+    if (!this.feeds) {
+      // get the current search result.
+      this.feeds = common.getBaconPropValue(search.resultProperty);
+    }
+  }
+}
 
 class SearchFormLink {
 
   constructor(scope, element, attrs, animate) {
     // setup class variables.
-    this.initVars(element, animate);
+    this.initVars(scope, element, animate);
     // setup event bindings.
     this.initEvents();
   }
@@ -35,7 +55,12 @@ class SearchFormLink {
    * Class Variables
    */
 
-  initVars(element, animate) {
+  initVars(scope, element, animate) {
+    /**
+     * Angular directive scope.
+     */
+    this.scope = scope;
+
     /**
      * jQuery element to be aniamted.
      * @type {object}
@@ -57,6 +82,11 @@ class SearchFormLink {
     this.el
       // on search term submission.
       .on('submit', _.partial(this._onSubmit, this.animate));
+
+    // after restrieving search result.
+    search.resultStream
+      .onValue(_.partial(this._onResult, 
+        this.animate, this.scope));
   }
 
   /**
@@ -74,6 +104,14 @@ class SearchFormLink {
         searchTerm: value
       });
     }
+  }
+
+  _onResult(animate, scope, data) {
+    scope.$apply(() => {
+      // update search result.
+      var feeds = scope.form.feeds;
+      feeds.splice(0, feeds.length, ...data.results);
+    });
   }
 
   static factory(...args) {

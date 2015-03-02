@@ -36,6 +36,21 @@ class CommonService {
     return url;
   }
 
+  /**
+   * Get the current value of a bacon property.
+   * @param {object}
+   */
+  getBaconPropValue(property) {
+    var ret = null;
+    var dispose = property
+      .onValue((value) => {
+        ret = value;
+      });
+
+    dispose();
+    return ret;
+  }
+
   static factory() {
     return new CommonService();
   }
