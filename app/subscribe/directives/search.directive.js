@@ -37,7 +37,8 @@ class SearchFormController {
 
     if (!this.feeds) {
       // get the current search result.
-      this.feeds = common.getBaconPropValue(search.resultProperty);
+      var {results} = common.getBaconPropValue(search.resultProperty);
+      this.feeds = results || [];
     }
   }
 }
@@ -85,7 +86,7 @@ class SearchFormLink {
 
     // after restrieving search result.
     search.resultStream
-      .onValue(_.partial(this._onResult, 
+      .onValue(_.partial(this._onResult,
         this.animate, this.scope));
   }
 

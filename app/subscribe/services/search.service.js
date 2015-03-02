@@ -14,7 +14,7 @@ class SearchService {
   /**
    * Class Variables
    */
-  
+
   initVars() {
     /**
      * Stream out search terms.
@@ -29,7 +29,8 @@ class SearchService {
      * @type {object}
      */
     this.resultStream = new Bacon.Bus();
-    this.resultProperty = this.resultStream.toProperty([]);
+    this.resultProperty = this.resultStream.toProperty({});
+    this.resultProperty.onValue();
   }
 
   /**
@@ -39,7 +40,7 @@ class SearchService {
   initActionHandlers() {
     // search podcast action from dispatcher.
     dispatcher.register(config.actions.SEARCH_PODCAST,
-      _.bind(_.partial(this._searchActionHandler, 
+      _.bind(_.partial(this._searchActionHandler,
         this.termStream, this.resultStream), this));
   }
 
