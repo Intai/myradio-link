@@ -66,7 +66,7 @@ class SearchFormLink {
      * jQuery element to be aniamted.
      * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
 
     /**
      * Animate directive controller.
@@ -82,12 +82,18 @@ class SearchFormLink {
   initEvents() {
     this.el
       // on search term submission.
-      .on('submit', _.partial(this._onSubmit, this.animate));
+      .on('submit.search', _.partial(this._onSubmit, this.animate));
 
     // after restrieving search result.
-    search.resultStream
+    var dispose = search.resultStream
       .onValue(_.partial(this._onResult,
         this.animate, this.scope));
+
+    // unbind on destroy.
+    this.scope.$on('$destroy', () => {
+      this.el.off('submit.search');
+      dispose();
+    });
   }
 
   /**
