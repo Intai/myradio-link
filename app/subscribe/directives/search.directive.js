@@ -13,7 +13,6 @@ class SearchForm {
     this.controller = SearchFormController;
     this.controllerAs = 'form';
     this.bindToController = true;
-    this.require = 'rdAnimate';
     this.link = SearchFormLink.factory;
     this.scope = {
       term: '@',
@@ -45,9 +44,9 @@ class SearchFormController {
 
 class SearchFormLink {
 
-  constructor(scope, element, attrs, animate) {
+  constructor(scope, element, attrs) {
     // setup class variables.
-    this.initVars(scope, element, animate);
+    this.initVars(scope, element);
     // setup event bindings.
     this.initEvents();
   }
@@ -56,7 +55,7 @@ class SearchFormLink {
    * Class Variables
    */
 
-  initVars(scope, element, animate) {
+  initVars(scope, element) {
     /**
      * Angular directive scope.
      */
@@ -67,12 +66,6 @@ class SearchFormLink {
      * @type {object}
      */
     this.el = $(element);
-
-    /**
-     * Animate directive controller.
-     * @type {object}
-     */
-    this.animate = animate;
   }
 
   /**
@@ -82,12 +75,12 @@ class SearchFormLink {
   initEvents() {
     this.el
       // on search term submission.
-      .on('submit.search', _.partial(this._onSubmit, this.animate));
+      .on('submit.search', this._onSubmit);
 
     // after restrieving search result.
     var dispose = search.resultStream
       .onValue(_.partial(this._onResult,
-        this.animate, this.scope));
+        this.scope));
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
@@ -100,7 +93,7 @@ class SearchFormLink {
    * Private
    */
 
-  _onSubmit(animate, e) {
+  _onSubmit(e) {
     var form = $(e.target),
         [{value}] = form.serializeArray();
 
@@ -113,7 +106,7 @@ class SearchFormLink {
     }
   }
 
-  _onResult(animate, scope, data) {
+  _onResult(scope, data) {
     scope.$apply(() => {
       // update search result.
       var feeds = scope.form.feeds;

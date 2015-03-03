@@ -6,7 +6,8 @@ $color-alert: #e74c3c;
 
 $grey: #333;
 $offgrey: #444;
-$lightgrey: #ccc;
+$lightgrey: #aaa;
+$lightergrey: #ccc;
 
 $white: #f2f2f2;
 $offwhite: #e2e2e2;
@@ -57,6 +58,16 @@ $prefixes: webkit moz ms o;
   }
 }
 
+@include keyframes-prefix(fade-in) {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@include keyframes-prefix(fade-out) {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 header, footer, article, hgroup, section, menu, nav, figure, figcaption, aside, details, output {
   display: block;
 }
@@ -93,16 +104,6 @@ a:visited {
   color: inherit;
 }
 
-@include keyframes-prefix(fade-in) {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@include keyframes-prefix(fade-out) {
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
 .page {
   position: absolute;
   width: 100%;
@@ -119,3 +120,4 @@ a:visited {
 }
 
 @import "core/core.module";
+@import "subscribe/subscribe.module";

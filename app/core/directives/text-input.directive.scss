@@ -9,7 +9,7 @@
   width: 100%;
   max-width: 540px;
   padding: 10px 15px;
-  margin: font-size(100) + 11px auto 0 auto;
+  margin: font-size(100) + 11px auto 1px auto;
 }
 
 .text-input-label {
@@ -17,7 +17,7 @@
   position: absolute;
   left: 15px;
   top: 10px;
-  color: $color-off-foreground;
+  color: $lightgrey;
   margin: -5px -13px 0 -13px;
   padding: 5px 13px;
   border-radius: 5px;
@@ -66,6 +66,7 @@
   border-color: $color-off-foreground;
   border-width: 2px;
   margin-top: font-size(100) + 10px;
+  margin-bottom: 0;
 
   > .text-input-label {
     background-color: $color-off-foreground;
