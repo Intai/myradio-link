@@ -46,26 +46,26 @@ class TextInputLink {
   }
 
   /**
-  * Class Variables
-  */
+   * Class Variables
+   */
 
   initVars(element, animate) {
     /**
-    * jQuery element to be aniamted.
-    * @type {object}
-    */
+     * jQuery element to be aniamted.
+     * @type {object}
+     */
     this.el = element;
 
     /**
-    * Animate directive controller.
-    * @type {object}
-    */
+     * Animate directive controller.
+     * @type {object}
+     */
     this.animate = animate;
   }
 
   /**
-  * Event Bindings
-  */
+   * Event Bindings
+   */
 
   initEvents() {
     this.el.find('input')
@@ -76,8 +76,8 @@ class TextInputLink {
   }
 
   /**
-  * Private
-  */
+   * Private
+   */
 
   _onFocus(animate) {
     animate

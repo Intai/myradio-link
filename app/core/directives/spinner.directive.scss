@@ -1,0 +1,17 @@
+.background-spinner-wrap {
+  display: none;
+  position: fixed;
+  left: 25%;
+  top: 30px;
+
+  &.show {
+    display: block;
+  }
+}
+
+.background-spinner {
+  @include prefix(animation, fa-spin 5s linear infinite);
+  color: $lightergrey;
+  font-size: 300px;
+  margin-left: -50%;
+}

@@ -4,6 +4,7 @@ var core = angular
 import anchor from './directives/anchor.directive';
 import button from './directives/button.directive';
 import icon from './directives/button-icon.directive';
+import spinner from './directives/spinner.directive';
 import textinput from './directives/text-input.directive';
 import animate from './directives/animate.directive';
 import dispatcher from './services/dispatcher.service';
