@@ -107,6 +107,12 @@ class SearchFormLink {
   }
 
   _onResult(scope, data) {
+    // dispatch the search term submitted.
+    dispatcher.dispatch({
+      actionType: config.actions.SEARCH_PODCAST_RESULTS,
+      results: data.results
+    });
+
     scope.$apply(() => {
       // update search result.
       var feeds = scope.form.feeds;

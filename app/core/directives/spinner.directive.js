@@ -1,3 +1,5 @@
+import loading from '../services/loading.service';
+
 class Spinner {
 
   constructor() {
@@ -49,32 +51,20 @@ class SpinnerLink {
    */
 
   initEvents() {
-    var disposes = [],
-        onShow = _.partial(this._onShow, this.el),
-        onHide = _.partial(this._onHide, this.el);
-
     // after submitting a search.
-    disposes.push(search.submitStream
-      .onValue(onShow));
-
-    // after restrieving search result.
-    disposes.push(search.resultStream
-      .onValue(onHide));
+    var dispose = loading.stateProperty
+      .onValue(_.partial(this._onStateChange, this.el));
 
     // unbind on destroy.
-    this.scope.$on('$destroy', _.compose(...disposes));
+    this.scope.$on('$destroy', dispose);
   }
 
   /**
    * Private
    */
 
-  _onShow(el) {
-    el.addClass('show');
-  }
-
-  _onHide(el) {
-    el.removeClass('show');
+  _onStateChange(el, isLoading) {
+    el.toggleClass('show', isLoading);
   }
 
   static factory(...args) {

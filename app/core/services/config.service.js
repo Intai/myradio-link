@@ -27,7 +27,8 @@ class ConfigService {
      * Dispatcher actions.
      */
     this.actions = {
-      SEARCH_PODCAST: 'SEARCH_PODCAST'
+      SEARCH_PODCAST: 'SEARCH_PODCAST',
+      SEARCH_PODCAST_RESULTS: 'SEARCH_PODCAST_RESULTS'
     };
   }
 

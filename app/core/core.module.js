@@ -14,5 +14,6 @@ import config from './services/config.service';
 import firebase from './services/firebase.service';
 import googleApi from './services/google.service';
 import appleApi from './services/apple.service';
+import loading from './services/loading.service';
 
 export default core;
