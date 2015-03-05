@@ -18,9 +18,9 @@ class AuthGoogle {
 
 class AuthGoogleController {
 
-  constructor() {
+  constructor(...args) {
     // setup public functions.
-    this.initPublicFuncs(...arguments);
+    this.initPublicFuncs(...args);
   }
 
   /**
@@ -89,8 +89,8 @@ class AuthGoogleLink {
       .on('click', this.authGoogle.authPopup);
   }
 
-  static factory() {
-    return new AuthGoogleLink(...arguments);
+  static factory(...args) {
+    return new AuthGoogleLink(...args);
   }
 }
 

@@ -79,8 +79,8 @@ class AnchorLink {
       .start();
   }
 
-  static factory() {
-    return new AnchorLink(...arguments);
+  static factory(...args) {
+    return new AnchorLink(...args);
   }
 }
 

@@ -7,6 +7,7 @@ import icon from './directives/button-icon.directive';
 import spinner from './directives/spinner.directive';
 import textinput from './directives/text-input.directive';
 import animate from './directives/animate.directive';
+import nav from './directives/navigation.directive';
 import dispatcher from './services/dispatcher.service';
 import browser from './services/browser.service';
 import common from './services/common.service';
@@ -15,5 +16,6 @@ import firebase from './services/firebase.service';
 import googleApi from './services/google.service';
 import appleApi from './services/apple.service';
 import loading from './services/loading.service';
+import navigate from './services/navigation.service';
 
 export default core;
