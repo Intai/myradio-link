@@ -17,6 +17,12 @@ gulp.task('jshint', function () {
     .pipe($.jshint.reporter($.jshintStylish));
 });
 
+gulp.task('sass-delay', function(callback) {
+  setTimeout(function() {
+    callback();
+  }, 500);
+});
+
 gulp.task('sass', function() {
   return gulp.src('app/app.module.scss')
     .pipe($.sass())
@@ -125,7 +131,11 @@ gulp.task('serve', ['connect'], function () {
 gulp.task('watch', ['connect', 'serve'], function () {
   $.livereload.listen();
 
-  gulp.watch([files + '.scss'], ['sass']);
+  gulp.watch([files + '.scss'], function() {
+    // workaround missing scss files from sublime save.
+    $.sequence('sass-delay', 'sass')();
+  });
+
   gulp.watch([files + '.js'], function() {
     // wrap in a function because an instance
     // of sequence can't be executed repeatedly.

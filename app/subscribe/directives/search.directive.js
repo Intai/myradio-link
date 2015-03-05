@@ -75,7 +75,8 @@ class SearchFormLink {
   initEvents() {
     this.el
       // on search term submission.
-      .on('submit.search', this._onSubmit);
+      .on('submit.search', _.partial(this._onSubmit,
+        this.scope));
 
     // after restrieving search result.
     var dispose = search.resultStream
@@ -93,7 +94,7 @@ class SearchFormLink {
    * Private
    */
 
-  _onSubmit(e) {
+  _onSubmit(scope, e) {
     var form = $(e.target),
         [{value}] = form.serializeArray();
 
@@ -103,11 +104,17 @@ class SearchFormLink {
         actionType: config.actions.SEARCH_PODCAST,
         searchTerm: value
       });
+
+      scope.$apply(() => {
+        // clear search result currently rendered.
+        var feeds = scope.form.feeds;
+        feeds.splice(0, feeds.length);
+      });
     }
   }
 
   _onResult(scope, data) {
-    // dispatch the search term submitted.
+    // dispatch the search results.
     dispatcher.dispatch({
       actionType: config.actions.SEARCH_PODCAST_RESULTS,
       results: data.results

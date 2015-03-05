@@ -1,3 +1,11 @@
 .search-item {
   overflow: hidden;
+
+  &.ng-enter {
+    @include prefix(animation, fade-in 300ms ease-in-out);
+  }
+
+  &.ng-leave {
+    @include prefix(animation, fade-out 300ms ease-out 1ms);
+  }
 }
