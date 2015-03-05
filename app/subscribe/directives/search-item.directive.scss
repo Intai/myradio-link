@@ -1,5 +1,9 @@
 .search-item {
+  @include prefix(transition, "background-color 100ms ease-out, color 100ms ease-out");
+  font-family: $sansserif;
+  color: $color-foreground;
   overflow: hidden;
+  margin-bottom: 1px;
 
   &.ng-enter {
     @include prefix(animation, fade-in 300ms ease-in-out);
@@ -8,4 +12,55 @@
   &.ng-leave {
     @include prefix(animation, fade-out 300ms ease-out 1ms);
   }
+
+  &:nth-child(even) {
+    background: $color-background;
+  }
+
+  &.search-item-state-up {
+    @include prefix(transition-duration, 500ms);
+  }
+
+  &.search-item-state-down {
+    background-color: $color-off-foreground;
+    color: $color-background;
+
+    .search-item-artist {
+      color: $offwhite;
+    }
+  }
+}
+
+.search-item-anchor {
+  text-decoration: none;
+}
+
+.search-item-thumbnail {
+  float: left;
+  height: 80px;
+  width: 80px;
+}
+
+.search-item-details {
+  height: 80px;
+}
+
+.search-item-track,
+.search-item-artist {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 0 15px;
+}
+
+.search-item-track {
+  @include font-size(100);
+  padding-top: (75px - font-size(190)) / 2;
+}
+
+.search-item-artist {
+  @include font-size(90);
+  padding-top: 5px;
+  color: $lightgrey;
 }

@@ -1,7 +1,9 @@
-<li class="search-item">
-  <a ng-href="add/{{item.feed.feedUrlBase64}}">
-    <img ng-src="{{item.feed.artworkUrl100}}" />
-    <span class="title">{{item.feed.trackName}}</span>
-    <span class="subtitle">{{item.feed.artistName}}</span>
+<li class="search-item" rd-animate keyframes="search-item-state-up, search-item-state-down">
+  <a class="search-item-anchor"  ng-href="add/{{item.feed.feedUrlBase64}}">
+    <img class="search-item-thumbnail" ng-src="{{item.feed.artworkUrl100}}" />
+    <div class="search-item-details">
+      <span class="search-item-track">{{item.feed.trackName}}</span>
+      <span class="search-item-artist">{{item.feed.artistName}}</span>
+    </div>
   </a>
 </li>

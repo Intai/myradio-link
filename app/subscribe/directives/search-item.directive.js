@@ -8,6 +8,8 @@ class SearchItem {
     this.controller = SearchItemController;
     this.controllerAs = 'item';
     this.bindToController = true;
+    this.require = 'rdAnimate';
+    this.link = SearchItemLink.factory;
     this.scope = {
       feed: '='
     };
@@ -26,9 +28,70 @@ class SearchItemController {
   }
 }
 
+class SearchItemLink {
+
+  constructor(scope, element, attrs, animate) {
+    // setup class variables.
+    this.initVars(element, animate);
+    // setup event bindings.
+    this.initEvents();
+  }
+
+  /**
+   * Class Variables
+   */
+
+  initVars(element, animate) {
+    /**
+     * jQuery element to be aniamted.
+     * @type {object}
+     */
+    this.el = element;
+
+    /**
+     * Animate directive controller.
+     * @type {object}
+     */
+    this.animate = animate;
+  }
+
+  /**
+   * Event Bindings
+   */
+
+  initEvents() {
+    this.el
+      // down state.
+      .on('mousedown touchstart', _.partial(this._onDown, this.animate))
+      // up state.
+      .on('mouseup drag touchend', _.partial(this._onUp, this.animate));
+  }
+
+  /**
+   * Private
+   */
+
+  _onDown(animate) {
+    animate
+      .reset(0)
+      .setReverse(false)
+      .restart();
+  }
+
+  _onUp(animate) {
+    animate
+      .setReverse(true)
+      .start();
+  }
+
+  static factory(...args) {
+    return new SearchItemLink(...args);
+  }
+}
+
 angular
   .module('app.subscribe')
   .directive('rdSearchItem', SearchItem.factory);
 
 export default SearchItem;
-export {SearchItemController};
+export {SearchItemController, SearchItemLink};

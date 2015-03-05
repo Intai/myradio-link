@@ -75,8 +75,8 @@ class ButtonLink {
       .start();
   }
 
-  static factory() {
-    return new ButtonLink(...arguments);
+  static factory(...args) {
+    return new ButtonLink(...args);
   }
 }
 
