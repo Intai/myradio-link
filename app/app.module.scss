@@ -119,5 +119,9 @@ a:visited {
   }
 }
 
+.page-main {
+  padding: 15px 0;
+}
+
 @import "core/core.module";
 @import "subscribe/subscribe.module";

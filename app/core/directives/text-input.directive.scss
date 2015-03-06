@@ -7,9 +7,9 @@
   border: 1px solid $color-foreground;
   border-radius: 5px;
   width: 100%;
-  max-width: 510px;
-  padding: 10px 15px;
+  max-width: 540px;
   margin: font-size(100) + 11px auto 1px auto;
+  padding: 0;
 }
 
 .text-input-label {
@@ -37,11 +37,11 @@
   width: 100%;
   border: none;
   outline: none;
-  padding: 0;
+  padding: 10px 15px;
 
   &.has-icon {
     box-sizing: border-box;
-    padding-right: font-size(100) + 30px;
+    padding-right: font-size(100) + 45px;
   }
 }
 

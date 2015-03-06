@@ -1,0 +1,15 @@
+.nav {
+  @include font-size(100);
+  font-family: $sansserif;
+  width: 100%;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 15px;
+  border-bottom: 1px solid $lightergrey;
+  height: font-size(100) + 30px;
+  box-sizing: border-box;
+}
+
+.nav-back {
+  text-transform: uppercase;
+}

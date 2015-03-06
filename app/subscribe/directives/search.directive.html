@@ -1,7 +1,9 @@
 <form>
-  <rd-text-input name="search-term" value="{{form.term}}" icon="search">
-    Search for Podcasts
-  </rd-text-input>
+  <div class="search-text-input">
+    <rd-text-input name="search-term" value="{{form.term}}" icon="search">
+      Search for Podcasts
+    </rd-text-input>
+  </div>
 
   <ul class="search-items">
     <rd-search-item ng-repeat="feed in form.feeds"
