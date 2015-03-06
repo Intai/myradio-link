@@ -16,16 +16,16 @@
   @include prefix(transition, "background-color 300ms ease-out, color 300ms ease-out, margin-top 300ms ease-out, border-radius 300ms ease-out");
   position: absolute;
   left: 15px;
-  top: 10px;
+  top: 5px;
   color: $lightgrey;
-  margin: -5px -13px 0 -13px;
+  margin: 0 -13px;
   padding: 5px 13px;
   border-radius: 5px;
 
   &.has-value {
     background-color: $color-foreground;
     color: $color-background;
-    margin-top: -22px - font-size(100);
+    margin-top: -17px - font-size(100);
     border-radius: 5px 5px 0 0;
   }
 }
@@ -71,7 +71,7 @@
   > .text-input-label {
     background-color: $color-off-foreground;
     color: $color-background;
-    margin-top: -22px - font-size(100);
+    margin-top: -17px - font-size(100);
     border-radius: 5px 5px 0 0;
   }
 }

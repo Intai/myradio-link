@@ -22,7 +22,10 @@ class SearchItem {
 
 class SearchItemController {
 
-  constructor() {
+  constructor($location) {
+    // url path to add a subscription feed.
+    this.addFeedPath = $location.path().replace(
+      /\/subscription\/add(\/init)?$/i, '/subscription/add-feed');
     // encode feed url to base64.
     this.feed.feedUrlBase64 = escape(btoa(this.feed.feedUrl));
   }
@@ -88,6 +91,8 @@ class SearchItemLink {
     return new SearchItemLink(...args);
   }
 }
+
+SearchItemController.$inject = ['$location'];
 
 angular
   .module('app.subscribe')

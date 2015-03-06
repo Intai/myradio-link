@@ -50,7 +50,7 @@ var routes = ($routeProvider, $locationProvider) => {
           firebase.onAuth(), '/login')
       }
     })
-    .when('/:list?/subscription/add/:token', {
+    .when('/:list?/subscription/add-feed/:token', {
       templateUrl: '/subscribe/views/subscribe.html',
       controller: 'SubscribeController',
       controllerAs: 'vm',
