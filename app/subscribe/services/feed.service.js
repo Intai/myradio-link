@@ -54,7 +54,7 @@ class FeedService {
   /**
    * Private
    */
-  
+
   _accumulate(array, data) {
     // accumulate feed data into an array.
     array.push(data);
@@ -83,7 +83,10 @@ class FeedService {
   }
 
   _loadFeedData(dataStream, url) {
-
+    // load the feed through google api.
+    googleApi.loadFeedData(url)
+      // push feed data out through the bacon bus.
+      .then((data) => dataStream.push(data));
   }
 
   static factory() {

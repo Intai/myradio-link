@@ -53,8 +53,11 @@ class DispatcherService {
   _dispatch(queue, listeners, payload) {
     // push a payload to action queue.
     queue.push(payload);
-    // process the queue in the next loop.
-    this._deferProcess(queue, listeners);
+
+    if (queue.length <= 1) {
+      // start processing the queue in the next loop.
+      this._deferProcess(queue, listeners);
+    }
   }
 
   _register(listeners, actionType, handler) {

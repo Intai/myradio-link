@@ -1,5 +1,6 @@
 import common from './core/services/common.service';
 import firebase from './core/services/firebase.service';
+import googleApi from './core/services/google.service';
 import subscribe from './subscribe/services/subscribe.service';
 import playlist from './playback/services/playlist.service';
 
@@ -56,7 +57,9 @@ var routes = ($routeProvider, $locationProvider) => {
       controllerAs: 'vm',
       resolve: {
         firebase: routeResolve(() =>
-          firebase.onAuth(), '/login')
+          firebase.onAuth(), '/login'),
+        google: routeResolve(() =>
+          googleApi.loadFeedsApi(), '/error')
       }
     })
     .when('/:list?', {
