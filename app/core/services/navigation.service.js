@@ -48,10 +48,16 @@ class NavigationService {
 
   _accumulate(history, to) {
     // when getting a navigation object.
-    if (typeof(to) === 'object'
-        && to.href && to.title) {
-      // accumulate into history.
-      history.push(to);
+    if (typeof(to) === 'object' && to.href) {
+      var prev = (history.length > 0)
+        ? history[history.length-1]
+        : null;
+
+      // if not duplicating the previous navigation object.
+      if (!prev || prev.href !== to.href) {
+        // accumulate into history.
+        history.push(to);
+      }
     }
     // when negative one is streamed.
     else {

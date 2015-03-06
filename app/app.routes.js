@@ -36,12 +36,12 @@ var routes = ($routeProvider, $locationProvider) => {
       controllerAs: 'vm',
       resolve: {
         subscribe: routeResolve(() =>
-          subscribe.onNonEmpty(), '/:list/subscription/add'),
+          subscribe.onNonEmpty(), '/:list/subscription/add/init'),
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login')
       }
     })
-    .when('/:list?/subscription/add', {
+    .when('/:list?/subscription/add/:init?', {
       templateUrl: '/subscribe/views/search.html',
       controller: 'SearchController',
       controllerAs: 'vm',
