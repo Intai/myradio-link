@@ -58,8 +58,7 @@ class FeedService {
   _accumulate(array, data) {
     // accumulate feed data into an array.
     array.push(data);
-
-    return history;
+    return array;
   }
 
   _getDataPropertyByUrl(dataProperty, url) {
@@ -69,7 +68,7 @@ class FeedService {
 
   _getDataByUrl(url, array) {
     for (let data of array) {
-      if (data.link === url) {
+      if (data.feedUrl === url) {
         return data;
       }
     }

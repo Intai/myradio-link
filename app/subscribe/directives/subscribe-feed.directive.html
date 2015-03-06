@@ -1,5 +1,7 @@
 <div>
-  {{feed.data.title}}
-  {{feed.data.link}}
-  {{feed.data.description}}
+  <div ng-if="feed.data">
+    {{feed.data.title}}
+    {{feed.data.link}}
+    {{feed.data.description}}
+  </div>
 </div>
