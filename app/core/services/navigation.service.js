@@ -63,6 +63,7 @@ class NavigationService {
     else {
       // go back in history.
       history.pop();
+      history.pop();
     }
 
     return history;
@@ -82,7 +83,7 @@ class NavigationService {
     historyStream.push(payload.to);
   }
 
-  _navigateBackActionHandler() {
+  _navigateBackActionHandler(historyStream) {
     // navigate back in history.
     historyStream.push(-1);
   }

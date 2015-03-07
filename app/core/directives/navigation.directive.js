@@ -71,7 +71,7 @@ class NavigationLink {
      * jQuery element of navigation.
      * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
   }
 
   /**
@@ -79,13 +79,13 @@ class NavigationLink {
    */
 
   initEvents() {
-    this.el.find('.nav-back')
+    this.el
       // navigate back in history.
-      .on('click.navigation', this._onBack);
+      .on('click.navigation', '.nav-back', this._onBack);
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
-      this.el.find('.nav-back').off('click.navigation');
+      this.el.off('click.navigation');
     });
   }
 
