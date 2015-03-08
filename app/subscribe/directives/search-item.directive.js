@@ -1,3 +1,6 @@
+import dispatcher from '../../core/services/dispatcher.service';
+import config from '../../core/services/config.service';
+
 class SearchItem {
 
   constructor() {
@@ -27,7 +30,9 @@ class SearchItemController {
     this.addFeedPath = $location.path().replace(
       /\/subscription\/add(\/init)?$/i, '/subscription/add-feed');
     // encode feed url to base64.
-    this.feed.feedUrlBase64 = escape(btoa(this.feed.feedUrl));
+    this.feed.feedUrlBase64 = encodeURIComponent(btoa(this.feed.feedUrl));
+    // encode feed title to base64.
+    this.feed.feedTitleBase64 = encodeURIComponent(btoa(encodeURIComponent(this.feed.trackName)));
   }
 }
 
@@ -35,7 +40,7 @@ class SearchItemLink {
 
   constructor(scope, element, attrs, animate) {
     // setup class variables.
-    this.initVars(element, animate);
+    this.initVars(scope, element, animate);
     // setup event bindings.
     this.initEvents();
   }
@@ -44,7 +49,12 @@ class SearchItemLink {
    * Class Variables
    */
 
-  initVars(element, animate) {
+  initVars(scope, element, animate) {
+    /**
+     * Angular directive scope.
+     */
+    this.scope = scope;
+
     /**
      * jQuery element to be aniamted.
      * @type {object}
@@ -67,7 +77,9 @@ class SearchItemLink {
       // down state.
       .on('mousedown touchstart', _.partial(this._onDown, this.animate))
       // up state.
-      .on('mouseup drag touchend', _.partial(this._onUp, this.animate));
+      .on('mouseup drag touchend', _.partial(this._onUp, this.animate))
+      // when selecting the podcast feed.
+      .on('click', _.partial(this._onClick, this.scope));
   }
 
   /**
@@ -85,6 +97,14 @@ class SearchItemLink {
     animate
       .setReverse(true)
       .start();
+  }
+
+  _onClick(scope) {
+    // dispatch to push the selected feed.
+    dispatcher.dispatch({
+      actionType: config.actions.FEED_PUSH_INFO,
+      info: scope.item.feed
+    });
   }
 
   static factory(...args) {

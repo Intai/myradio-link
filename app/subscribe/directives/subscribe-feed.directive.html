@@ -1,5 +1,8 @@
 <div>
-  <div ng-if="feed.data">
+  <div ng-if="feed.data && feed.info">
+    {{feed.info.artworkUrl100}}
+    {{feed.info.trackName}}
+    {{feed.info.artistName}}
     {{feed.data.title}}
     {{feed.data.link}}
     {{feed.data.description}}

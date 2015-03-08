@@ -1,5 +1,7 @@
 import dispatcher from '../../core/services/dispatcher.service';
 import googleApi from '../../core/services/google.service';
+import appleApi from '../../core/services/apple.service';
+import common from '../../core/services/common.service';
 import config from '../../core/services/config.service';
 
 class FeedService {
@@ -19,13 +21,23 @@ class FeedService {
 
   initVars() {
     /**
-     * Stream out search terms.
+     * Stream out feed data.
      * @type {object}
      */
     this.dataStream = new Bacon.Bus();
     this.dataProperty = this.dataStream
-      .scan([], this._accumulate);
+      .scan([], common.accumulateInArray);
     this.dataProperty.onValue();
+
+    /**
+     *
+     * Stream out feed details.
+     * @type {Bacon}
+     */
+    this.infoStream = new Bacon.Bus();
+    this.infoProperty = this.infoStream
+      .scan([], common.accumulateInArray);
+    this.infoProperty.onValue();
   }
 
   /**
@@ -35,9 +47,17 @@ class FeedService {
   initPublicFuncs() {
     /**
      * Get a bacon property of feed data for the specified url.
+     * @param {string} url
      */
-    this.getDataPropertyByUrl = _.partial(this._getDataPropertyByUrl,
-      this.dataProperty);
+    this.getDataPropertyByUrl = _.partial(common.mapBaconPropArrayWhere,
+      this.dataProperty, 'feedUrl');
+
+    /**
+     * Get a bacon property of feed information by url..
+     * @param {string} url
+     */
+    this.getInfoPropertyByUrl = _.partial(common.mapBaconPropArrayWhere,
+      this.infoProperty, 'feedUrl');
   }
 
   /**
@@ -45,38 +65,27 @@ class FeedService {
    */
 
   initActionHandlers() {
-    // search podcast action from dispatcher.
-    dispatcher.register(config.actions.FEED_DATA,
-      _.bind(_.partial(this._dataActionHandler,
+    // action from dispatcher to load feed data.
+    dispatcher.register(config.actions.FEED_LOAD_DATA,
+      _.bind(_.partial(this._loadDataActionHandler,
         this.dataStream), this));
+
+    // action from dispatcher to load feed information.
+    dispatcher.register(config.actions.FEED_LOAD_INFO,
+      _.bind(_.partial(this._loadInfoActionHandler,
+        this.infoStream), this));
+
+    // action from dispatcher to push feed information.
+    dispatcher.register(config.actions.FEED_PUSH_INFO,
+      _.partial(this._pushInfoActionHandler,
+        this.infoStream));
   }
 
   /**
    * Private
    */
 
-  _accumulate(array, data) {
-    // accumulate feed data into an array.
-    array.push(data);
-    return array;
-  }
-
-  _getDataPropertyByUrl(dataProperty, url) {
-    return dataProperty.map(
-      _.partial(this._getDataByUrl, url));
-  }
-
-  _getDataByUrl(url, array) {
-    for (let data of array) {
-      if (data.feedUrl === url) {
-        return data;
-      }
-    }
-
-    return null;
-  }
-
-  _dataActionHandler(dataStream, payload) {
+  _loadDataActionHandler(dataStream, payload) {
     // extract feed url from action payload.
     this._loadFeedData(dataStream, payload.url);
   }
@@ -86,6 +95,25 @@ class FeedService {
     googleApi.loadFeedData(url)
       // push feed data out through the bacon bus.
       .then((data) => dataStream.push(data));
+  }
+
+  _loadInfoActionHandler(infoStream, payload) {
+    // extract feed title from action payload.
+    this._loadFeedInfo(infoStream, payload.title);
+  }
+
+  _loadFeedInfo(infoStream, title) {
+    // search for podcasts on itunes.
+    appleApi.searchPodcast(title)
+      // push result out through the bacon bus.
+      .then((data) => infoStream.push(data.results));
+  }
+
+  _pushInfoActionHandler(infoStream, payload) {
+    if (payload.info) {
+      // stream out the feed info specified.
+      infoStream.push(payload.info);
+    }
   }
 
   static factory() {

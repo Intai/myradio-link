@@ -15,7 +15,8 @@ class SubscribeFeed {
     this.bindToController = true;
     this.link = SubscribeFeedLink.factory;
     this.scope = {
-      feedUrl: '@'
+      feedUrl: '@',
+      feedTitle: '@'
     };
   }
 
@@ -27,9 +28,13 @@ class SubscribeFeed {
 class SubscribeFeedController {
 
   constructor() {
-    // get the feed data for the url specified.
+    // get feed data for the url specified.
     this.data = common.getBaconPropValue(
       feed.getDataPropertyByUrl(this.feedUrl));
+
+    // get feed information by url.
+    this.info = common.getBaconPropValue(
+      feed.getInfoPropertyByUrl(this.feedUrl));
   }
 }
 
@@ -66,20 +71,31 @@ class SubscribeFeedLink {
    */
 
   initEvents() {
+    var ctrl = this.scope.feed,
+        dispose = null;
+
     this.el.find('.subscribe')
       // on confirmation of the feed subscription.
       .on('click.feed', _.partial(this._onSubscribe,
         this.scope));
 
-    // after restrieving feed data.
-    var dispose = feed.dataStream
-      .onValue(_.partial(this._onFeedData,
+    // if either feed data or info is not ready.
+    if (!ctrl.data || !ctrl.info) {
+      dispose = Bacon.combineTemplate({
+        data: feed.getDataPropertyByUrl(ctrl.feedUrl).filter(_.isObject),
+        info: feed.getInfoPropertyByUrl(ctrl.feedUrl).filter(_.isObject)
+      })
+      // update template when both are ready.
+      .onValue(_.partial(this._onLoadFeed,
         this.scope));
+    }
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
       this.el.off('click.feed');
-      dispose();
+      if (dispose) {
+        dispose();
+      }
     });
   }
 
@@ -91,8 +107,16 @@ class SubscribeFeedLink {
     if (!scope.feed.data) {
       // dispatch to retrieve the feed data.
       dispatcher.dispatch({
-        actionType: config.actions.FEED_DATA,
+        actionType: config.actions.FEED_LOAD_DATA,
         url: scope.feed.feedUrl
+      });
+    }
+
+    if (!scope.feed.info) {
+      // dispatch to retrieve feed info.
+      dispatcher.dispatch({
+        actionType: config.actions.FEED_LOAD_INFO,
+        title: scope.feed.feedTitle
       });
     }
   }
@@ -102,7 +126,7 @@ class SubscribeFeedLink {
    */
 
   _onSubscribe(scope, e) {
-    // dispatch to retrieve the feed data.
+    // dispatch to subscribe to the feed.
     dispatcher.dispatch({
       actionType: config.actions.FEED_SUBSCRIBE,
       url: scope.feed.feedUrl,
@@ -110,10 +134,11 @@ class SubscribeFeedLink {
     });
   }
 
-  _onFeedData(scope, data) {
+  _onLoadFeed(scope, template) {
     scope.$apply(() => {
-      // update feed data.
-      scope.feed.data = data;
+      // update feed data and information.
+      scope.feed.data = template.data;
+      scope.feed.info = template.info;
     });
   }
 

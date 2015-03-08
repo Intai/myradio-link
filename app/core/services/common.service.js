@@ -38,7 +38,7 @@ class CommonService {
 
   /**
    * Get the current value of a bacon property.
-   * @param {object}
+   * @param {object} property
    */
   getBaconPropValue(property) {
     var ret = null;
@@ -49,6 +49,33 @@ class CommonService {
 
     dispose();
     return ret;
+  }
+
+  /**
+   * Accumulate data in an array.
+   * @param {array} array
+   * @param {object} data
+   */
+  accumulateInArray(array, data) {
+    // accumulate feed data into an array.
+    if (_.isArray(data)) {
+      array.splice(0, array.length, ...data);
+    } else {
+      array.push(data);
+    }
+
+    return array;
+  }
+
+  /**
+   * Map a bacon property to select an obejct out of array.
+   * @param {object} property
+   * @param {string} attr
+   * @pram {string} value
+   */
+  mapBaconPropArrayWhere(property, attr, value) {
+    return property.map((array) =>
+      _.findWhere(array, {[attr]: value}));
   }
 
   static factory() {

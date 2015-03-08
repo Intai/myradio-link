@@ -1,8 +1,10 @@
-<rd-nav title="Add Podcast" 
+<rd-nav title="Add Podcast"
   enable-default-back="true"
-  default-back-href="/{{vm.listName}}/subscription/add" 
+  default-back-href="/{{vm.listName}}/subscription/add"
   default-back-title="Search"></rd-nav>
 
 <div class="page-main">
-  <rd-subscribe-feed feed-url="{{vm.feedUrl}}"></rd-subscribe-feed>
+  <rd-subscribe-feed
+    feed-url="{{vm.feedUrl}}"
+    feed-title="{{vm.feedTitle}}"></rd-subscribe-feed>
 </div>
