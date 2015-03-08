@@ -104,19 +104,28 @@ class SubscribeFeedLink {
    */
 
   dispatchActions(scope) {
-    if (!scope.feed.data) {
-      // dispatch to retrieve the feed data.
+    var ctrl = scope.feed;
+
+    if (!ctrl.data || !ctrl.info) {
+      // dispatch to indicate loading.
       dispatcher.dispatch({
-        actionType: config.actions.FEED_LOAD_DATA,
-        url: scope.feed.feedUrl
+        actionType: config.actions.FEED_LOAD
       });
     }
 
-    if (!scope.feed.info) {
+    if (!ctrl.data) {
+      // dispatch to retrieve the feed data.
+      dispatcher.dispatch({
+        actionType: config.actions.FEED_LOAD_DATA,
+        url: ctrl.feedUrl
+      });
+    }
+
+    if (!ctrl.info) {
       // dispatch to retrieve feed info.
       dispatcher.dispatch({
         actionType: config.actions.FEED_LOAD_INFO,
-        title: scope.feed.feedTitle
+        title: ctrl.feedTitle
       });
     }
   }
@@ -135,6 +144,12 @@ class SubscribeFeedLink {
   }
 
   _onLoadFeed(scope, template) {
+    // dispatch the feed data and info loaded.
+    dispatcher.dispatch({
+      actionType: config.actions.FEED_LOAD_RESULTS,
+      results: template
+    });
+
     scope.$apply(() => {
       // update feed data and information.
       scope.feed.data = template.data;

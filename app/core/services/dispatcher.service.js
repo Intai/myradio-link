@@ -60,11 +60,17 @@ class DispatcherService {
     }
   }
 
-  _register(listeners, actionType, handler) {
-    // register an action handler.
-    listeners.push({
-      actionType,
-      handler
+  _register(listeners, actionTypes, handler) {
+    if (!_.isArray(actionTypes)) {
+      actionTypes = [actionTypes];
+    }
+
+    _.each(actionTypes, (actionType) => {
+      // register an action handler.
+      listeners.push({
+        actionType,
+        handler
+      });
     });
   }
 

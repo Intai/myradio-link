@@ -30,13 +30,23 @@ class LoadingService {
    */
 
   initActionHandlers() {
-    // search podcast action from dispatcher.
-    dispatcher.register(config.actions.SEARCH_PODCAST,
+    // action types to indicate loading from dispatcher.
+    var showActionTypes = [
+      config.actions.SEARCH_PODCAST,
+      config.actions.FEED_LOAD];
+
+    // action types to finish loading from dispatcher.
+    var hideActionTypes = [
+      config.actions.SEARCH_PODCAST_RESULTS,
+      config.actions.FEED_LOAD_RESULTS];
+
+    // register action types to indicate loading.
+    dispatcher.register(showActionTypes,
       _.partial(this._showActionHandler,
         this.stateStream));
 
-    // search results action from dispatcher.
-    dispatcher.register(config.actions.SEARCH_PODCAST_RESULTS,
+    // register action types to finish loading.
+    dispatcher.register(hideActionTypes,
       _.partial(this._hideActionHandler,
         this.stateStream));
   }
