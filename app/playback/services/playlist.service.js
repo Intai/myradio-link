@@ -40,12 +40,6 @@ class PlaylistService {
     this.order = 'asc';
 
     /**
-     * Whether playlists have been retrieved.
-     * @type {bool}
-     */
-    this.isListsLoaded = false;
-
-    /**
      * Stream out playlists.
      * @type {bacon.bus}
      */
@@ -54,11 +48,19 @@ class PlaylistService {
     this.listsProperty.onValue();
 
     /**
+     * Stream out error when retrieving playlists.
+     * @type {bacon.bus}
+     */
+    this.errorStream = new Bacon.Bus();
+    this.errorProperty = this.errorStream.toProperty(null);
+    this.errorProperty.onValue();
+
+    /**
      * Stream out current playlist name.
      * @type {bacon.bus}
      */
     this.currentStream = new Bacon.Bus();
-    this.currentProperty = this.currentStream.toProperty('');
+    this.currentProperty = this.currentStream.toProperty(null);
     this.currentProperty.onValue();
 
     /**
@@ -68,6 +70,19 @@ class PlaylistService {
     this.episodesStream = new Bacon.Bus();
     this.episodesProperty = this.episodesStream.scan([], common.accumulateInArray);
     this.episodesProperty.onValue();
+
+    /**
+     * Stream out the current playlist.
+     * @type {bacon.bus}
+     */
+    this.currentListProperty = Bacon.combineTemplate({
+      lists: this.listsProperty.filter(_.isObject),
+      current: this.currentProperty.filter(_.isString),
+      episodes: this.episodesProperty
+    })
+    // combine the current playlist
+    // with additional episodes.
+    .map(this._mapCurrentList);
   }
 
   /**
@@ -120,7 +135,7 @@ class PlaylistService {
     firebase.onAuth()
       .then(_.bind(this.initListsPath, this))
       .then(_.bind(this.initOnValue, this))
-      .catch(_.bind(this.catchOnValue, this));
+      .catch(_.partial(this._pushStreamValue, this.errorStream));
   }
 
   initListsPath(authData) {
@@ -131,46 +146,8 @@ class PlaylistService {
   initOnValue() {
     // retrieve playlists for the current user.
     firebase.onValue(this.listsPath)
-      .then(_.bind(this.resolveOnValue, this))
-      .catch(_.bind(this.catchOnValue, this));
-  }
-
-  resolveOnValue(value) {
-    // if there is no playlist.
-    if (_.isEmpty(value)) {
-      // not non-empty.
-      this._rejectOnNonEmpty();
-    }
-    else {
-      // otherwise update the playlists
-      // and notify listeners on onNonEmpty.
-      _.extend(this.lists, value);
-      this._resolveOnNonEmpty();
-    }
-
-    this.isListsLoaded = true;
-  }
-
-  catchOnValue() {
-    // empty playlists.
-    this._rejectOnNonEmpty();
-    this.isListsLoaded = true;
-  }
-
-  onNonEmpty() {
-    // if the playlists have been retrieved.
-    if (this.isListsLoaded) {
-      // return a resolved promise if not empty.
-      return (_.isEmpty(this.lists))
-        ? Promise.reject()
-        : Promise.resolve();
-    }
-
-    // wait for lists to be retrieved.
-    return new Promise((resolve, reject) => {
-      this._resolveOnNonEmpty = _.compose(this._resolveOnNonEmpty, resolve);
-      this._rejectOnNonEmpty = _.compose(this._rejectOnNonEmpty, reject);
-    });
+      .then(_.partial(this._pushStreamValue, this.listsStream))
+      .catch(_.partial(this._pushStreamValue, this.errorStream));
   }
 
   /**
@@ -185,16 +162,45 @@ class PlaylistService {
   }
 
   /**
+   * Route Resolves
+   */
+
+  routeResolveCurrent($route) {
+    // playlist name from url path or defaults.
+    var name = $route.current.pathParams.list || config.defaults.PLAYLIST;
+    this.currentStream.push(name);
+  }
+
+  onNonEmpty() {
+    // wait for lists to be retrieved.
+    return new Promise((resolve, reject) => {
+      // resolve if not empty. reject otherwise.
+      this.listsProperty.filter(_.isObject)
+        .take(1).onValue((lists) => {
+          common.callIfElse(_.isEmpty(lists), reject, resolve);
+        });
+
+      // reject on error.
+      this.errorProperty.filter(_.isObject)
+        .take(1).onValue(reject);
+    });
+  }
+
+  /**
    * Private
    */
 
-   _addEpisodeActionHandler(episodesStream, payload) {
-     episodesStream.push(payload.episode);
-   }
+  _pushStreamValue(stream, value) {
+    stream.push(value);
+  }
 
-  _resolveOnNonEmpty() {}
+  _addEpisodeActionHandler(episodesStream, payload) {
+    episodesStream.push(payload.episode);
+  }
 
-  _rejectOnNonEmpty() {}
+  _mapCurrentList(template) {
+    console.log(template);
+  }
 
   _addList(listsStream, name) {
     listsStream.push({

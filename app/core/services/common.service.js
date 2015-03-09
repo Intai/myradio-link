@@ -12,6 +12,20 @@ class CommonService {
   }
 
   /**
+   * Call either functions on a condition.
+   * @param  {bool} cond
+   * @param  {function} if
+   * @param  {function} else
+   */
+  callIfElse(cond, funcIf, funcElse) {
+    if (cond) {
+      funcIf();
+    } else {
+      funcElse();
+    }
+  }
+
+  /**
    * Build url path or get params.
    * @param {string} url
    * @param {object} params
@@ -57,6 +71,10 @@ class CommonService {
    * @param {object} data
    */
   accumulateInArray(array, data) {
+    if (!_.isArray(array)) {
+      array = [];
+    }
+
     // accumulate feed data into an array.
     if (_.isArray(data)) {
       array.splice(0, array.length, ...data);
@@ -73,7 +91,7 @@ class CommonService {
    * @param {object} data
    */
   accumulateInObject(object, data) {
-    if (!object) {
+    if (!_.isObject(object)) {
       object = {};
     }
 

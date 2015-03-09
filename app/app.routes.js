@@ -36,6 +36,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'SubscriptionController',
       controllerAs: 'vm',
       resolve: {
+        playlistName: ['$route',_.bind(
+          playlist.routeResolveCurrent, playlist)],
         subscribe: routeResolve(() =>
           subscribe.onNonEmpty(), '/:list/subscription/add/init'),
         firebase: routeResolve(() =>
@@ -47,6 +49,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'SearchController',
       controllerAs: 'vm',
       resolve: {
+        playlistName: ['$route',_.bind(
+          playlist.routeResolveCurrent, playlist)],
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login')
       }
@@ -56,6 +60,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'SubscribeController',
       controllerAs: 'vm',
       resolve: {
+        playlistName: ['$route',_.bind(
+          playlist.routeResolveCurrent, playlist)],
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login'),
         google: routeResolve(() =>
@@ -67,6 +73,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'PlaylistController',
       controllerAs: 'vm',
       resolve: {
+        playlistName: ['$route',_.bind(
+          playlist.routeResolveCurrent, playlist)],
         playlist: routeResolve(() =>
           playlist.onNonEmpty(), '/:list/subscription'),
         firebase: routeResolve(() =>
