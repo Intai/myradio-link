@@ -6,14 +6,15 @@ class ConfigService {
      * Default values.
      */
     this.defaults = {
-        PLAYLIST: 'play'
+      PLAYLIST: 'play'
     };
 
     /**
      * Constant numbers.
      */
     this.numbers = {
-        ANIMATE_MIN_DURATION: 50
+      ANIMATE_MIN_DURATION: 50,
+      FEED_MAX_ENTRIES: 10
     };
 
     /**

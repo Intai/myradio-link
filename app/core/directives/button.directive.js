@@ -12,7 +12,7 @@ class Button {
     this.link = ButtonLink.factory;
     this.scope = {
       highlight: '&'
-    }
+    };
   }
 
   static factory() {

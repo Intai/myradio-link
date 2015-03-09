@@ -1,4 +1,5 @@
 import firebase from './firebase.service';
+import config from './config.service';
 
 class GoogleService {
 
@@ -18,6 +19,8 @@ class GoogleService {
     return new Promise((resolve, reject) => {
       // create google feed for the url specified.
       var feed = new google.feeds.Feed(url);
+      // set maximum number of feed entreies.
+      feed.setNumEntries(config.numbers.FEED_MAX_ENTRIES);
       // load the feed through google api.
       feed.load((result) => {
         if (result.error) {
