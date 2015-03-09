@@ -74,7 +74,7 @@ class SubscribeFeedLink {
     var ctrl = this.scope.feed,
         dispose = null;
 
-    this.el.find('.subscribe')
+    this.el.find('.feed-subscribe')
       // on confirmation of the feed subscription.
       .on('click.feed', _.partial(this._onSubscribe,
         this.scope));

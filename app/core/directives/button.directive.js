@@ -10,6 +10,9 @@ class Button {
     this.bindToController = true;
     this.require = 'rdAnimate';
     this.link = ButtonLink.factory;
+    this.scope = {
+      highlight: '&'
+    }
   }
 
   static factory() {

@@ -13,13 +13,19 @@
   &:focus {
     outline:0;
   }
+
+  &.highlight {
+    color: $color-off-foreground;
+    border-color: $color-off-foreground;
+  }
 }
 
 .btn-state-up {
   @include prefix(transition-duration, 500ms);
 }
 
-.btn-state-down {
+.btn-state-down,
+.btn-state-down.highlight {
   background-color: $color-off-foreground;
   border-color: $color-off-foreground;
   color: $color-background;

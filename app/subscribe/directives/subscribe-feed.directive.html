@@ -1,10 +1,18 @@
-<div>
+<div class="feed">
   <div ng-if="feed.data && feed.info">
-    {{feed.info.artworkUrl100}}
-    {{feed.info.trackName}}
-    {{feed.info.artistName}}
-    {{feed.data.title}}
-    {{feed.data.link}}
-    {{feed.data.description}}
+    <img class="feed-image" ng-src="{{feed.info.artworkUrl600}}"></img>
+    <div class="feed-info">
+      <span class="feed-track">{{feed.info.trackName}}</span>
+      <span class="feed-artist">{{feed.info.artistName}}</span>
+      <rd-anchor class="feed-link" href="{{feed.data.link}}">{{feed.data.link}}</rd-anchor>
+    </div>
+
+    <div class="feed-description">
+      {{feed.data.description}}
+    </div>
+
+    <rd-button class="feed-subscribe" highlight="true">
+      Subscribe
+    </rd-button>
   </div>
 </div>

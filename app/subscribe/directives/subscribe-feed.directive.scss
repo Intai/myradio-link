@@ -1,0 +1,77 @@
+.feed {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  padding-top: 15px;
+}
+
+.feed-image {
+  width: 40%;
+  float: left;
+  margin-right: 15px;
+
+  @media (max-width: 460px) {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.feed-info {
+  font-family: $sansserif;
+  overflow: hidden;
+}
+
+.feed-track,
+.feed-artist,
+.feed-link {
+  display: block;
+
+  @media (max-width: 460px) {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 540px + 15px) {
+    padding-right: 15px;
+  }
+}
+
+.feed-track {
+  @include font-size(100);
+}
+
+.feed-artist {
+  @include font-size(90);
+  padding-top: 5px;
+  color: $lightgrey;
+}
+
+.feed-link,
+.feed-link:link,
+.feed-link:active,
+.feed-link:visited {
+  @include font-size(90);
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-top: 6px;
+  color: $grey;
+}
+
+.feed-description {
+  clear: left;
+  padding-top: 15px;
+
+  @media (max-width: 540px + 30px) {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+.feed-subscribe {
+  display: block;
+  margin: 15px auto;
+  text-transform: uppercase;
+}
