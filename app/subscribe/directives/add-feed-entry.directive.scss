@@ -1,8 +1,10 @@
 .feed-entry {
   @include prefix(transition, "background-color 100ms ease-out, color 100ms ease-out");
+  position: relative;
   font-family: $sansserif;
   color: $color-foreground;
   overflow: hidden;
+  cursor: pointer;
 
   &:nth-child(odd) {
     background: $color-background;
@@ -16,14 +18,31 @@
     background-color: $color-off-foreground;
     color: $color-background;
 
+    .feed-entry-icon,
     .feed-entry-date {
       color: $offwhite;
     }
   }
 }
 
+.feed-entry-icon {
+  @include prefix(transition, color 100ms ease-out);
+  @include font-size(100);
+  color: $color-foreground;
+  margin-top: -0.5em;
+  position: absolute;
+  left: 15px;
+  top: 50%;
+
+  &.fa-plus {
+    @include font-size(125);
+    color: $color-off-foreground;
+  }
+}
+
 .feed-entry-details {
   padding: 15px;
+  padding-left: font-size(100) + 25px;
 }
 
 .feed-entry-title,
