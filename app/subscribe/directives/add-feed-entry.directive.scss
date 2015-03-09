@@ -1,0 +1,45 @@
+.feed-entry {
+  @include prefix(transition, "background-color 100ms ease-out, color 100ms ease-out");
+  font-family: $sansserif;
+  color: $color-foreground;
+  overflow: hidden;
+
+  &:nth-child(odd) {
+    background: $color-background;
+  }
+
+  &.feed-entry-state-up {
+    @include prefix(transition-duration, 500ms);
+  }
+
+  &.feed-entry-state-down {
+    background-color: $color-off-foreground;
+    color: $color-background;
+
+    .feed-entry-date {
+      color: $offwhite;
+    }
+  }
+}
+
+.feed-entry-details {
+  padding: 15px;
+}
+
+.feed-entry-title,
+.feed-entry-date {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.feed-entry-title {
+  @include font-size(90);
+}
+
+.feed-entry-date {
+  @include font-size(80);
+  padding-top: 5px;
+  color: $lightgrey;
+}

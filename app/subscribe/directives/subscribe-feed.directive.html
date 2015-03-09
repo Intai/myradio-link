@@ -1,5 +1,5 @@
 <div class="feed">
-  <div ng-if="feed.data && feed.info">
+  <div class="feed-inner" ng-if="feed.data && feed.info">
     <img class="feed-image" ng-src="{{feed.info.artworkUrl600}}"></img>
     <div class="feed-info">
       <span class="feed-track">{{feed.info.trackName}}</span>
@@ -14,5 +14,10 @@
     <rd-button class="feed-subscribe" highlight="true">
       Subscribe
     </rd-button>
+
+    <ul class="episodes">
+      <rd-add-feed-entry ng-repeat="episode in feed.data.entries"
+        episode="episode"></rd-add-feed-entry>
+    </ul>
   </div>
 </div>

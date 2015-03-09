@@ -5,6 +5,17 @@
   padding-top: 15px;
 }
 
+.feed-inner {
+
+  &.ng-enter {
+    @include prefix(animation, fade-in 300ms ease-in-out);
+  }
+
+  &.ng-leave {
+    @include prefix(animation, fade-out 300ms ease-out 1ms);
+  }
+}
+
 .feed-image {
   width: 40%;
   float: left;
@@ -72,6 +83,6 @@
 
 .feed-subscribe {
   display: block;
-  margin: 15px auto;
+  margin: 30px auto;
   text-transform: uppercase;
 }
