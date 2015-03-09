@@ -68,6 +68,28 @@ class CommonService {
   }
 
   /**
+   * Accumulate data in an object.
+   * @param {obejct} object
+   * @param {object} data
+   */
+  accumulateInObject(object, data) {
+    if (!object) {
+      object = {};
+    }
+
+    // accumulate feed data into an object.
+    for (let key in data) {
+      if (key in object) {
+        _.extend(object[key], data[key]);
+      } else {
+        object[key] = data[key];
+      }
+    }
+
+    return object;
+  }
+
+  /**
    * Map a bacon property to select an obejct out of array.
    * @param {object} property
    * @param {string} attr

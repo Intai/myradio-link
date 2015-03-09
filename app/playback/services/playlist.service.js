@@ -1,4 +1,6 @@
+import dispatcher from '../../core/services/dispatcher.service';
 import common from '../../core/services/common.service';
+import config from '../../core/services/config.service';
 import firebase from '../../core/services/firebase.service';
 
 class PlaylistService {
@@ -10,6 +12,8 @@ class PlaylistService {
     this.initPublicFuncs();
     // setup event bindings.
     this.initEvents();
+    // setup action handlers.
+    this.initActionHandlers();
   }
 
   /**
@@ -40,6 +44,30 @@ class PlaylistService {
      * @type {bool}
      */
     this.isListsLoaded = false;
+
+    /**
+     * Stream out playlists.
+     * @type {bacon.bus}
+     */
+    this.listsStream = new Bacon.Bus();
+    this.listsProperty = this.listsStream.scan(null, common.accumulateInObject);
+    this.listsProperty.onValue();
+
+    /**
+     * Stream out current playlist name.
+     * @type {bacon.bus}
+     */
+    this.currentStream = new Bacon.Bus();
+    this.currentProperty = this.currentStream.toProperty('');
+    this.currentProperty.onValue();
+
+    /**
+     * Stream out additional episodes for the current playlist.
+     * @type {bacon.bus}
+     */
+    this.episodesStream = new Bacon.Bus();
+    this.episodesProperty = this.episodesStream.scan([], common.accumulateInArray);
+    this.episodesProperty.onValue();
   }
 
   /**
@@ -51,8 +79,8 @@ class PlaylistService {
      * Add a new playlist.
      * @param {string} name
      */
-    this.addList = common.chainable((name) => this._addList(
-      this.lists, name));
+    this.addList = common.chainable(_.partial(this._addList,
+      this.listsStream));
 
     /**
      * Get a playlist by name.
@@ -146,17 +174,32 @@ class PlaylistService {
   }
 
   /**
+   * Action Handlers
+   */
+
+  initActionHandlers() {
+    // action to add an espisode from dispatcher.
+    dispatcher.register(config.actions.FEED_ADD_EPISODE,
+      _.partial(this._addEpisodeActionHandler,
+        this.episodesStream));
+  }
+
+  /**
    * Private
    */
+
+   _addEpisodeActionHandler(episodesStream, payload) {
+     episodesStream.push(payload.episode);
+   }
 
   _resolveOnNonEmpty() {}
 
   _rejectOnNonEmpty() {}
 
-  _addList(lists, name) {
-    if (!(name in lists)) {
-      lists[name] = [];
-    }
+  _addList(listsStream, name) {
+    listsStream.push({
+      [name]: {}
+    });
   }
 
   _getList(lists, name) {
