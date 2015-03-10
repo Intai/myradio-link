@@ -63,7 +63,7 @@ class SubscribeFeedLink {
      * jQuery element.
      * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
   }
 
   /**
@@ -74,9 +74,9 @@ class SubscribeFeedLink {
     var ctrl = this.scope.feed,
         dispose = null;
 
-    this.el.find('.feed-subscribe')
+    this.el
       // on confirmation of the feed subscription.
-      .on('click.feed', _.partial(this._onSubscribe,
+      .on('click.feed', '.feed-subscribe', _.partial(this._onSubscribe,
         this.scope));
 
     // if either feed data or info is not ready.
@@ -134,12 +134,13 @@ class SubscribeFeedLink {
    * Private
    */
 
-  _onSubscribe(scope, e) {
+  _onSubscribe(scope) {
+    var ctrl = scope.feed;
+
     // dispatch to subscribe to the feed.
     dispatcher.dispatch({
       actionType: config.actions.FEED_SUBSCRIBE,
-      url: scope.feed.feedUrl,
-      data: scope.feed.data
+      feedInfo: scope.feed.info
     });
   }
 

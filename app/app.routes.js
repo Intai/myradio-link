@@ -38,6 +38,8 @@ var routes = ($routeProvider, $locationProvider) => {
       resolve: {
         playlistName: ['$route',_.bind(
           playlist.routeResolveCurrent, playlist)],
+        subscribeName: ['$route',_.bind(
+          subscribe.routeResolveCurrent, subscribe)],
         subscribe: routeResolve(() =>
           subscribe.onNonEmpty(), '/:list/subscription/add/init'),
         firebase: routeResolve(() =>
@@ -51,6 +53,8 @@ var routes = ($routeProvider, $locationProvider) => {
       resolve: {
         playlistName: ['$route',_.bind(
           playlist.routeResolveCurrent, playlist)],
+        subscribeName: ['$route',_.bind(
+          subscribe.routeResolveCurrent, subscribe)],
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login')
       }
@@ -62,6 +66,8 @@ var routes = ($routeProvider, $locationProvider) => {
       resolve: {
         playlistName: ['$route',_.bind(
           playlist.routeResolveCurrent, playlist)],
+        subscribeName: ['$route',_.bind(
+          subscribe.routeResolveCurrent, subscribe)],
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login'),
         google: routeResolve(() =>
@@ -75,6 +81,8 @@ var routes = ($routeProvider, $locationProvider) => {
       resolve: {
         playlistName: ['$route',_.bind(
           playlist.routeResolveCurrent, playlist)],
+        subscribeName: ['$route',_.bind(
+          subscribe.routeResolveCurrent, subscribe)],
         playlist: routeResolve(() =>
           playlist.onNonEmpty(), '/:list/subscription'),
         firebase: routeResolve(() =>

@@ -1,5 +1,8 @@
-import googleApi from '../../core/services/google.service';
+import dispatcher from '../../core/services/dispatcher.service';
+import common from '../../core/services/common.service';
+import config from '../../core/services/config.service';
 import firebase from '../../core/services/firebase.service';
+import googleApi from '../../core/services/google.service';
 
 class SubscribeService {
 
@@ -10,6 +13,8 @@ class SubscribeService {
     this.initPublicFuncs();
     // setup event bindings.
     this.initEvents();
+    // setup action handlers.
+    this.initActionHandlers();
   }
 
   /**
@@ -34,6 +39,51 @@ class SubscribeService {
      * @type {bool}
      */
     this.isListsLoaded = false;
+
+    /**
+     * Stream out subscription lists.
+     * @type {bacon.bus}
+     */
+    this.subscriptionsStream = new Bacon.Bus();
+    this.subscriptionsProperty = this.subscriptionsStream.scan(null, common.accumulateInObject);
+    this.subscriptionsProperty.onValue();
+
+    /**
+     * Stream out error when retrieving subscriptions.
+     * @type {bacon.bus}
+     */
+    this.errorStream = new Bacon.Bus();
+    this.errorProperty = this.errorStream.toProperty(null);
+    this.errorProperty.onValue();
+
+    /**
+     * Stream out current subscription name.
+     * @type {bacon.bus}
+     */
+    this.currentStream = new Bacon.Bus();
+    this.currentProperty = this.currentStream.toProperty(null);
+    this.currentProperty.onValue();
+
+    /**
+     * Stream out additional feeds for the current subscription.
+     * @type {bacon.bus}
+     */
+    this.feedsStream = new Bacon.Bus();
+    this.feedsProperty = this.feedsStream.scan([], common.accumulateInArray);
+    this.feedsProperty.onValue();
+
+    /**
+     * Stream out the current subscription.
+     * @type {bacon.bus}
+     */
+    this.mergedSubscriptionsProperty = Bacon.combineTemplate({
+      subscriptions: this.subscriptionsProperty.filter(_.isObject),
+      current: this.currentProperty.filter(_.isString),
+      feeds: this.feedsProperty
+    })
+    // combine the current subscription
+    // with additional feeds.
+    .map(this._mergeFeeds);
   }
 
   /**
@@ -53,7 +103,7 @@ class SubscribeService {
     firebase.onAuth()
       .then(_.bind(this.initListsPath, this))
       .then(_.bind(this.initOnValue, this))
-      .catch(_.bind(this.catchOnValue, this));
+      .catch(_.partial(this._pushStreamValue, this.errorStream));
   }
 
   initListsPath(authData) {
@@ -64,45 +114,47 @@ class SubscribeService {
   initOnValue() {
     // retrieve playlists for the current user.
     firebase.onValue(this.listsPath)
-      .then(_.bind(this.resolveOnValue, this))
-      .catch(_.bind(this.catchOnValue, this));
+      .then(_.partial(this._pushStreamValue, this.subscriptionsStream))
+      .catch(_.partial(this._pushStreamValue, this.errorStream));
+
+    // whenever subscriptions changed, sync back to server.
+    this.mergedSubscriptionsProperty.onValue(
+      _.partial(this._sync, this.listsPath));
   }
 
-  resolveOnValue(value) {
-    // if there is no subscription.
-    if (_.isEmpty(value)) {
-      // not non-empty.
-      this._rejectOnNonEmpty();
-    }
-    else {
-      // otherwise update the subscription lists
-      // and notify listeners on onNonEmpty.
-      _.extend(this.lists, value);
-      this._resolveOnNonEmpty();
-    }
+  /**
+   * Action Handlers
+   */
 
-    this.isListsLoaded = true;
+  initActionHandlers() {
+    // action to add a podcast feed from dispatcher.
+    dispatcher.register(config.actions.FEED_SUBSCRIBE,
+      _.partial(this._subscribeActionHandler,
+        this.feedsStream));
   }
 
-  catchOnValue() {
-    // empty subscription lists.
-    this._rejectOnNonEmpty();
-    this.isListsLoaded = true;
+  /**
+   * Route Resolves
+   */
+
+  routeResolveCurrent($route) {
+    // subscription name from url path or defaults.
+    var name = $route.current.pathParams.list || config.defaults.PLAYLIST;
+    this.currentStream.push(name);
   }
 
   onNonEmpty() {
-    // if the subscription lists have been retrieved.
-    if (this.isListsLoaded) {
-      // return a resolved promise if not empty.
-      return (_.isEmpty(this.lists))
-        ? Promise.reject()
-        : Promise.resolve();
-    }
-
-    // wait for lists to be retrieved.
+    // wait for subscription lists to be retrieved.
     return new Promise((resolve, reject) => {
-      this._resolveOnNonEmpty = _.compose(this._resolveOnNonEmpty, resolve);
-      this._rejectOnNonEmpty = _.compose(this._rejectOnNonEmpty, reject);
+      // resolve if not empty. reject otherwise.
+      this.subscriptionsProperty.filter(_.isObject)
+        .take(1).onValue((lists) => {
+          common.callIfElse(_.isEmpty(lists), reject, resolve);
+        });
+
+      // reject on error.
+      this.errorProperty.filter(_.isObject)
+        .take(1).onValue(reject);
     });
   }
 
@@ -110,12 +162,25 @@ class SubscribeService {
    * Private
    */
 
-  _resolveOnNonEmpty() {}
+  _pushStreamValue(stream, value) {
+    stream.push(value);
+  }
 
-  _rejectOnNonEmpty() {}
+  _subscribeActionHandler(feedsStream, payload) {
+    feedsStream.push(payload.feedInfo);
+  }
 
-  _subscribe(url) {
+  _mergeFeeds(template) {
+    var lists = template.subscriptions,
+        name = template.current,
+        feeds = template.feeds,
+        list = (name in lists) ? lists[name] : [];
 
+    // merge the current subsciption with additional feeds.
+    var concat = (list || []).concat(feeds);
+    lists[name] = _.uniq(concat, _.iteratee('feedUrl'));
+
+    return lists;
   }
 
   _update(url) {
@@ -135,6 +200,12 @@ class SubscribeService {
         }
       });
     });
+  }
+
+  _sync(listsPath, lists) {
+    if (!_.isEmpty(lists)) {
+      firebase.setData(listsPath, lists);
+    }
   }
 
   static factory() {
