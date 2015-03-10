@@ -61,7 +61,7 @@ class SubscribeService {
      * @type {bacon.bus}
      */
     this.currentStream = new Bacon.Bus();
-    this.currentProperty = this.currentStream.toProperty(null);
+    this.currentProperty = this.currentStream.toProperty(null).skipDuplicates();
     this.currentProperty.onValue();
 
     /**

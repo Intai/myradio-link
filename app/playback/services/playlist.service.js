@@ -60,7 +60,7 @@ class PlaylistService {
      * @type {bacon.bus}
      */
     this.currentStream = new Bacon.Bus();
-    this.currentProperty = this.currentStream.toProperty(null);
+    this.currentProperty = this.currentStream.toProperty(null).skipDuplicates();
     this.currentProperty.onValue();
 
     /**
@@ -75,14 +75,19 @@ class PlaylistService {
      * Stream out the current playlist.
      * @type {bacon.bus}
      */
-    this.mergedListsProperty = Bacon.combineTemplate({
+    this.templateProperty = Bacon.combineTemplate({
       lists: this.listsProperty.filter(_.isObject),
       current: this.currentProperty.filter(_.isString),
       episodes: this.episodesProperty
-    })
+    });
     // combine the current playlist
     // with additional episodes.
-    .map(this._mergeEpisodes);
+    this.mergedListsProperty = this.templateProperty
+      .map(this._mergeEpisodes);
+    // combine then return the current playlist.
+    this.currentListProperty = this.templateProperty
+      .doAction(this._mergeEpisodes)
+      .map(this._mapToCurrent);
   }
 
   /**
@@ -159,9 +164,14 @@ class PlaylistService {
    */
 
   initActionHandlers() {
-    // action to add an espisode from dispatcher.
+    // action from dispatcher to add an espisode.
     dispatcher.register(config.actions.FEED_ADD_EPISODE,
       _.partial(this._addEpisodeActionHandler,
+        this.episodesStream));
+
+    // action to remove an espisode.
+    dispatcher.register(config.actions.FEED_REMOVE_EPISODE,
+      _.partial(this._removeEpisodeActionHandler,
         this.episodesStream));
   }
 
@@ -202,6 +212,14 @@ class PlaylistService {
     episodesStream.push(payload.episode);
   }
 
+  _removeEpisodeActionHandler(episodesStream, payload) {
+    // todo
+    // push to episode with a flag
+    // accumulate only the last link
+    // merge to remove
+    // 
+  }
+
   _mergeEpisodes(template) {
     var lists = template.lists,
         name = template.current,
@@ -216,6 +234,11 @@ class PlaylistService {
     list.entries = _.uniq(concat, _.iteratee('link'));
 
     return lists;
+  }
+
+  _mapToCurrent(template) {
+    // return the current playlist or an empty object.
+    return template.lists[template.current] || {};
   }
 
   _addList(listsStream, name) {

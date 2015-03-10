@@ -25,6 +25,12 @@ class CommonService {
     }
   }
 
+  findWhere(properties) {
+    return function(list) {
+      return _.findWhere(list, properties);
+    };
+  }
+
   /**
    * Build url path or get params.
    * @param {string} url

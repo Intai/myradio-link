@@ -151,11 +151,10 @@ class SubscribeFeedLink {
       results: template
     });
 
-    scope.$apply(() => {
-      // update feed data and information.
-      scope.feed.data = template.data;
-      scope.feed.info = template.info;
-    });
+    // update feed data and information.
+    scope.feed.data = template.data;
+    scope.feed.info = template.info;
+    scope.$digest();
   }
 
   static factory(...args) {

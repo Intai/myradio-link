@@ -1,6 +1,8 @@
 import dispatcher from '../../core/services/dispatcher.service';
 import config from '../../core/services/config.service';
 import common from '../../core/services/common.service';
+import playback from '../../playback/playback.module';
+import playlist from '../../playback/services/playlist.service';
 
 class AddFeedEntry {
 
@@ -29,6 +31,13 @@ class AddFeedEntryController {
   constructor() {
     // create date object from the published date string.
     this.episode.publishedDateObject = new Date(this.episode.publishedDate);
+
+    // whether the episode is in the current playlist.
+    this.addedProperty = playlist.currentListProperty
+      .map(_.property('entries'))
+      .map(common.findWhere({link: this.episode.link}));
+    // show plus or minus icon.
+    this.added = common.getBaconPropValue(this.addedProperty);
   }
 }
 
@@ -48,6 +57,7 @@ class AddFeedEntryLink {
   initVars(scope, element, animate) {
     /**
      * Angular directive scope.
+     * @type {object}
      */
     this.scope = scope;
 
@@ -76,6 +86,16 @@ class AddFeedEntryLink {
       .on('mouseup drag touchend', _.partial(this._onUp, this.animate))
       // when selecting the episode.
       .on('click', _.partial(this._onClick, this.scope));
+
+    // whether the episode has been added or removed from playlist.
+    var dispose = this.scope.item.addedProperty.changes()
+      .onValue(_.partial(this._onAdded, this.scope));
+
+    // unbind on destroy.
+    this.scope.$on('$destroy', () => {
+      this.el.off();
+      dispose();
+    });
   }
 
   /**
@@ -96,11 +116,20 @@ class AddFeedEntryLink {
   }
 
   _onClick(scope) {
+    var actionType = (scope.item.added)
+      ? config.actions.FEED_REMOVE_EPISODE
+      : config.actions.FEED_ADD_EPISODE;
+
     // dispatch to add the selected episode.
     dispatcher.dispatch({
-      actionType: config.actions.FEED_ADD_EPISODE,
+      actionType: actionType,
       episode: scope.item.episode
     });
+  }
+
+  _onAdded(scope, added) {
+    scope.item.added = !!added;
+    scope.$digest();
   }
 
   static factory(...args) {

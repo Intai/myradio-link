@@ -105,11 +105,10 @@ class SearchFormLink {
         searchTerm: value
       });
 
-      scope.$apply(() => {
-        // clear search result currently rendered.
-        var feeds = scope.form.feeds;
-        feeds.splice(0, feeds.length);
-      });
+      // clear search result currently rendered.
+      var feeds = scope.form.feeds;
+      feeds.splice(0, feeds.length);
+      scope.$digest();
     }
   }
 
@@ -120,11 +119,10 @@ class SearchFormLink {
       results: data.results
     });
 
-    scope.$apply(() => {
-      // update search result.
-      var feeds = scope.form.feeds;
-      feeds.splice(0, feeds.length, ...data.results);
-    });
+    // update search result.
+    var feeds = scope.form.feeds;
+    feeds.splice(0, feeds.length, ...data.results);
+    scope.$digest();
   }
 
   static factory(...args) {
