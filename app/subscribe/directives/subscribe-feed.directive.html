@@ -16,7 +16,7 @@
     </rd-button>
 
     <ul class="episodes">
-      <rd-add-feed-entry ng-repeat="episode in feed.data.entries"
+      <rd-add-feed-entry ng-repeat="episode in feed.data.entries track by episode.link"
         episode="episode"></rd-add-feed-entry>
     </ul>
   </div>

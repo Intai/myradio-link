@@ -75,14 +75,14 @@ class PlaylistService {
      * Stream out the current playlist.
      * @type {bacon.bus}
      */
-    this.currentListProperty = Bacon.combineTemplate({
+    this.mergedListsProperty = Bacon.combineTemplate({
       lists: this.listsProperty.filter(_.isObject),
       current: this.currentProperty.filter(_.isString),
       episodes: this.episodesProperty
     })
     // combine the current playlist
     // with additional episodes.
-    .map(this._mapCurrentList);
+    .map(this._mergeEpisodes);
   }
 
   /**
@@ -148,6 +148,10 @@ class PlaylistService {
     firebase.onValue(this.listsPath)
       .then(_.partial(this._pushStreamValue, this.listsStream))
       .catch(_.partial(this._pushStreamValue, this.errorStream));
+
+    // whenever playlists changed, sync back to server.
+    this.mergedListsProperty.onValue(
+      _.partial(this._sync, this.listsPath));
   }
 
   /**
@@ -198,8 +202,20 @@ class PlaylistService {
     episodesStream.push(payload.episode);
   }
 
-  _mapCurrentList(template) {
-    console.log(template);
+  _mergeEpisodes(template) {
+    var lists = template.lists,
+        name = template.current,
+        episodes = template.episodes,
+        list = (name in lists) ? lists[name] : {};
+
+    // list may be newly created.
+    lists[name] = list;
+
+    // merge the current list with additional episodes.
+    var concat = (list.entries || []).concat(episodes);
+    list.entries = _.uniq(concat, _.iteratee('link'));
+
+    return lists;
   }
 
   _addList(listsStream, name) {
@@ -257,7 +273,9 @@ class PlaylistService {
   }
 
   _sync(listsPath, lists) {
-    firebase.setData(listsPath, lists);
+    if (!_.isEmpty(lists)) {
+      firebase.setData(listsPath, lists);
+    }
   }
 
   static factory() {
