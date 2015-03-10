@@ -6,7 +6,7 @@
   </div>
 
   <ul class="search-items">
-    <rd-search-item ng-repeat="feed in form.feeds"
+    <rd-search-item ng-repeat="feed in form.feeds track by feed.feedUrl"
       feed="feed"></rd-search-item>
   </ul>
 </form>

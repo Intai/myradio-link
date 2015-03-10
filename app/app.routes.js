@@ -4,27 +4,6 @@ import googleApi from './core/services/google.service';
 import subscribe from './subscribe/services/subscribe.service';
 import playlist from './playback/services/playlist.service';
 
-var routeResolve = (func, redirect) => {
-  // eavesdrop the promise result.
-  var channelResolve = function($location, $route) {
-    return new Promise((resolve, reject) => {
-      func().then(resolve)
-        // if rejected.
-        .catch(() => {
-          // redirect to a fallback url.
-          $location.path(common.buildUrl(redirect, $route.current.pathParams));
-          // reject with a specific message to
-          // skip redirection in $routeChangeError.
-          reject('resolved.redirect');
-        });
-    });
-  };
-
-  channelResolve.$inject = ['$location', '$route'];
-
-  return channelResolve;
-};
-
 var routes = ($routeProvider, $locationProvider) => {
 
   $routeProvider
@@ -36,10 +15,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'SubscriptionController',
       controllerAs: 'vm',
       resolve: {
-        playlistName: ['$route',_.bind(
-          playlist.routeResolveCurrent, playlist)],
-        subscribeName: ['$route',_.bind(
-          subscribe.routeResolveCurrent, subscribe)],
+        playlistName:
+          routeResolveCurrentPlaylist,
         subscribe: routeResolve(() =>
           subscribe.onNonEmpty(), '/:list/subscription/add/init'),
         firebase: routeResolve(() =>
@@ -51,10 +28,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'SearchController',
       controllerAs: 'vm',
       resolve: {
-        playlistName: ['$route',_.bind(
-          playlist.routeResolveCurrent, playlist)],
-        subscribeName: ['$route',_.bind(
-          subscribe.routeResolveCurrent, subscribe)],
+        playlistName:
+          routeResolveCurrentPlaylist,
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login')
       }
@@ -64,10 +39,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'SubscribeController',
       controllerAs: 'vm',
       resolve: {
-        playlistName: ['$route',_.bind(
-          playlist.routeResolveCurrent, playlist)],
-        subscribeName: ['$route',_.bind(
-          subscribe.routeResolveCurrent, subscribe)],
+        playlistName:
+          routeResolveCurrentPlaylist,
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login'),
         google: routeResolve(() =>
@@ -79,10 +52,8 @@ var routes = ($routeProvider, $locationProvider) => {
       controller: 'PlaylistController',
       controllerAs: 'vm',
       resolve: {
-        playlistName: ['$route',_.bind(
-          playlist.routeResolveCurrent, playlist)],
-        subscribeName: ['$route',_.bind(
-          subscribe.routeResolveCurrent, subscribe)],
+        playlistName:
+          routeResolveCurrentPlaylist,
         playlist: routeResolve(() =>
           playlist.onNonEmpty(), '/:list/subscription'),
         firebase: routeResolve(() =>
@@ -111,8 +82,36 @@ var routeError = ($rootScope, $location) => {
   });
 };
 
+function routeResolve(func, redirect) {
+  // eavesdrop the promise result.
+  var channelResolve = function($location, $route) {
+    return new Promise((resolve, reject) => {
+      func().then(resolve)
+      // if rejected.
+      .catch(() => {
+        // redirect to a fallback url.
+        $location.path(common.buildUrl(redirect, $route.current.pathParams));
+        // reject with a specific message to
+        // skip redirection in $routeChangeError.
+        reject('resolved.redirect');
+      });
+    });
+  };
+
+  channelResolve.$inject = ['$location', '$route'];
+
+  return channelResolve;
+}
+
+function routeResolveCurrentPlaylist($route) {
+  // setup the current playlist according to route.
+  playlist.routeResolveCurrent($route);
+  subscribe.routeResolveCurrent($route);
+}
+
 routes.$inject = ['$routeProvider', '$locationProvider'];
 routeError.$inject = ['$rootScope', '$location'];
+routeResolveCurrentPlaylist.$inject = ['$route'];
 
 angular
   .module('app')
