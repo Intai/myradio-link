@@ -12,7 +12,8 @@
     </div>
 
     <rd-button class="feed-subscribe" highlight="true">
-      Subscribe
+      <span ng-if="!feed.subscribed">Subscribe</span>
+      <span ng-if="feed.subscribed">Unsubscribe</span>
     </rd-button>
 
     <ul class="episodes">

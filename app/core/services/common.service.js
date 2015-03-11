@@ -12,10 +12,18 @@ class CommonService {
   }
 
   /**
+   * Execute a collection of functions.
+   * @param {array}
+   */
+  execute(funcs) {
+    _.each(funcs, (func) => func());
+  }
+
+  /**
    * Call either functions on a condition.
-   * @param  {bool} cond
-   * @param  {function} if
-   * @param  {function} else
+   * @param {bool} cond
+   * @param {function} if
+   * @param {function} else
    */
   callIfElse(cond, funcIf, funcElse) {
     if (cond) {
@@ -25,6 +33,10 @@ class CommonService {
     }
   }
 
+  /**
+   * Flip underscore findWhere for chaining. e.g. bacon map.
+   * @param {object}
+   */
   findWhere(properties) {
     return function(list) {
       return _.findWhere(list, properties);

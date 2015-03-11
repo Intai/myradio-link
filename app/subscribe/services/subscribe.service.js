@@ -76,14 +76,18 @@ class SubscribeService {
      * Stream out the current subscription.
      * @type {bacon.bus}
      */
-    this.mergedSubscriptionsProperty = Bacon.combineTemplate({
+    this.templateProperty = Bacon.combineTemplate({
       subscriptions: this.subscriptionsProperty.filter(_.isObject),
       current: this.currentProperty.filter(_.isString),
       feeds: this.feedsProperty
-    })
+    });
     // combine the current subscription
     // with additional feeds.
-    .map(this._mergeFeeds);
+    this.mergedSubscriptionsProperty = this.templateProperty.map(this._mergeFeeds);
+    // combine then return the current subscription list.
+    this.currentListProperty = this.templateProperty
+      .doAction(this._mergeFeeds)
+      .map(this._mapToCurrent);
   }
 
   /**
@@ -131,6 +135,11 @@ class SubscribeService {
     dispatcher.register(config.actions.FEED_SUBSCRIBE,
       _.partial(this._subscribeActionHandler,
         this.feedsStream));
+
+    // action to add a podcast feed from dispatcher.
+    dispatcher.register(config.actions.FEED_UNSUBSCRIBE,
+      _.partial(this._unsubscribeActionHandler,
+        this.feedsStream));
   }
 
   /**
@@ -170,6 +179,10 @@ class SubscribeService {
     feedsStream.push(payload.feedInfo);
   }
 
+  _unsubscribeActionHandler(feedsStream, payload) {
+    console.log('unsubscribe');
+  }
+
   _mergeFeeds(template) {
     var lists = template.subscriptions,
         name = template.current,
@@ -181,6 +194,11 @@ class SubscribeService {
     lists[name] = _.uniq(concat, _.iteratee('feedUrl'));
 
     return lists;
+  }
+
+  _mapToCurrent(template) {
+    // return the current subscription list or an empty array.
+    return template.subscriptions[template.current] || [];
   }
 
   _update(url) {
