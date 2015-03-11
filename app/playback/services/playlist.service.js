@@ -190,9 +190,9 @@ class PlaylistService {
     // wait for lists to be retrieved.
     return new Promise((resolve, reject) => {
       // resolve if not empty. reject otherwise.
-      this.listsProperty.filter(_.isObject)
-        .take(1).onValue((lists) => {
-          common.callIfElse(_.isEmpty(lists), reject, resolve);
+      this.currentListProperty.filter(_.isObject)
+        .take(1).onValue((list) => {
+          common.callIfElse(_.isEmpty(list.entries), reject, resolve);
         });
 
       // reject on error.

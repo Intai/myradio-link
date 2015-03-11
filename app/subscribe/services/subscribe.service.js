@@ -156,9 +156,9 @@ class SubscribeService {
     // wait for subscription lists to be retrieved.
     return new Promise((resolve, reject) => {
       // resolve if not empty. reject otherwise.
-      this.subscriptionsProperty.filter(_.isObject)
-        .take(1).onValue((lists) => {
-          common.callIfElse(_.isEmpty(lists), reject, resolve);
+      this.currentListProperty.filter(_.isArray)
+        .take(1).onValue((list) => {
+          common.callIfElse(_.isEmpty(list), reject, resolve);
         });
 
       // reject on error.
