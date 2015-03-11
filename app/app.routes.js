@@ -23,13 +23,28 @@ var routes = ($routeProvider, $locationProvider) => {
           firebase.onAuth(), '/login')
       }
     })
-    .when('/:list?/subscription/add/:init?', {
+    .when('/:list?/subscription/add/:init', {
       templateUrl: '/subscribe/views/search.html',
       controller: 'SearchController',
       controllerAs: 'vm',
       resolve: {
         playlistName:
           routeResolveCurrentPlaylist,
+        subscribe: routeResolve(() =>
+          subscribe.onEmpty(), '/:list/subscription/add'),
+        firebase: routeResolve(() =>
+          firebase.onAuth(), '/login')
+      }
+    })
+    .when('/:list?/subscription/add', {
+      templateUrl: '/subscribe/views/search.html',
+      controller: 'SearchController',
+      controllerAs: 'vm',
+      resolve: {
+        playlistName:
+          routeResolveCurrentPlaylist,
+        subscribe: routeResolve(() =>
+          subscribe.onNonEmpty(), '/:list/subscription/add/init'),
         firebase: routeResolve(() =>
           firebase.onAuth(), '/login')
       }

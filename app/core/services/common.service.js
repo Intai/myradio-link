@@ -44,6 +44,16 @@ class CommonService {
   }
 
   /**
+   * Flip function arguments.
+   * @param {function}
+   */
+  flip(func) {
+    return function(...args) {
+      func(...args.reverse());
+    };
+  }
+
+  /**
    * Build url path or get params.
    * @param {string} url
    * @param {object} params

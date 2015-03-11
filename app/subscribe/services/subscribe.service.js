@@ -155,22 +155,30 @@ class SubscribeService {
 
   onNonEmpty() {
     // wait for subscription lists to be retrieved.
-    return new Promise((resolve, reject) => {
-      // resolve if not empty. reject otherwise.
-      this.currentListProperty.filter(_.isArray)
-        .take(1).onValue((list) => {
-          common.callIfElse(_.isEmpty(list), reject, resolve);
-        });
+    return new Promise(common.flip(
+      _.bind(this._onEmpty, this)));
+  }
 
-      // reject on error.
-      this.errorProperty.filter(_.isObject)
-        .take(1).onValue(reject);
-    });
+  onEmpty() {
+    return new Promise(
+      _.bind(this._onEmpty, this));
   }
 
   /**
    * Private
    */
+
+  _onEmpty(resolve, reject) {
+    // resolve if not empty. reject otherwise.
+    this.currentListProperty.filter(_.isArray)
+      .take(1).onValue((list) => {
+        common.callIfElse(_.isEmpty(list), resolve, reject);
+      });
+
+    // reject on error.
+    this.errorProperty.filter(_.isObject)
+      .take(1).onValue(reject);
+  }
 
   _pushStreamValue(stream, value) {
     stream.push(value);
