@@ -60,6 +60,10 @@ class SearchService {
       .then((data) => {
         termStream.push(term);
         resultStream.push(data);
+      })
+      .catch(() => {
+        termStream.push(term);
+        resultStream.push({});
       });
   }
 

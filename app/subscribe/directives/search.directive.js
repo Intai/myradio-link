@@ -119,10 +119,12 @@ class SearchFormLink {
       results: data.results
     });
 
-    // update search result.
-    var feeds = scope.form.feeds;
-    feeds.splice(0, feeds.length, ...data.results);
-    scope.$digest();
+    if (data.results) {
+      // update search result.
+      var feeds = scope.form.feeds;
+      feeds.splice(0, feeds.length, ...data.results);
+      scope.$digest();
+    }
   }
 
   static factory(...args) {
