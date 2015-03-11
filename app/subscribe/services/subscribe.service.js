@@ -69,7 +69,8 @@ class SubscribeService {
      * @type {bacon.bus}
      */
     this.feedsStream = new Bacon.Bus();
-    this.feedsProperty = this.feedsStream.scan([], common.accumulateInArray);
+    this.feedsProperty = this.feedsStream.scan(
+      {add: [], remove: []}, _.bind(this._accumulateFeeds, this));
     this.feedsProperty.onValue();
 
     /**
@@ -176,11 +177,33 @@ class SubscribeService {
   }
 
   _subscribeActionHandler(feedsStream, payload) {
-    feedsStream.push(payload.feedInfo);
+    feedsStream.push({add: payload.feedInfo});
   }
 
   _unsubscribeActionHandler(feedsStream, payload) {
-    console.log('unsubscribe');
+    feedsStream.push({remove: payload.feedInfo});
+  }
+
+  _accumulateFeeds(object, data) {
+    object = this._accumulateFeedsTo('add', object, data);
+    object = this._accumulateFeedsTo('remove', object, data);
+
+    return object;
+  }
+
+  _accumulateFeedsTo(action, object, data) {
+    if (data[action]) {
+      // accumulate into the target object uniquely.
+      var concat = object[action].concat(data[action]);
+      object[action] = _.uniq(concat, _.iteratee('feedUrl'));
+
+      // remove from the opposite action.
+      var opposite = (action === 'add') ? 'remove' : 'add';
+      object[opposite] = _.filter(object[opposite],
+        _.negate(_.matcher({feedUrl: data[action].feedUrl})));
+    }
+
+    return object;
   }
 
   _mergeFeeds(template) {
@@ -190,8 +213,15 @@ class SubscribeService {
         list = (name in lists) ? lists[name] : [];
 
     // merge the current subsciption with additional feeds.
-    var concat = (list || []).concat(feeds);
+    var concat = (list || []).concat(feeds.add);
     lists[name] = _.uniq(concat, _.iteratee('feedUrl'));
+
+    // feeds to be removed from the current list.
+    if (feeds.remove.length > 0) {
+      lists[name] = _.filter(lists[name], (feed) => {
+        return !_.findWhere(feeds.remove, {feedUrl: feed.feedUrl});
+      });
+    }
 
     return lists;
   }

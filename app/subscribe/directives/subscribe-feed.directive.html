@@ -11,7 +11,7 @@
       {{feed.data.description}}
     </div>
 
-    <rd-button class="feed-subscribe" highlight="true">
+    <rd-button class="feed-subscribe" highlight="!feed.subscribed">
       <span ng-if="!feed.subscribed">Subscribe</span>
       <span ng-if="feed.subscribed">Unsubscribe</span>
     </rd-button>
