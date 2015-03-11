@@ -68,7 +68,8 @@ class PlaylistService {
      * @type {bacon.bus}
      */
     this.episodesStream = new Bacon.Bus();
-    this.episodesProperty = this.episodesStream.scan([], common.accumulateInArray);
+    this.episodesProperty = this.episodesStream.scan(
+      {add: [], remove: []}, _.bind(this._accumulateEpisodes, this));
     this.episodesProperty.onValue();
 
     /**
@@ -209,15 +210,33 @@ class PlaylistService {
   }
 
   _addEpisodeActionHandler(episodesStream, payload) {
-    episodesStream.push(payload.episode);
+    episodesStream.push({add: payload.episode});
   }
 
   _removeEpisodeActionHandler(episodesStream, payload) {
-    // todo
-    // push to episode with a flag
-    // accumulate only the last link
-    // merge to remove
-    // 
+    episodesStream.push({remove: payload.episode});
+  }
+
+  _accumulateEpisodes(object, data) {
+    object = this._accumulateEpisodesTo('add', object, data);
+    object = this._accumulateEpisodesTo('remove', object, data);
+
+    return object;
+  }
+
+  _accumulateEpisodesTo(action, object, data) {
+    if (data[action]) {
+      // accumulate into the target object uniquely.
+      var concat = object[action].concat(data[action]);
+      object[action] = _.uniq(concat, _.iteratee('link'));
+
+      // remove from the opposite action.
+      var opposite = (action === 'add') ? 'remove' : 'add';
+      object[opposite] = _.filter(object[opposite],
+        _.negate(_.matcher({link: data[action].link})));
+    }
+
+    return object;
   }
 
   _mergeEpisodes(template) {
@@ -230,8 +249,15 @@ class PlaylistService {
     lists[name] = list;
 
     // merge the current list with additional episodes.
-    var concat = (list.entries || []).concat(episodes);
+    var concat = (list.entries || []).concat(episodes.add);
     list.entries = _.uniq(concat, _.iteratee('link'));
+
+    // episodes to be removed from the current list.
+    if (episodes.remove.length > 0) {
+      list.entries = _.filter(list.entries, (episode) => {
+        return !_.findWhere(episodes.remove, {link: episode.link});
+      });
+    }
 
     return lists;
   }
