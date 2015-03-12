@@ -18,7 +18,13 @@ class Spinner {
   }
 }
 
-class SpinnerController {}
+class SpinnerController {
+
+  constructor() {
+    // default to be hidden.
+    this.show = false;
+  }
+}
 
 class SpinnerLink {
 
@@ -43,7 +49,7 @@ class SpinnerLink {
      * jQuery element to be aniamted.
      * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
   }
 
   /**
@@ -52,8 +58,8 @@ class SpinnerLink {
 
   initEvents() {
     // after submitting a search.
-    var dispose = loading.stateProperty
-      .onValue(_.partial(this._onStateChange, this.el));
+    var dispose = loading.stateProperty.changes()
+      .onValue(_.partial(this._onStateChange, this.scope));
 
     // unbind on destroy.
     this.scope.$on('$destroy', dispose);
@@ -63,8 +69,9 @@ class SpinnerLink {
    * Private
    */
 
-  _onStateChange(el, isLoading) {
-    el.toggleClass('show', isLoading);
+  _onStateChange(scope, isLoading) {
+    scope.spinner.show = isLoading;
+    scope.$digest();
   }
 
   static factory(...args) {

@@ -28,6 +28,7 @@ class ConfigService {
      * Dispatcher actions.
      */
     this.actions = {
+      MESSAGE: 'MESSAGE',
       SEARCH_PODCAST: 'SEARCH_PODCAST',
       SEARCH_PODCAST_RESULTS: 'SEARCH_PODCAST_RESULTS',
       NAVIGATE: 'NAVIGATE',
@@ -41,6 +42,13 @@ class ConfigService {
       FEED_UNSUBSCRIBE: 'FEED_UNSUBSCRIBE',
       FEED_ADD_EPISODE: 'FEED_ADD_EPISODE',
       FEED_REMOVE_EPISODE: 'FEED_REMOVE_EPISODE'
+    };
+
+    /**
+     * Errors.
+     */
+    this.errors = {
+      SEARCH_ITUNES: 'Sorry, we are having trouble with iTunes search. Please try again later.'
     };
   }
 

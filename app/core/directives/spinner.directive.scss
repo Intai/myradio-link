@@ -1,12 +1,15 @@
 .background-spinner-wrap {
-  @include prefix(transition, "opacity 500ms ease-in-out");
-  opacity: 0;
   position: fixed;
   left: 25%;
   top: 30px;
 
-  &.show {
-    opacity: 1;
+  &.ng-hide-remove {
+    @include prefix(animation, fade-in 500ms ease-out);
+  }
+
+  &.ng-hide-add {
+    @include prefix(animation, fade-out 500ms ease-out);
+    display: block !important;
   }
 }
 
