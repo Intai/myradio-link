@@ -54,6 +54,42 @@ class CommonService {
   }
 
   /**
+   * Encode a string to base64 and safe to be in url.
+   * @param {string}
+   * @return {string}
+   */
+  encodeBase64(string) {
+    return encodeURIComponent(btoa(encodeURIComponent(string)));
+  }
+
+  /**
+   * Decode a string encoded by encodeBase64.
+   * @param {string}
+   * @return {string}
+   */
+  decodeBase64(string) {
+    return decodeURIComponent(atob(decodeURIComponent(string)));
+  }
+
+  /**
+   * Encode an ascii string to base64 and safe to be in url.
+   * @param {string}
+   * @return {string}
+   */
+  encodeAsciiBase64(string) {
+    return encodeURIComponent(btoa(string));
+  }
+
+  /**
+   * Decode a string encoded by encodeAsciiBase64.
+   * @param {string}
+   * @return {string}
+   */
+  decodeAsciiBase64(string) {
+    return atob(decodeURIComponent(string));
+  }
+
+  /**
    * Build url path or get params.
    * @param {string} url
    * @param {object} params

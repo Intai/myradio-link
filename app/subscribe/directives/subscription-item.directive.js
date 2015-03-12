@@ -2,34 +2,31 @@ import dispatcher from '../../core/services/dispatcher.service';
 import config from '../../core/services/config.service';
 import common from '../../core/services/common.service';
 
-class SearchItem {
+class SubscriptionItem {
 
   constructor() {
     this.restrict = 'E';
     this.replace = true;
     this.transclude = false;
-    this.templateUrl = '/subscribe/directives/search-item.directive.html';
-    this.controller = SearchItemController;
+    this.templateUrl = '/subscribe/directives/subscription-item.directive.html';
+    this.controller = SubscriptionItemController;
     this.controllerAs = 'item';
     this.bindToController = true;
     this.require = 'rdAnimate';
-    this.link = SearchItemLink.factory;
+    this.link = SubscriptionItemLink.factory;
     this.scope = {
       feed: '='
     };
   }
 
   static factory() {
-    return new SearchItem();
+    return new SubscriptionItem();
   }
 }
 
-class SearchItemController {
+class SubscriptionItemController {
 
-  constructor($location) {
-    // url path to add a subscription feed.
-    this.addFeedPath = $location.path().replace(
-      /\/subscription\/add(\/init)?$/i, '/subscription/add-feed');
+  constructor() {
     // encode feed url to base64.
     this.feed.feedUrlBase64 = common.encodeAsciiBase64(this.feed.feedUrl);
     // encode feed title to base64.
@@ -37,7 +34,7 @@ class SearchItemController {
   }
 }
 
-class SearchItemLink {
+class SubscriptionItemLink {
 
   constructor(scope, element, attrs, animate) {
     // setup class variables.
@@ -109,15 +106,13 @@ class SearchItemLink {
   }
 
   static factory(...args) {
-    return new SearchItemLink(...args);
+    return new SubscriptionItemLink(...args);
   }
 }
 
-SearchItemController.$inject = ['$location'];
-
 angular
   .module('app.subscribe')
-  .directive('rdSearchItem', SearchItem.factory);
+  .directive('rdSubscriptionItem', SubscriptionItem.factory);
 
-export default SearchItem;
-export {SearchItemController, SearchItemLink};
+export default SubscriptionItem;
+export {SubscriptionItemController, SubscriptionItemLink};

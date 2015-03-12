@@ -1,0 +1,9 @@
+<li class="subscription-item" rd-animate keyframes="subscription-item-state-up, subscription-item-state-down">
+  <a class="subscription-item-anchor" ng-href="subscription/add-feed/{{item.feed.feedUrlBase64}}/{{item.feed.feedTitleBase64}}">
+    <img class="subscription-item-thumbnail" ng-src="{{item.feed.artworkUrl100}}" />
+    <div class="subscription-item-details">
+      <span class="subscription-item-track">{{item.feed.trackName}}</span>
+      <span class="subscription-item-artist">{{item.feed.artistName}}</span>
+    </div>
+  </a>
+</li>

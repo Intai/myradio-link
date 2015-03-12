@@ -1,5 +1,4 @@
 <ul class="subscription-list">
-  <li ng-repeat="feed in subscription.list track by feed.feedUrl">
-    {{feed.feedUrl}}
-  </li>
+  <rd-subscription-item ng-repeat="feed in subscription.list track by feed.feedUrl"
+    feed="feed"></rd-subscription-item>
 </ul>

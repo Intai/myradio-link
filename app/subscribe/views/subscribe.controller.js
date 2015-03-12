@@ -7,9 +7,9 @@ class SubscribeController {
     // playlist name from url or defaults.
     this.listName = $routeParams.list || config.defaults.PLAYLIST;
     // decode feed url from base64.
-    this.feedUrl = atob(decodeURIComponent($routeParams.tokenUrl));
+    this.feedUrl = common.decodeAsciiBase64($routeParams.tokenUrl);
     // decode feed title from base64.
-    this.feedTitle = decodeURIComponent(atob(decodeURIComponent($routeParams.tokenTitle)));
+    this.feedTitle = common.decodeBase64($routeParams.tokenTitle);
   }
 }
 

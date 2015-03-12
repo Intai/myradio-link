@@ -1,4 +1,4 @@
-.search-item {
+.subscription-item {
   @include prefix(transition, "background-color 100ms ease-out, color 100ms ease-out");
   font-family: $sansserif;
   color: $color-foreground;
@@ -17,36 +17,36 @@
     background: $color-background;
   }
 
-  &.search-item-state-up {
+  &.subscription-item-state-up {
     @include prefix(transition-duration, 500ms);
   }
 
-  &.search-item-state-down {
+  &.subscription-item-state-down {
     background-color: $color-off-foreground;
     color: $color-background;
 
-    .search-item-artist {
+    .subscription-item-artist {
       color: $offwhite;
     }
   }
 }
 
-.search-item-anchor {
+.subscription-item-anchor {
   text-decoration: none;
 }
 
-.search-item-thumbnail {
+.subscription-item-thumbnail {
   float: left;
   height: 80px;
   width: 80px;
 }
 
-.search-item-details {
+.subscription-item-details {
   height: 80px;
 }
 
-.search-item-track,
-.search-item-artist {
+.subscription-item-track,
+.subscription-item-artist {
   display: block;
   overflow: hidden;
   white-space: nowrap;
@@ -54,12 +54,12 @@
   padding: 0 15px;
 }
 
-.search-item-track {
+.subscription-item-track {
   @include font-size(100);
   padding-top: (75px - font-size(190)) / 2;
 }
 
-.search-item-artist {
+.subscription-item-artist {
   @include font-size(90);
   padding-top: 5px;
   color: $lightgrey;
