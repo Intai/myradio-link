@@ -126,11 +126,6 @@ class SearchFormLink {
       scope.$digest();
     }
     else {
-      // todo
-      // dispatch the search error
-      // show error message with ok button
-      // 
-
       // dispatch the search error.
       dispatcher.dispatch({
         actionType: config.actions.MESSAGE,
