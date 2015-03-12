@@ -6,6 +6,7 @@ import searchForm from './directives/search.directive';
 import searchItem from './directives/search-item.directive';
 import subscribeFeed from './directives/subscribe-feed.directive';
 import addFeedEntry from './directives/add-feed-entry.directive';
+import subscription from './directives/subscription.directive';
 import search from './services/search.service';
 import feed from './services/feed.service';
 import listView from './views/list.controller';

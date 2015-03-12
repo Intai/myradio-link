@@ -26,32 +26,37 @@ class ButtonLink {
 
   constructor(scope, element, attrs, animate) {
     // setup class variables.
-    this.initVars(element, animate);
+    this.initVars(scope, element, animate);
     // setup event bindings.
     this.initEvents();
   }
 
   /**
-  * Class Variables
-  */
+   * Class Variables
+   */
 
-  initVars(element, animate) {
+  initVars(scope, element, animate) {
     /**
-    * jQuery element to be aniamted.
-    * @type {object}
-    */
+     * Angular directive scope.
+     */
+    this.scope = scope;
+
+    /**
+     * jQuery element.
+     * @type {object}
+     */
     this.el = element;
 
     /**
-    * Animate directive controller.
-    * @type {object}
-    */
+     * Animate directive controller.
+     * @type {object}
+     */
     this.animate = animate;
   }
 
   /**
-  * Event Bindings
-  */
+   * Event Bindings
+   */
 
   initEvents() {
     this.el
@@ -67,8 +72,8 @@ class ButtonLink {
   }
 
   /**
-  * Private
-  */
+   * Private
+   */
 
   _onDown(animate) {
     animate
