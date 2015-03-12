@@ -59,6 +59,11 @@ class ButtonLink {
       .on('mousedown touchstart', _.partial(this._onDown, this.animate))
       // up state.
       .on('mouseup drag touchend', _.partial(this._onUp, this.animate));
+
+    // unbind on destroy.
+    this.scope.$on('$destroy', () => {
+      this.el.off();
+    });
   }
 
   /**

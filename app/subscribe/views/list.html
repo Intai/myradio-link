@@ -1,2 +1,13 @@
-<rd-anchor href="/{{vm.listName}}">Playback</rd-anchor>
-<rd-anchor href="/{{vm.listName}}/subscription/add">Add</rd-anchor>
+<rd-nav title="Subscription"
+  enable-default-back="true"
+  default-back-href="/{{vm.listName}}"
+  default-back-title="Playlist">
+
+  <a ng-href="/{{vm.listName}}/subscription/add">
+    <rd-button-icon type="plus"></rd-button-icon>
+  </a>
+</rd-nav>
+
+<div class="page-main">
+
+</div>

@@ -6,10 +6,19 @@
   margin: 0 auto;
   padding: 15px;
   border-bottom: 1px solid $lightergrey;
-  height: font-size(100) + 30px;
+  height: font-size(100) + 35px;
   box-sizing: border-box;
 }
 
 .nav-back {
   text-transform: uppercase;
+}
+
+.nav-next {
+  float: right;
+  margin-right: -10px;
+
+  > a > .btn-icon {
+    margin-top: -10px;
+  }
 }
