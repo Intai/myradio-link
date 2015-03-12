@@ -24,6 +24,7 @@
 }
 
 .message-icon {
+  @include prefix(animation, pop 700ms linear infinite);
   color: $lightergrey;
   font-size: 300px;
   margin-left: -150px;

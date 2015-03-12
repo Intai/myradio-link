@@ -68,6 +68,12 @@ $prefixes: webkit moz ms o;
   100% { opacity: 0; }
 }
 
+@include keyframes-prefix(pop) {
+  0% { @include prefix(transform, scale3d(1, 1, 1)); }
+  14% { @include prefix(transform, scale3d(1.1, 1.1, 1)); }
+  100% { @include prefix(transform, scale3d(1, 1, 1)); }
+}
+
 header, footer, article, hgroup, section, menu, nav, figure, figcaption, aside, details, output {
   display: block;
 }
