@@ -64,12 +64,10 @@ class LoadingService {
   }
 
   _showActionHandler(stateStream) {
-    // extract search term from action payload.
     stateStream.push(1);
   }
 
   _hideActionHandler(stateStream) {
-    // extract search term from action payload.
     stateStream.push(-1);
   }
 

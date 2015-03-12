@@ -46,10 +46,10 @@ class SpinnerLink {
     this.scope = scope;
 
     /**
-     * jQuery element to be aniamted.
+     * jQuery element.
      * @type {object}
      */
-    this.el = $(element);
+    this.el = element;
   }
 
   /**

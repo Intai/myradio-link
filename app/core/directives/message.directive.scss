@@ -1,0 +1,32 @@
+.message {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: $white;
+  text-align: center;
+}
+
+.message-icon-wrap {
+  position: absolute;
+  left: 25%;
+  top: 30px;
+}
+
+.message-icon {
+  color: $lightergrey;
+  font-size: 300px;
+  margin-left: -150px;
+}
+
+.message-text {
+  @include font-size(150);
+  color: $color-foreground;
+  margin: 230px auto 15px;
+  padding: 0 15px;
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+}

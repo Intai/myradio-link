@@ -29,6 +29,7 @@ class ConfigService {
      */
     this.actions = {
       MESSAGE: 'MESSAGE',
+      MESSAGE_CLOSE: 'MESSAGE_CLOSE',
       SEARCH_PODCAST: 'SEARCH_PODCAST',
       SEARCH_PODCAST_RESULTS: 'SEARCH_PODCAST_RESULTS',
       NAVIGATE: 'NAVIGATE',
