@@ -4,6 +4,7 @@
   color: $color-foreground;
   overflow: hidden;
   margin-bottom: 1px;
+  position: relative;
 
   &.ng-enter {
     @include prefix(animation, fade-in 300ms ease-in-out);
@@ -33,6 +34,9 @@
 
 .subscription-item-anchor {
   text-decoration: none;
+  background-color: inherit;
+  position: relative;
+  display: block;
 }
 
 .subscription-item-thumbnail {
@@ -63,4 +67,15 @@
   @include font-size(90);
   padding-top: 5px;
   color: $lightgrey;
+}
+
+.subscription-hidden {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 80px;
+
+  > .btn-icon {
+    margin-top: 21px;
+  }
 }

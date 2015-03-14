@@ -20,7 +20,7 @@ class AnimateController {
 
   constructor($element, $attrs) {
     // setup class variables.
-    this.initVars(...arguments);
+    this.initVars($element, $attrs);
     // setup public functions.
     this.initPublicFuncs();
     // setup initial keyframes.
@@ -225,7 +225,9 @@ class AnimateController {
     state.isRunning = false;
   }
 
-  _tick(el, state, frames, timer) {
+  _tick(...args) {
+    var [el, state, frames, timer] = args;
+
     clearTimeout(timer.id);
     var next = -1;
 
@@ -275,11 +277,11 @@ class AnimateController {
       // schedule at the end of the frame.
       var duration = this._getCurrDuration(el);
       if (duration > 0) {
-        timer.id = setTimeout(() => this._tick(...arguments),
+        timer.id = setTimeout(() => this._tick(...args),
           duration + config.numbers.ANIMATE_MIN_DURATION);
       }
       else {
-        timer.id = setTimeout(() => this._tick(...arguments), 0);
+        timer.id = setTimeout(() => this._tick(...args), 0);
       }
     }
     else {
