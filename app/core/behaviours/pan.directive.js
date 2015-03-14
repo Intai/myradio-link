@@ -72,7 +72,7 @@ class PanLink {
       /**
        * Configurations.
        */
-      direction: config.DIR_HORIZONTAL,
+      direction: config.enums.DIR_HORIZONTAL,
       momentum: MOMENTUM,
 
       /**
@@ -190,10 +190,10 @@ class PanLink {
 
       // restrict movement direction.
       switch (state.direction) {
-        case config.DIR_HORIZONTAL:
+        case config.enums.DIR_HORIZONTAL:
           diff.v[1] = 0;
           break;
-        case config.DIR_VERTICAL:
+        case config.enums.DIR_VERTICAL:
           diff.v[0] = 0;
           break;
       }
@@ -419,10 +419,10 @@ class PanLink {
   }
 
   _isPanDirectionAlign(state, direction) {
-    return (state.direction === config.DIR_ALL
-      || (state.direction === config.DIR_HORIZONTAL
+    return (state.direction === config.enums.DIR_ALL
+      || (state.direction === config.enums.DIR_HORIZONTAL
         && (direction === Vec.DIR_POS_X || direction === Vec.DIR_NEG_X))
-      || (state.direction === config.DIR_VERTICAL
+      || (state.direction === config.enums.DIR_VERTICAL
         && (direction === Vec.DIR_POS_Y || direction === Vec.DIR_NEG_Y)));
   }
 
