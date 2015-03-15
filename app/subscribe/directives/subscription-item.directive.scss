@@ -2,6 +2,7 @@
   @include prefix(transition, "background-color 100ms ease-out, color 100ms ease-out");
   font-family: $sansserif;
   color: $color-foreground;
+  background: $white;
   overflow: hidden;
   margin-bottom: 1px;
   position: relative;
@@ -73,9 +74,14 @@
   position: absolute;
   right: 0;
   top: 0;
+  width: 70px;
   height: 80px;
 
   > .btn-icon {
-    margin-top: 21px;
+    background-color: $color-alert;
+    border-color: $color-background;
+    color: $color-background;
+    margin: 21px auto;
+    display: block;
   }
 }

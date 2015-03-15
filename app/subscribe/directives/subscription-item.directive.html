@@ -2,10 +2,11 @@
   rd-animate keyframes="subscription-item-state-up, subscription-item-state-down">
 
   <div class="subscription-hidden">
-    <rd-button-icon type="trash-o"></rd-button-icon>
+    <rd-button-icon class="subscription-delete" type="trash"></rd-button-icon>
   </div>
 
-  <a class="subscription-item-anchor" rd-slide-reveal rd-pan rd-matrix
+  <a class="subscription-item-anchor"
+    rd-slide-reveal rd-pan rd-matrix reveal-content="subscription-hidden"
     ng-href="subscription/add-feed/{{item.feed.feedUrlBase64}}/{{item.feed.feedTitleBase64}}">
 
     <img class="subscription-item-thumbnail" ng-src="{{item.feed.artworkUrl100}}" />

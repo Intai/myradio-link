@@ -291,14 +291,14 @@ class PanLink {
     var time = 0;
 
     // calculate the rectangle after sliding.
-    var rect = Rct.createFromDimension([target.clientWidth, target.clientHeight]);
-    var transformed = rect.clone().matrix(
-      (state.matrix.init)
-        ? state.matrix.init.clone().multiply(state.matrix.current)
-        : state.matrix.current);
+    /*var rect = Rct.createFromDimension([target.clientWidth, target.clientHeight]);
+    var transformed = rect.clone().matrix(state.matrix.current);
 
     // calculate vectors to bounce off boundaries.
-    var bounce = transformed.bounce(rect, diff, OFFSET_BOUNCE);
+    var bounce = transformed.bounce(rect, diff, OFFSET_BOUNCE);*/
+
+    var bounce = this._calcMinVecTransformed(target, state,
+      (transformed, rect) => transformed.bounce(rect, diff, OFFSET_BOUNCE));
 
     // if sliding over boundaries, don't continue
     // sliding. stop at the boundaries.
@@ -331,32 +331,20 @@ class PanLink {
     if (state.bounceDiff) {
       // apply the bounce vector.
       state.matrix.current.multiply(Mtx.create().translate(state.bounceDiff.v));
-      // make sure the bounce is not over boundaries.
-      this._snapToBound(target, state);
+      // bounce back to boundaries in a fixed time.
+      target.style[CSS_TRANSITION] = CSS_TRANSFORM + ' ' + TIME_BOUNCE + CSS_TRANSITION_TIMING;
+      target.style[CSS_TRANSFORM] = browser.cssMatrix(state.matrix.current);
 
-      // if it is within boundaries.
-      if (!state.isOverBound) {
-        // bounce back to boundaries in a fixed time.
-        target.style[CSS_TRANSITION] = CSS_TRANSFORM + ' ' + TIME_BOUNCE + CSS_TRANSITION_TIMING;
-        target.style[CSS_TRANSFORM] = browser.cssMatrix(state.matrix.current);
-
-        // stop at the end of transition.
-        this._onTransitionEnd = this._endTransition;
-      }
+      // stop at the end of transition.
+      this._onTransitionEnd = this._endTransition;
     }
   }
 
   _snapToBound(target, state) {
-    // calculate the current rectangle.
-    var rect = Rct.createFromDimension([target.clientWidth, target.clientHeight]);
-    var transformed = rect.clone().matrix(
-      (state.matrix.init)
-          ? state.matrix.init.clone().multiply(state.matrix.current)
-          : state.matrix.current);
-
     // calculate vector to snap the current
     // rectangle to contain the original rectangle.
-    var snap = transformed.snap(rect);
+    var snap = this._calcMinVecTransformed(target, state,
+      (transformed, rect) => transformed.snap(rect));
 
     // if target is over boundaries.
     state.isOverBound = (snap !== false);
@@ -372,23 +360,48 @@ class PanLink {
   }
 
   _applyTension(target, state, diff) {
-    // calculate the current rectangle.
-    var rect = Rct.createFromDimension([target.clientWidth, target.clientHeight]);
-    var transformed = rect.clone().matrix(
-      (state.matrix.init)
-        ? state.matrix.init.clone().multiply(state.matrix.current)
-        : state.matrix.current);
-
     // calculate tension vector between the current and original rectangle.
-    var tension = transformed.tension(rect, diff);
+    var tension = this._calcMinVecTransformed(target, state,
+      (transformed, rect) => transformed.tension(rect, diff));
+
     // whether target is dragged over boundaries.
     state.isOverBound = (tension !== false);
 
     // if dragging over boundaries, make the dragging distance
-    // shorter to give the feeling of pulling back to boundries.
+    // shorter to give the feeling of pulling back to boundaries.
     if (state.isOverBound) {
       state.matrix.current.multiply(Mtx.create().translate(tension));
     }
+  }
+
+  _calcMinVecTransformed(target, state, calcVec) {
+    var rect = Rct.createFromDimension([target.clientWidth, target.clientHeight]),
+        boundaries = state.matrix.boundaries;
+
+    // calculate vectors from the transformed rectangle.
+    var vectors = _.map(boundaries, (matrix) => {
+      // transform the current rectangle.
+      let transformed = rect.clone().matrix(state.matrix.current);
+      // calculate boundary rectangle.
+      let boundary = (matrix) ? rect.clone().matrix(matrix) : rect;
+
+      return calcVec(transformed, boundary);
+    });
+
+    // return the minimum vector calculated.
+    return _.min(vectors, this._calcVecLength);
+  }
+
+  _calcVecLength(ary) {
+    // if it's a 2d array. e.g. bounce.
+    if (ary && _.isArray(ary[0])) {
+      // take the first array.
+      ary = ary[0];
+    }
+
+    return (ary)
+      ? Vec.create(ary).length()
+      : Number.MAX_VALUE;
   }
 
   _stopTransition(target, state) {

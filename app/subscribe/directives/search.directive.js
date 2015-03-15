@@ -96,6 +96,7 @@ class SearchFormLink {
 
   _onSubmit(scope, e) {
     var form = $(e.target),
+        input = form.find('input:first'),
         [{value}] = form.serializeArray();
 
     if (value) {
@@ -110,6 +111,11 @@ class SearchFormLink {
       feeds.splice(0, feeds.length);
       scope.$digest();
     }
+
+    // close software keyboard.
+    input.blur();
+    // stop browser from submitting the form.
+    e.preventDefault();
   }
 
   _onResult(scope, data) {

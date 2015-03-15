@@ -57,7 +57,7 @@ class SubscriptionItemLink {
      * jQuery element.
      * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
 
     /**
      * Animate directive controller.
@@ -73,11 +73,17 @@ class SubscriptionItemLink {
   initEvents() {
     this.el
       // down state.
-      .on('mousedown touchstart', _.partial(this._onDown, this.animate))
+      .on('mousedown touchstart', '.subscription-item-anchor',
+        _.partial(this._onDown, this.animate))
       // up state.
-      .on('mouseup drag touchend', _.partial(this._onUp, this.animate))
-      // when selecting the podcast feed.
-      .on('click', _.partial(this._onClick, this.scope));
+      .on('mouseup dragend touchend', '.subscription-item-anchor',
+        _.partial(this._onUp, this.animate))
+      // select the podcast feed.
+      .on('click', '.subscription-item-anchor',
+        _.partial(this._onClick, this.scope))
+      //
+      .on('click', '.subscription-delete',
+        _.partial(this._onDelete, this.scope));
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => this.el.off());
@@ -105,6 +111,14 @@ class SubscriptionItemLink {
     dispatcher.dispatch({
       actionType: config.actions.FEED_PUSH_INFO,
       info: scope.item.feed
+    });
+  }
+
+  _onDelete(scope) {
+    // dispatch to unsubscribe the feed.
+    dispatcher.dispatch({
+      actionType: config.actions.FEED_UNSUBSCRIBE,
+      feedInfo: scope.item.feed
     });
   }
 

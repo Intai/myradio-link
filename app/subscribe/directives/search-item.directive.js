@@ -78,9 +78,12 @@ class SearchItemLink {
       // down state.
       .on('mousedown touchstart', _.partial(this._onDown, this.animate))
       // up state.
-      .on('mouseup drag touchend', _.partial(this._onUp, this.animate))
+      .on('mouseup dragend touchend', _.partial(this._onUp, this.animate))
       // when selecting the podcast feed.
       .on('click', _.partial(this._onClick, this.scope));
+
+    // unbind on destroy.
+    this.scope.$on('$destroy', () => this.el.off());
   }
 
   /**
