@@ -81,7 +81,7 @@ class SubscriptionItemLink {
       // select the podcast feed.
       .on('click', '.subscription-item-anchor',
         _.partial(this._onClick, this.scope))
-      //
+      // unsubscribe.
       .on('click', '.subscription-delete',
         _.partial(this._onDelete, this.scope));
 

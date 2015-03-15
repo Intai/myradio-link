@@ -6,7 +6,8 @@
   </div>
 
   <a class="subscription-item-anchor"
-    rd-slide-reveal rd-pan rd-matrix reveal-content="subscription-hidden"
+    rd-slide-reveal rd-pan rd-matrix
+    reveal-content="subscription-hidden" reveal-group="subscription"
     ng-href="subscription/add-feed/{{item.feed.feedUrlBase64}}/{{item.feed.feedTitleBase64}}">
 
     <img class="subscription-item-thumbnail" ng-src="{{item.feed.artworkUrl100}}" />

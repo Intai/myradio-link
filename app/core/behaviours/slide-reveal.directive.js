@@ -21,6 +21,8 @@ class SlideRevealController {
   constructor($attrs) {
     // class name of the content to be revealed.
     this.content = $attrs.revealContent;
+    // group of hidden contents.
+    this.group = $attrs.revealGroup;
   }
 }
 
