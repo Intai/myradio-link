@@ -9,7 +9,7 @@ class SlideReveal {
     this.controllerAs = 'reveal';
     this.bindToController = true;
     this.link = SlideRevealLink.factory;
-    this.require = ['rdPan', 'rdMatrix'];
+    this.require = ['?^rdSubscriptionItem', 'rdPan', 'rdMatrix'];
   }
 
   static factory() {
@@ -30,10 +30,12 @@ class SlideRevealController {
 class SlideRevealLink {
 
   constructor(scope, element, attrs, controllers) {
-    var [pan, matrix] = controllers;
+    var [wrap, pan, matrix] = controllers;
 
     // setup class variables.
-    this.initVars(scope, element, pan, matrix);
+    this.initVars(scope, element, wrap, pan, matrix);
+    // setup event bindings.
+    this.initEvents();
     // setup boundary matrix.
     this.initBoundary();
     // setup reveal direction.
@@ -44,7 +46,7 @@ class SlideRevealLink {
    * Class Variables
    */
 
-  initVars(scope, element, pan, matrix) {
+  initVars(scope, element, wrap, pan, matrix) {
     /**
      * Angular directive scope.
      */
@@ -55,6 +57,12 @@ class SlideRevealLink {
      * @type {object}
      */
     this.el = $(element);
+
+    /**
+     * Subscription item controller.
+     * @type {object}
+     */
+    this.wrap = wrap;
 
     /**
      * Pan directive controller.
@@ -78,6 +86,21 @@ class SlideRevealLink {
   }
 
   /**
+   * Event Bindings
+   */
+
+  initEvents() {
+    if (this.wrap) {
+      // reveal or hide from the wrapper.
+      var dispose = this.wrap.revealStream.onValue(
+        _.partial(this._onReveal, this.pan));
+
+      // unbind on destroy.
+      this.scope.$on('$destroy', () => dispose());
+    }
+  }
+
+  /**
    * Boundary Matrices
    */
 
@@ -93,6 +116,18 @@ class SlideRevealLink {
     if (this.revealWidth) {
       // assign a shift vector to reveal the hidden content.
       this.pan.shiftVector = Vec.create([-this.revealWidth, 0]);
+    }
+  }
+
+  /**
+   * Private
+   */
+
+  _onReveal(pan, reveal) {
+    if (reveal) {
+      pan.shift();
+    } else {
+      pan.unshift();
     }
   }
 

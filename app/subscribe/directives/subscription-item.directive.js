@@ -31,6 +31,8 @@ class SubscriptionItemController {
     this.feed.feedUrlBase64 = common.encodeAsciiBase64(this.feed.feedUrl);
     // encode feed title to base64.
     this.feed.feedTitleBase64 = common.encodeBase64(this.feed.trackName);
+    // stream out reveal/hide signal.
+    this.revealStream = new Bacon.Bus();
   }
 }
 
@@ -83,7 +85,11 @@ class SubscriptionItemLink {
         _.partial(this._onClick, this.scope))
       // unsubscribe.
       .on('click', '.subscription-delete',
-        _.partial(this._onDelete, this.scope));
+        _.partial(this._onDelete, this.scope))
+      // reveal on mouse enter.
+      .on('mouseenter', _.partial(this._onEnter, this.scope))
+      // hide on mouse leave.
+      .on('mouseleave', _.partial(this._onLeave, this.scope));
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => this.el.off());
@@ -120,6 +126,14 @@ class SubscriptionItemLink {
       actionType: config.actions.FEED_UNSUBSCRIBE,
       feedInfo: scope.item.feed
     });
+  }
+
+  _onEnter(scope) {
+    scope.item.revealStream.push(true);
+  }
+
+  _onLeave(scope) {
+    scope.item.revealStream.push(false);
   }
 
   static factory(...args) {
