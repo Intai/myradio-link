@@ -1,3 +1,4 @@
+import Vec from '../libs/math/vector';
 import Mtx from '../libs/math/matrix';
 
 class SlideReveal {
@@ -8,7 +9,7 @@ class SlideReveal {
     this.controllerAs = 'reveal';
     this.bindToController = true;
     this.link = SlideRevealLink.factory;
-    this.require = 'rdMatrix';
+    this.require = ['rdPan', 'rdMatrix'];
   }
 
   static factory() {
@@ -28,18 +29,22 @@ class SlideRevealController {
 
 class SlideRevealLink {
 
-  constructor(scope, element, attrs, matrix) {
+  constructor(scope, element, attrs, controllers) {
+    var [pan, matrix] = controllers;
+
     // setup class variables.
-    this.initVars(scope, element, matrix);
+    this.initVars(scope, element, pan, matrix);
     // setup boundary matrix.
-    this.initBoundary(matrix);
+    this.initBoundary();
+    // setup reveal direction.
+    this.initPanVector();
   }
 
   /**
    * Class Variables
    */
 
-  initVars(scope, element, matrix) {
+  initVars(scope, element, pan, matrix) {
     /**
      * Angular directive scope.
      */
@@ -52,10 +57,24 @@ class SlideRevealLink {
     this.el = $(element);
 
     /**
+     * Pan directive controller.
+     * @type {object}
+     */
+    this.pan = pan;
+
+    /**
      * Matrix directive controller.
      * @type {object}
      */
     this.matrix = matrix;
+
+    /**
+     * Width of the hidden conten.
+     * @type {integer}
+     */
+    var className = scope.reveal.content,
+        content = this.el.siblings(`.${className}`);
+    this.revealWidth = content.width();
   }
 
   /**
@@ -63,14 +82,17 @@ class SlideRevealLink {
    */
 
   initBoundary() {
-    var className = this.scope.reveal.content,
-        content = this.el.siblings(`.${className}`),
-        width = content.width();
-
-    if (width) {
+    if (this.revealWidth) {
       // add a boundary matrix to reveal the hidden content.
       this.matrix.addBoundaryMatrix(
-        Mtx.create().translate([-width, 0]));
+        Mtx.create().translate([-this.revealWidth, 0]));
+    }
+  }
+
+  initPanVector() {
+    if (this.revealWidth) {
+      // assign a shift vector to reveal the hidden content.
+      this.pan.shiftVector = Vec.create([-this.revealWidth, 0]);
     }
   }
 

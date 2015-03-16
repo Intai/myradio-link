@@ -12,6 +12,7 @@ var CSS_TRANSFORM = browser.cssPrefix('transform'),
     MIN_VELOCITY = 1,
     MAX_VELOCITY = 3.5,
     MOMENTUM = 0.0025,
+    TIME_SHIFT = 300,
     TIME_BOUNCE = 500,
     OFFSET_BOUNCE = 75;
 
@@ -31,7 +32,24 @@ class Pan {
   }
 }
 
-class PanController {}
+class PanController {
+
+  constructor() {
+    // default vector to shift the element.
+    this.shiftVector = Vec.create();
+    // stream out shift/unshift vector.
+    this.shiftStream = new Bacon.Bus();
+  }
+
+  shift() {
+    this.shiftStream.push(this.shiftVector);
+  }
+
+  unshift() {
+    this.shiftStream.push(
+      this.shiftVector.clone().inverse());
+  }
+}
 
 class PanLink {
 
@@ -104,6 +122,8 @@ class PanLink {
       this._onTouchMove, element, this.state), this);
     var onTouchEnd = _.bind(_.partial(
       this._onTouchEnd, element, this.state), this);
+    var onMouseEnter = _.bind(_.partial(
+      this._onMouseEnter, element, this.scope, this.state), this);
     var onTransitionEnd = _.bind(_.partial(
       this._onTransitionEndEvent, element, this.state), this);
 
@@ -112,6 +132,7 @@ class PanLink {
     element.addEventListener('touchmove', onTouchMove, false);
     element.addEventListener('touchleave', onTouchEnd, false);
     element.addEventListener('touchend', onTouchEnd, false);
+    element.addEventListener('mouseenter', onMouseEnter, false);
     element.addEventListener('click', onTouchEnd, false);
 
     // transition end event.
@@ -123,6 +144,7 @@ class PanLink {
       element.removeEventListener('touchmove', onTouchMove);
       element.removeEventListener('touchleave', onTouchMove);
       element.removeEventListener('touchend', onTouchEnd);
+      element.removeEventListener('mouseenter', onMouseEnter);
       element.removeEventListener('click', onTouchEnd);
       element.removeEventListener(eventTransitionEnd, onTransitionEnd);
     });
@@ -264,10 +286,39 @@ class PanLink {
     }
   }
 
+  _onMouseEnter(target, scope, state) {
+    // shift positively.
+    this._shift(target, state, scope.pan.shiftVector);
+  }
+
   _onTransitionEndEvent(target, state, e) {
     if (this._onTransitionEnd) {
       this._onTransitionEnd(target, state);
     }
+  }
+
+  _shift(target, state, vector) {
+    // shift the current matrix with the vector.
+    state.matrix.current.multiply(Mtx.create().translate(vector.v));
+
+    // calculate vector to snap the shifted
+    // rectangle to contain the original rectangle.
+    var snap = this._calcMinVecTransformed(target, state,
+      (transformed, rect) => transformed.snap(rect));
+
+    // if target is over boundaries.
+    state.isOverBound = (snap !== false);
+    if (state.isOverBound) {
+      // snap back to boundaries.
+      state.matrix.current.multiply(Mtx.create().translate(snap));
+    }
+
+    // shift in a fixed time
+    target.style[CSS_TRANSITION] = CSS_TRANSFORM + ' ' + TIME_SHIFT + CSS_TRANSITION_TIMING;
+    target.style[CSS_TRANSFORM] = browser.cssMatrix(state.matrix.current);
+
+    // stop at the end of transition.
+    this._onTransitionEnd = this._endTransition;
   }
 
   _slide(target, state) {
@@ -290,13 +341,7 @@ class PanLink {
 
     var time = 0;
 
-    // calculate the rectangle after sliding.
-    /*var rect = Rct.createFromDimension([target.clientWidth, target.clientHeight]);
-    var transformed = rect.clone().matrix(state.matrix.current);
-
     // calculate vectors to bounce off boundaries.
-    var bounce = transformed.bounce(rect, diff, OFFSET_BOUNCE);*/
-
     var bounce = this._calcMinVecTransformed(target, state,
       (transformed, rect) => transformed.bounce(rect, diff, OFFSET_BOUNCE));
 
@@ -401,7 +446,7 @@ class PanLink {
 
     return (ary)
       ? Vec.create(ary).length()
-      : Number.MAX_VALUE;
+      : Number.MIN_VALUE;
   }
 
   _stopTransition(target, state) {
