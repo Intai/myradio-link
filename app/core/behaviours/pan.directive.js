@@ -168,10 +168,7 @@ class PanLink {
     }
 
     // interrupt the current transition if there is one.
-    if (this._stopTransition(target, state)) {
-      // prevent clicking on anything.
-      e.preventDefault();
-    }
+    this._stopTransition(target, state);
 
     // clean up states for touch start.
     state.prevPoint.set([touch.clientX, touch.clientY]);
