@@ -12,6 +12,15 @@ class BrowserService {
     this.properties = {};
   }
 
+  supportTouch() {
+    if (!('touch' in this.support)) {
+      // whether on touch device
+      this.support.touch = ('ontouchstart' in window);
+    }
+
+    return this.support.touch;
+  }
+
   supportTranslate3d() {
     if (!('cssTranslate3d' in this.support)) {
       // whether translate3d is supported.

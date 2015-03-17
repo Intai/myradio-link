@@ -1,6 +1,7 @@
 import dispatcher from '../../core/services/dispatcher.service';
 import config from '../../core/services/config.service';
 import common from '../../core/services/common.service';
+import browser from '../../core/services/browser.service';
 
 class SubscriptionItem {
 
@@ -85,11 +86,17 @@ class SubscriptionItemLink {
         _.partial(this._onClick, this.scope))
       // unsubscribe.
       .on('click', '.subscription-delete',
-        _.partial(this._onDelete, this.scope))
-      // reveal on mouse enter.
-      .on('mouseenter', _.partial(this._onEnter, this.scope))
-      // hide on mouse leave.
-      .on('mouseleave', _.partial(this._onLeave, this.scope));
+        _.partial(this._onDelete, this.scope));
+
+    // todo
+    // how about surface?
+    if (!browser.supportTouch()) {
+      this.el
+        // reveal on mouse enter.
+        .on('mouseenter', _.partial(this._onEnter, this.scope))
+        // hide on mouse leave.
+        .on('mouseleave', _.partial(this._onLeave, this.scope));
+    }
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => this.el.off());
