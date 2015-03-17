@@ -9,7 +9,7 @@ class SlideReveal {
     this.controllerAs = 'reveal';
     this.bindToController = true;
     this.link = SlideRevealLink.factory;
-    this.require = ['?^rdSubscriptionItem', 'rdPan', 'rdMatrix'];
+    this.require = ['rdPan', 'rdMatrix', '?^rdSubscriptionItem', '?^rdGroup'];
   }
 
   static factory() {
@@ -30,10 +30,8 @@ class SlideRevealController {
 class SlideRevealLink {
 
   constructor(scope, element, attrs, controllers) {
-    var [wrap, pan, matrix] = controllers;
-
     // setup class variables.
-    this.initVars(scope, element, wrap, pan, matrix);
+    this.initVars(scope, element, ...controllers);
     // setup event bindings.
     this.initEvents();
     // setup boundary matrix.
@@ -46,7 +44,7 @@ class SlideRevealLink {
    * Class Variables
    */
 
-  initVars(scope, element, wrap, pan, matrix) {
+  initVars(scope, element, pan, matrix, wrap, group) {
     /**
      * Angular directive scope.
      */
@@ -59,12 +57,6 @@ class SlideRevealLink {
     this.el = $(element);
 
     /**
-     * Subscription item controller.
-     * @type {object}
-     */
-    this.wrap = wrap;
-
-    /**
      * Pan directive controller.
      * @type {object}
      */
@@ -75,6 +67,18 @@ class SlideRevealLink {
      * @type {object}
      */
     this.matrix = matrix;
+
+    /**
+     * Subscription item controller.
+     * @type {object}
+     */
+    this.wrap = wrap;
+
+    /**
+     * Group directive controller.
+     * @type {object}
+     */
+    this.group = group;
 
     /**
      * Width of the hidden conten.
@@ -90,13 +94,23 @@ class SlideRevealLink {
    */
 
   initEvents() {
+    var disposes = [];
+
     if (this.wrap) {
       // reveal or hide from the wrapper.
-      var dispose = this.wrap.revealStream.onValue(
-        _.partial(this._onReveal, this.pan));
+      disposes.push(this.wrap.revealStream.onValue(
+        _.partial(this._onReveal, this.pan)));
+    }
 
+    if (this.group) {
+      // hide when revealing another in the same group.
+      disposes.push(this.group.messageStream.onValue(
+        _.partial(this._onGroupMessage, this.pan)));
+    }
+
+    if (disposes.length > 0) {
       // unbind on destroy.
-      this.scope.$on('$destroy', () => dispose());
+      this.scope.$on('$destroy', () => common.execute(disposes));
     }
   }
 
@@ -127,6 +141,14 @@ class SlideRevealLink {
     if (reveal) {
       pan.shift();
     } else {
+      pan.unshift();
+    }
+  }
+
+  _onGroupMessage(pan, post) {
+    // if focusing on another member in the group.
+    if (post.message === 'focus') {
+      // slide to hide.
       pan.unshift();
     }
   }
