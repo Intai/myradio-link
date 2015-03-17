@@ -22,11 +22,14 @@ class GroupController {
     // key to uniquely identify a group.
     this.key = $attrs.groupKey;
     // unique id of the member in the group.
-    this.memberId = $attrs.groupMemberId;
+    $attrs.$observe('groupMemberId', (value) => {
+      this.memberId = value;
+    });
+
     // stream out group messages for the group key.
     this.messageStream = groups.messageStream
       .filter(_.matcher({groupKey: this.key}))
-      .negate(_.matcher({memberId: this.memberId}));
+      .filter(_.negate(_.bind(this._filterMemberId, this)));
   }
 
   broadcast(message) {
@@ -37,6 +40,14 @@ class GroupController {
       groupKey: this.key,
       message: message
     });
+  }
+
+  /**
+   * Private
+   */
+
+  _filterMemberId(post) {
+    return (post.memberId === this.memberId);
   }
 }
 

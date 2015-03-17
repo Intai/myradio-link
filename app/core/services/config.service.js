@@ -23,7 +23,8 @@ class ConfigService {
     this.enums = {
       DIR_ALL: 0,
       DIR_HORIZONTAL: 1,
-      DIR_VERTICAL: 2
+      DIR_VERTICAL: 2,
+      MSG_UNSHIFT: 0
     };
 
     /**

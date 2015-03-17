@@ -1,5 +1,6 @@
 import Vec from '../libs/math/vector';
 import Mtx from '../libs/math/matrix';
+import config from '../services/config.service';
 
 class SlideReveal {
 
@@ -103,15 +104,19 @@ class SlideRevealLink {
     }
 
     if (this.group) {
+      // on touch start, slide others to hide.
+      this.el.on('touchstart', _.partial(this._onTouchStart, this.group));
+
       // hide when revealing another in the same group.
       disposes.push(this.group.messageStream.onValue(
         _.partial(this._onGroupMessage, this.pan)));
     }
 
-    if (disposes.length > 0) {
-      // unbind on destroy.
-      this.scope.$on('$destroy', () => common.execute(disposes));
-    }
+    // unbind on destroy.
+    this.scope.$on('$destroy', () => {
+      this.el.off();
+      common.execute(disposes);
+    });
   }
 
   /**
@@ -137,6 +142,11 @@ class SlideRevealLink {
    * Private
    */
 
+  _onTouchStart(group) {
+    // notify other members in the group.
+    group.broadcast(config.enums.MSG_UNSHIFT);
+  }
+
   _onReveal(pan, reveal) {
     if (reveal) {
       pan.shift();
@@ -147,7 +157,7 @@ class SlideRevealLink {
 
   _onGroupMessage(pan, post) {
     // if focusing on another member in the group.
-    if (post.message === 'focus') {
+    if (post.message === config.enums.MSG_UNSHIFT) {
       // slide to hide.
       pan.unshift();
     }

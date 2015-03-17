@@ -38,7 +38,7 @@ class GroupService {
    */
 
   _broadcastActionHandler(messageStream, payload) {
-    var message = _.pick(payload, 'groupKey', 'message');
+    var message = _.pick(payload, 'groupKey', 'memberId', 'message');
     messageStream.push(message);
   }
 
