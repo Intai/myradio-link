@@ -5,6 +5,7 @@ class FirebaseService {
         url = `https://${id}.firebaseio.com`;
 
     this.firebase = new Firebase(url);
+    this.authStream = new Bacon.Bus();
   }
 
   authWithOAuthPopup(provider) {
@@ -35,6 +36,9 @@ class FirebaseService {
   onAuth() {
     return new Promise((resolve, reject) => {
       this.firebase.onAuth((authData) => {
+        // notify whoever interested about the auth.
+        this.authStream.push(authData);
+
         if (authData) {
           resolve(authData);
         } else {

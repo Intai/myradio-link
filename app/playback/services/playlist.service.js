@@ -138,9 +138,13 @@ class PlaylistService {
 
   initEvents() {
     // after authenticated.
+    firebase.authStream.filter(_.isObject).take(1)
+      .map(_.bind(this.initListsPath, this))
+      .onValue(_.bind(this.initOnValue, this));
+
+    // whether currently authenticated.
     firebase.onAuth()
-      .then(_.bind(this.initListsPath, this))
-      .then(_.bind(this.initOnValue, this))
+      // not authenticated.
       .catch(_.partial(this._pushStreamValue, this.errorStream));
   }
 
