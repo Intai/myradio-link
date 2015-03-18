@@ -1,8 +1,10 @@
+import config from './core/services/config.service';
 import common from './core/services/common.service';
 import firebase from './core/services/firebase.service';
 import googleApi from './core/services/google.service';
 import subscribe from './subscribe/services/subscribe.service';
 import playlist from './playback/services/playlist.service';
+import dispatcher from './core/services/dispatcher.service';
 
 var routes = ($routeProvider, $locationProvider) => {
 
@@ -86,8 +88,30 @@ var routes = ($routeProvider, $locationProvider) => {
   });
 };
 
-var routeError = ($rootScope, $location) => {
+function routeStart($rootScope) {
+  $rootScope.$on('$routeChangeStart', () => {
+     dispatcher.dispatch({
+      actionType: config.actions.ROUTE_START
+    });
+  });
+}
+
+function routeSuccess($rootScope) {
+  $rootScope.$on('$routeChangeSuccess', () => {
+     dispatcher.dispatch({
+      actionType: config.actions.ROUTE_COMPLETE
+    });
+  });
+}
+
+function routeError($rootScope, $location) {
   $rootScope.$on('$routeChangeError', (e, current, previous, rejection) => {
+    // notify about finishing the routing. 
+    // e.g. hide loading spinner.
+    dispatcher.dispatch({
+      actionType: config.actions.ROUTE_COMPLETE
+    });
+
     // if hasn't been redirected in routeResolve.
     if (rejection !== 'resolved.redirect') {
       // default to homepage if there is routing
@@ -95,7 +119,7 @@ var routeError = ($rootScope, $location) => {
       $location.path('/');
     }
   });
-};
+}
 
 function routeResolve(func, redirect) {
   // eavesdrop the promise result.
@@ -125,10 +149,14 @@ function routeResolveCurrentPlaylist($route) {
 }
 
 routes.$inject = ['$routeProvider', '$locationProvider'];
+routeStart.$inject = ['$rootScope'];
+routeSuccess.$inject = ['$rootScope'];
 routeError.$inject = ['$rootScope', '$location'];
 routeResolveCurrentPlaylist.$inject = ['$route'];
 
 angular
   .module('app')
   .config(routes)
+  .run(routeStart)
+  .run(routeSuccess)
   .run(routeError);

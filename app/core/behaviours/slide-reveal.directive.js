@@ -1,6 +1,7 @@
 import Vec from '../libs/math/vector';
 import Mtx from '../libs/math/matrix';
 import config from '../services/config.service';
+import common from '../services/common.service';
 
 class SlideReveal {
 

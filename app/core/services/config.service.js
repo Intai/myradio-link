@@ -38,6 +38,8 @@ class ConfigService {
      * Dispatcher actions.
      */
     this.actions = {
+      ROUTE_START: 'ROUTE_START',
+      ROUTE_COMPLETE: 'ROUTE_COMPLETE',
       MESSAGE: 'MESSAGE',
       MESSAGE_CLOSE: 'MESSAGE_CLOSE',
       SEARCH_PODCAST: 'SEARCH_PODCAST',

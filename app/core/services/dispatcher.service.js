@@ -75,10 +75,13 @@ class DispatcherService {
   }
 
   _process(queue, listeners) {
+    var payload = queue.shift(),
+        remain = queue.length;
+
     // notify all action handlers about the payload.
-    this._trigger(listeners, queue.shift());
+    this._trigger(listeners, payload);
     // if there are more payloads.
-    if (queue.length > 0) {
+    if (remain > 0) {
       // continue in the next loop.
       this._deferProcess(queue, listeners);
     }

@@ -32,11 +32,13 @@ class LoadingService {
   initActionHandlers() {
     // action types to indicate loading from dispatcher.
     var showActionTypes = [
+      config.actions.ROUTE_START,
       config.actions.SEARCH_PODCAST,
       config.actions.FEED_LOAD];
 
     // action types to finish loading from dispatcher.
     var hideActionTypes = [
+      config.actions.ROUTE_COMPLETE,
       config.actions.SEARCH_PODCAST_RESULTS,
       config.actions.FEED_LOAD_RESULTS];
 
