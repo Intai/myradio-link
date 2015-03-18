@@ -1,4 +1,5 @@
 .background-spinner-wrap {
+  pointer-events: none;
   position: fixed;
   left: 25%;
   top: 30px;
@@ -15,7 +16,7 @@
 
 .background-spinner {
   @include prefix(animation, fa-spin 5s linear infinite);
-  color: $lightergrey;
+  color: rgba($lightergrey, 0.8);
   font-size: 300px;
-  margin-left: -50%;
+  margin-left: -150px;
 }

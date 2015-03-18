@@ -25,7 +25,7 @@
 
 .message-icon {
   @include prefix(animation, pop 700ms linear infinite);
-  color: $lightergrey;
+  color: rgba($lightergrey, 0.8);
   font-size: 300px;
   margin-left: -150px;
 }
