@@ -57,7 +57,7 @@ class AuthGoogleController {
       .then(_.partial(this._redirect, ...args));
   }
 
-  _redirect($scope, $location, redirect) {console.log(arguments);
+  _redirect($scope, $location, redirect) {
     if (redirect) {
       // redirect after authenticated successfully.
       $location.path(redirect).replace();
