@@ -1,4 +1,5 @@
 import loading from '../services/loading.service';
+import config from '../services/config.service'
 
 class Spinner {
 
@@ -50,6 +51,14 @@ class SpinnerLink {
      * @type {object}
      */
     this.el = element;
+
+    /**
+     * Timer to delay the spinner.
+     * @type {integer}
+     */
+    this.timer = {
+      id: null
+    };
   }
 
   /**
@@ -59,7 +68,7 @@ class SpinnerLink {
   initEvents() {
     // after submitting a search.
     var dispose = loading.stateProperty.changes()
-      .onValue(_.partial(this._onStateChange, this.scope));
+      .onValue(_.partial(this._onStateChange, this.scope, this.timer));
 
     // unbind on destroy.
     this.scope.$on('$destroy', dispose);
@@ -69,9 +78,29 @@ class SpinnerLink {
    * Private
    */
 
-  _onStateChange(scope, isLoading) {
-    scope.spinner.show = isLoading;
-    scope.$digest();
+  _onStateChange(scope, timer, isLoading) {
+    if (isLoading) {
+      // delay to avoid flashing the 
+      // spinner on every route switch.
+      clearTimeout(timer.id);
+      timer.id = setTimeout(() => {
+        scope.spinner.show = true;
+        scope.$digest();
+      }, config.numbers.SPINNER_DELAY);
+    }
+    // if the spinner hasn't been shown.
+    else if (!scope.spinner.show) {
+      // simply clear the timer.
+      clearTimeout(timer.id);
+      timer.id = null;
+    }
+    else {
+      // hide the spinner.
+      scope.spinner.show = false;
+      scope.$digest();
+    }
+    
+    return timer;
   }
 
   static factory(...args) {
