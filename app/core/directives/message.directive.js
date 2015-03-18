@@ -7,12 +7,18 @@ class Message {
   constructor() {
     this.restrict = 'E';
     this.replace = true;
-    this.transclude = false;
+    this.transclude = true;
     this.templateUrl = '/core/directives/message.directive.html';
     this.controller = MessageController;
     this.controllerAs = 'message';
     this.bindToController = true;
     this.link = MessageLink.factory;
+    this.scope = {
+      show: '&',
+      icon: '@',
+      text: '@',
+      label: '@'
+    };
   }
 
   static factory() {
@@ -24,7 +30,7 @@ class MessageController {
 
   constructor() {
     // default to be hidden.
-    this.show = false;
+    this.show = !!this.show();
     // content of the message.
     this.content = {};
   }

@@ -36,6 +36,10 @@ class GoogleService {
     return firebase.authWithOAuthPopup('google');
   }
 
+  authRedirect() {
+    return firebase.authWithOAuthRedirect('google');
+  }
+
   static factory() {
     return new GoogleService();
   }

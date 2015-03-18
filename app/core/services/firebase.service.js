@@ -20,6 +20,16 @@ class FirebaseService {
     });
   }
 
+  authWithOAuthRedirect(provider) {
+    return new Promise((resolve, reject) => {
+      this.firebase.authWithOAuthRedirect(provider, (error) => {
+        if (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
   unauth() {
     this.firebase.unauth();
   }

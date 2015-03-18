@@ -38,14 +38,25 @@
   height: 50%;
 }
 
-.message-text {
+.message-text,
+.message-label,
+.message-error {
   @include font-size(150);
   color: $color-foreground;
-  margin: -0.5em auto 15px;
-  padding: 0 30px;
+  margin: -1em auto 20px;
+  padding: 0 15px;
   box-sizing: border-box;
   position: relative;
   width: 100%;
   max-width: 540px;
   display: block;
+  text-shadow:
+    -1px -1px 0 $white,
+    1px -1px 0 $white,
+    -1px 1px 0 $white,
+    1px 1px 0 $white;
+}
+
+.message-label {
+  @include font-size(190);
 }

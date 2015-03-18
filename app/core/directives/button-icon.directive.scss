@@ -18,6 +18,11 @@
   &:focus {
     outline:0;
   }
+
+  &.large {
+    @include font-size(150);
+    padding: 15px;
+  }
 }
 
 .btn-icon-state-up {

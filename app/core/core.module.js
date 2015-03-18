@@ -23,6 +23,8 @@ import config from './services/config.service';
 import firebase from './services/firebase.service';
 import googleApi from './services/google.service';
 import appleApi from './services/apple.service';
+import twitterApi from './services/twitter.service';
+import facebookApi from './services/facebook.service';
 import loading from './services/loading.service';
 import message from './services/message.service';
 import groups from './services/group.service';

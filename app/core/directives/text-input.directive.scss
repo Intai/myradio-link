@@ -44,6 +44,10 @@
     box-sizing: border-box;
     padding-right: font-size(100) + 45px;
   }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
 }
 
 .text-input-icon {

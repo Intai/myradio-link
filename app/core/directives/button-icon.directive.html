@@ -1,2 +1,7 @@
-<button ng-transclude class="btn-icon fa fa-{{button.type}}"
-  rd-animate keyframes="btn-icon-state-up, btn-icon-state-down"></button>
+<button ng-transclude
+  rd-animate keyframes="btn-icon-state-up, btn-icon-state-down"
+  ng-class="{
+    'btn-icon': true,
+    'fa fa-{{button.type}}': true,
+    'large': button.large()}">
+</button>

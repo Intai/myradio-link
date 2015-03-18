@@ -1,22 +1,22 @@
-import googleApi from '../../core/services/google.service';
+import facebookApi from '../../core/services/facebook.service';
 
-class AuthGoogle {
+class AuthFacebook {
 
   constructor() {
     this.restrict = 'A';
-    this.controller = AuthGoogleController;
+    this.controller = AuthFacebookController;
     this.controllerAs = 'auth';
     this.bindToController = true;
-    this.require = 'rdAuthGoogle';
-    this.link = AuthGoogleLink.factory;
+    this.require = 'rdAuthFacebook';
+    this.link = AuthFacebookLink.factory;
   }
 
   static factory() {
-    return new AuthGoogle();
+    return new AuthFacebook();
   }
 }
 
-class AuthGoogleController {
+class AuthFacebookController {
 
   constructor(...args) {
     // setup public functions.
@@ -29,13 +29,13 @@ class AuthGoogleController {
 
   initPublicFuncs($scope, $location, $attrs) {
     /**
-     * Authenticate with google through popup.
+     * Authenticate with facebook through popup.
      */
     this.authPopup = _.bind(_.partial(this._authPopup,
       $scope, $location, $attrs.href), this);
 
     /**
-     * Authenticate with google through redirect.
+     * Authenticate with facebook through redirect.
      */
     this.authRedirect = _.bind(_.partial(this._authRedirect,
       $scope, $location, $attrs.href), this);
@@ -46,18 +46,18 @@ class AuthGoogleController {
    */
 
   _authPopup(...args) {
-    // authenticate with google.
-    googleApi.authPopup()
+    // authenticate with facebook.
+    facebookApi.authPopup()
       .then(_.partial(this._redirect, ...args));
   }
 
   _authRedirect(...args) {
-    // authenticate with google.
-    googleApi.authRedirect()
+    // authenticate with facebook.
+    facebookApi.authRedirect()
       .then(_.partial(this._redirect, ...args));
   }
 
-  _redirect($scope, $location, redirect) {console.log(arguments);
+  _redirect($scope, $location, redirect) {
     if (redirect) {
       // redirect after authenticated successfully.
       $location.path(redirect).replace();
@@ -66,11 +66,11 @@ class AuthGoogleController {
   }
 }
 
-class AuthGoogleLink {
+class AuthFacebookLink {
 
-  constructor(scope, element, attrs, authGoogle) {
+  constructor(scope, element, attrs, authFacebook) {
     // setup class variables.
-    this.initVars(element, authGoogle);
+    this.initVars(element, authFacebook);
     // setup event bindings.
     this.initEvents();
   }
@@ -79,7 +79,7 @@ class AuthGoogleLink {
    * Class Variables
    */
 
-  initVars(element, authGoogle) {
+  initVars(element, authFacebook) {
     /**
      * jQuery element to be aniamted.
      * @type {object}
@@ -87,10 +87,10 @@ class AuthGoogleLink {
     this.el = element;
 
     /**
-     * AuthGoogle directive controller.
+     * AuthFacebook directive controller.
      * @type {object}
      */
-    this.authGoogle = authGoogle;
+    this.authFacebook = authFacebook;
   }
 
   /**
@@ -100,19 +100,19 @@ class AuthGoogleLink {
   initEvents() {
     this.el
       // triggered by user interaction.
-      .on('click', this.authGoogle.authPopup);
+      .on('click', this.authFacebook.authPopup);
   }
 
   static factory(...args) {
-    return new AuthGoogleLink(...args);
+    return new AuthFacebookLink(...args);
   }
 }
 
-AuthGoogleController.$inject = ['$scope', '$location', '$attrs'];
+AuthFacebookController.$inject = ['$scope', '$location', '$attrs'];
 
 angular
   .module('app.core')
-  .directive('rdAuthGoogle', AuthGoogle.factory);
+  .directive('rdAuthFacebook', AuthFacebook.factory);
 
-export default AuthGoogle;
-export {AuthGoogleController, AuthGoogleLink};
+export default AuthFacebook;
+export {AuthFacebookController, AuthFacebookLink};

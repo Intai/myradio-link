@@ -13,7 +13,8 @@ class ButtonIcon {
     this.require = 'rdAnimate';
     this.link = ButtonLink.factory;
     this.scope = {
-        type: '@'
+        type: '@',
+        large: '&'
     };
   }
 

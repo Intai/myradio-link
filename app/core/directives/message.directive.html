@@ -1,10 +1,18 @@
 <div class="message" ng-show="message.show">
   <span class="message-icon-wrap">
-    <span class="message-icon fa fa-exclamation-circle"></span>
+    <span ng-class="{
+      'message-icon': true, 'fa': true,
+      'fa-exclamation-circle': message.content.error,
+      'fa-{{message.icon}}': message.icon}"></span>
   </span>
 
   <div class="message-body">
-    <span class="message-text">{{message.content.error}}</span>
-    <rd-button class="message-button okay" highlight="true">OK</rd-button>
+    <span class="message-label" ng-if="message.label">{{message.label}}</span>
+    <span class="message-text" ng-if="message.text">{{message.text}}</span>
+    <span class="message-error" ng-if="message.content.error">{{message.content.error}}</span>
+
+    <span ng-transclude></span>
+    <rd-button class="message-button okay" highlight="true"
+      ng-if="message.content.error">OK</rd-button>
   <div>
 </div>
