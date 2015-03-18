@@ -1,5 +1,5 @@
 import loading from '../services/loading.service';
-import config from '../services/config.service'
+import config from '../services/config.service';
 
 class Spinner {
 
