@@ -1,0 +1,60 @@
+.episode {
+  @include prefix(transition, "background-color 100ms ease-out, color 100ms ease-out");
+  position: relative;
+  font-family: $sansserif;
+  color: $color-foreground;
+  background: $white;
+  overflow: hidden;
+  margin-bottom: 1px;
+
+  &.ng-enter {
+    @include prefix(animation, fade-in 300ms ease-in-out);
+  }
+
+  &.ng-leave {
+    @include prefix(animation, fade-out 300ms ease-out 1ms);
+  }
+
+  &:nth-child(odd) {
+    background: $color-background;
+  }
+
+  &.episode-state-up {
+    @include prefix(transition-duration, 500ms);
+  }
+
+  &.episode-state-down {
+    background-color: $color-off-foreground;
+    color: $color-background;
+
+    .episode-date {
+      color: $offwhite;
+    }
+  }
+}
+
+.episode-anchor {
+  text-decoration: none;
+  background-color: inherit;
+  position: relative;
+  display: block;
+  padding: 15px;
+}
+
+.episode-title,
+.episode-date {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.episode-title {
+  @include font-size(90);
+}
+
+.episode-date {
+  @include font-size(80);
+  padding-top: 5px;
+  color: $lightgrey;
+}

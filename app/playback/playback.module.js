@@ -3,6 +3,7 @@ var playback = angular
     'ngAnimate']);
 
 import playlist from './directives/playlist.directive';
+import episode from './directives/episode.directive';
 import listData from './services/playlist.service';
 import listView from './views/list.controller';
 
