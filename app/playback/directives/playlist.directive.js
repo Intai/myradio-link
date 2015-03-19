@@ -1,35 +1,35 @@
 import dispatcher from '../../core/services/dispatcher.service';
 import config from '../../core/services/config.service';
 import common from '../../core/services/common.service';
-import subscribe from '../services/subscribe.service';
+import playlist from '../services/playlist.service';
 
-class Subscription {
+class Playlist {
 
   constructor() {
     this.restrict = 'E';
     this.replace = true;
     this.transclude = false;
-    this.templateUrl = '/subscribe/directives/subscription.directive.html';
-    this.controller = SubscriptionController;
-    this.controllerAs = 'subscription';
+    this.templateUrl = '/playback/directives/playlist.directive.html';
+    this.controller = PlaylistController;
+    this.controllerAs = 'playlist';
     this.bindToController = true;
-    this.link = SubscriptionLink.factory;
+    this.link = PlaylistLink.factory;
   }
 
   static factory() {
-    return new Subscription();
+    return new Playlist();
   }
 }
 
-class SubscriptionController {
+class PlaylistController {
 
   constructor() {
-    // current list of subscriptions.
-    this.list = common.getBaconPropValue(subscribe.currentListProperty);
+    // current playlist according to routing.
+    this.list = common.getBaconPropValue(playlist.currentListProperty);
   }
 }
 
-class SubscriptionLink {
+class PlaylistLink {
 
   constructor(scope, element, attrs) {
     // setup class variables.
@@ -60,8 +60,8 @@ class SubscriptionLink {
    */
 
   initEvents() {
-    // when subscription list is loaded.
-    var dispose = subscribe.currentListProperty.changes()
+    // when the current playlist is loaded.
+    var dispose = playlist.currentListProperty.changes()
       .onValue(_.partial(this._onLoadList, this.scope));
 
     // unbind on destroy.
@@ -73,19 +73,19 @@ class SubscriptionLink {
    */
 
   _onLoadList(scope, list) {
-    // update subscription list.
-    scope.subscription.list = list;
+    // update playlist.
+    scope.playlist.list = list;
     scope.$digest();
   }
 
   static factory(...args) {
-    return new SubscriptionLink(...args);
+    return new PlaylistLink(...args);
   }
 }
 
 angular
-  .module('app.subscribe')
-  .directive('rdSubscription', Subscription.factory);
+  .module('app.playback')
+  .directive('rdPlaylist', Playlist.factory);
 
-export default Subscription;
-export {SubscriptionController, SubscriptionLink};
+export default Playlist;
+export {PlaylistController, PlaylistLink};

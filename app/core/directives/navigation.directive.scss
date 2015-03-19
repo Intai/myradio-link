@@ -18,7 +18,10 @@
   float: right;
   margin-right: -10px;
 
-  > a > .btn-icon {
-    margin-top: -10px;
+  > a {
+    > .btn,
+    > .btn-icon {
+      margin-top: -10px;
+    }
   }
 }
