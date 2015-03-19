@@ -17,7 +17,8 @@ class AddFeedEntry {
     this.require = 'rdAnimate';
     this.link = AddFeedEntryLink.factory;
     this.scope = {
-      episode: '='
+      episode: '=',
+      feedUrl: '@'
     };
   }
 
@@ -31,6 +32,8 @@ class AddFeedEntryController {
   constructor() {
     // create date object from the published date string.
     this.episode.publishedDateObject = new Date(this.episode.publishedDate);
+    // link to the associated subscription.
+    this.episode.feedUrl = this.feedUrl;
 
     // whether the episode is in the current playlist.
     this.addedProperty = playlist.currentListProperty
