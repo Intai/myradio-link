@@ -11,7 +11,7 @@ class SlideReveal {
     this.controllerAs = 'reveal';
     this.bindToController = true;
     this.link = SlideRevealLink.factory;
-    this.require = ['rdPan', 'rdMatrix', '?^rdSubscriptionItem', '?^rdGroup'];
+    this.require = ['rdPan', 'rdMatrix', '?^rdGroup', '?^rdSubscriptionItem', '?^rdEpisode'];
   }
 
   static factory() {
@@ -46,7 +46,7 @@ class SlideRevealLink {
    * Class Variables
    */
 
-  initVars(scope, element, pan, matrix, wrap, group) {
+  initVars(scope, element, pan, matrix, group, wrap1, wrap2) {
     /**
      * Angular directive scope.
      */
@@ -71,10 +71,10 @@ class SlideRevealLink {
     this.matrix = matrix;
 
     /**
-     * Subscription item controller.
+     * item controller wraps around. e.g. episode.
      * @type {object}
      */
-    this.wrap = wrap;
+    this.wrap = wrap1 || wrap2;
 
     /**
      * Group directive controller.
@@ -98,7 +98,7 @@ class SlideRevealLink {
   initEvents() {
     var disposes = [];
 
-    if (this.wrap) {
+    if (this.wrap && this.wrap.revealStream) {
       // reveal or hide from the wrapper.
       disposes.push(this.wrap.revealStream.onValue(
         _.partial(this._onReveal, this.pan)));

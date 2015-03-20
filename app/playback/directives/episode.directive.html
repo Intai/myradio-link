@@ -1,6 +1,17 @@
 <li class="episode" rd-animate keyframes="episode-state-up, episode-state-down">
-  <a class="episode-anchor">
-    <span class="episode-title">{{item.episode.title}}</span>
-    <span class="episode-date">{{item.episode.publishedDateObject | date:'short'}}</span>
-  </a>
+  <div class="episode-hidden">
+    <rd-button-icon class="episode-order" type="arrows"></rd-button-icon>
+    <rd-button-icon class="episode-delete" type="trash"></rd-button-icon>
+  </div>
+
+  <div class="episode-play"
+    rd-slide-reveal reveal-content="episode-hidden" rd-pan rd-matrix
+    rd-group group-key="playlist" group-member-id="{{item.episode.link}}">
+
+    <img class="episode-thumbnail" ng-src="{{item.feed.artworkUrl100}}" />
+    <div class="episode-details">
+      <span class="episode-title">{{item.episode.title}}</span>
+      <span class="episode-date">{{item.episode.publishedDateObject | date:'short'}}</span>
+    </div>
+  </div>
 </li>

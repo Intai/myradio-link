@@ -33,12 +33,22 @@
   }
 }
 
-.episode-anchor {
+.episode-play {
   text-decoration: none;
   background-color: inherit;
   position: relative;
   display: block;
-  padding: 15px;
+  cursor: pointer;
+}
+
+.episode-thumbnail {
+  float: left;
+  height: 80px;
+  width: 80px;
+}
+
+.episode-details {
+  height: 80px;
 }
 
 .episode-title,
@@ -47,14 +57,38 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  padding: 0 15px;
 }
 
 .episode-title {
-  @include font-size(90);
+  @include font-size(100);
+  padding-top: (75px - font-size(190)) / 2;
 }
 
 .episode-date {
-  @include font-size(80);
+  @include font-size(90);
   padding-top: 5px;
   color: $lightgrey;
+}
+
+.episode-hidden {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 140px;
+  height: 80px;
+  padding: 0 8px;
+  box-sizing: border-box;
+
+  > .btn-icon {
+    margin: 21px 8px;
+    display: block;
+    float: right;
+  }
+}
+
+.episode-delete {
+  background-color: $color-alert;
+  border-color: $color-background;
+  color: $color-background;
 }
