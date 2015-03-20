@@ -1,5 +1,7 @@
+import config from '../../core/services/config.service';
 import common from '../../core/services/common.service';
 import browser from '../../core/services/browser.service';
+import dispatcher from '../../core/services/dispatcher.service';
 import module from '../../subscribe/subscribe.module';
 import subscribe from '../../subscribe/services/subscribe.service';
 
@@ -80,11 +82,14 @@ class EpisodeLink {
   initEvents() {
     this.el
       // down state.
-      .on('mousedown touchstart', '.episode-anchor',
+      .on('mousedown touchstart', '.episode-play',
         _.partial(this._onDown, this.animate))
       // up state.
-      .on('mouseup dragend touchend', '.episode-anchor',
-        _.partial(this._onUp, this.animate));
+      .on('mouseup dragend touchend', '.episode-play',
+        _.partial(this._onUp, this.animate))
+      // unsubscribe.
+      .on('click', '.episode-delete',
+        _.partial(this._onDelete, this.scope));
 
     if (!browser.supportTouch()) {
       this.el
@@ -125,6 +130,14 @@ class EpisodeLink {
   _onFeedUpdate(scope, feed) {
     scope.item.feed = feed;
     scope.$digest();
+  }
+
+  _onDelete(scope) {
+    // dispatch to remove from the current playlist.
+    dispatcher.dispatch({
+      actionType: config.actions.FEED_REMOVE_EPISODE,
+      episode: scope.item.episode
+    });
   }
 
   _onEnter(scope) {
