@@ -64,6 +64,14 @@ class PlaylistService {
     this.currentProperty.onValue();
 
     /**
+     * Stream out the episode being played.
+     * @type {bacon.bus}
+     */
+    this.playingStream = new Bacon.Bus();
+    this.playingProperty = this.playingStream.toProperty(null);
+    this.playingProperty.onValue();
+
+    /**
      * Stream out additional episodes for the current playlist.
      * @type {bacon.bus}
      */
@@ -79,15 +87,19 @@ class PlaylistService {
     this.templateProperty = Bacon.combineTemplate({
       lists: this.listsProperty.filter(_.isObject),
       current: this.currentProperty.filter(_.isString),
+      playing: this.playingProperty,
       episodes: this.episodesProperty
     });
     // combine the current playlist
     // with additional episodes.
-    this.mergedListsProperty = this.templateProperty
-      .map(this._mergeEpisodes);
+    this.mergedTemplateProperty = this.templateProperty
+      .doAction(this._updatePlaying)
+      .doAction(this._mergeEpisodes);
+    // combine then return all playlists.
+    this.mergedListsProperty = this.mergedTemplateProperty
+      .map(this._mapToLists);
     // combine then return the current playlist.
-    this.currentListProperty = this.templateProperty
-      .doAction(this._mergeEpisodes)
+    this.currentListProperty = this.mergedTemplateProperty
       .map(this._mapToCurrent);
   }
 
@@ -173,6 +185,16 @@ class PlaylistService {
     dispatcher.register(config.actions.FEED_REMOVE_EPISODE,
       _.partial(this._removeEpisodeActionHandler,
         this.episodesStream));
+
+    // action to play an espisode.
+    dispatcher.register(config.actions.FEED_PLAY_EPISODE,
+      _.partial(this._playEpisodeActionHandler,
+        this.playingStream));
+
+    // action to stop an espisode.
+    dispatcher.register(config.actions.FEED_STOP_EPISODE,
+      _.partial(this._stopEpisodeActionHandler,
+        this.playingStream));
   }
 
   /**
@@ -216,6 +238,14 @@ class PlaylistService {
     episodesStream.push({remove: payload.episode});
   }
 
+  _playEpisodeActionHandler(playingStream, payload) {
+    playingStream.push({episode: payload.episode});
+  }
+
+  _stopEpisodeActionHandler(playingStream, payload) {
+    playingStream.push({episode: null});
+  }
+
   _accumulateEpisodes(object, data) {
     object = this._accumulateEpisodesTo('add', object, data);
     object = this._accumulateEpisodesTo('remove', object, data);
@@ -238,6 +268,27 @@ class PlaylistService {
     return object;
   }
 
+  _updatePlaying(template) {
+    var lists = template.lists,
+        name = template.current,
+        playing = template.playing,
+        list = (name in lists) ? lists[name] : null;
+
+    if (playing && list) {
+      // get the episode being played.
+      let episode = playing.episode;
+      // flag the episode as playing.
+      list.entries = _.map(list.entries, (entry) => {
+        if (episode && entry.link === episode.link) {
+          entry.playing = true;
+        } else {
+          delete entry.playing;
+        }
+        return entry;
+      });
+    }
+  }
+
   _mergeEpisodes(template) {
     var lists = template.lists,
         name = template.current,
@@ -257,8 +308,10 @@ class PlaylistService {
         return !_.findWhere(episodes.remove, {link: episode.link});
       });
     }
+  }
 
-    return lists;
+  _mapToLists(template) {
+    return template.lists;
   }
 
   _mapToCurrent(template) {

@@ -87,7 +87,10 @@ class EpisodeLink {
       // up state.
       .on('mouseup dragend touchend', '.episode-play',
         _.partial(this._onUp, this.animate))
-      // unsubscribe.
+      // play the podcast episode.
+      .on('click', '.episode-play',
+        _.partial(this._onClick, this.scope))
+      // remove the episode.
       .on('click', '.episode-delete',
         _.partial(this._onDelete, this.scope));
 
@@ -130,6 +133,14 @@ class EpisodeLink {
   _onFeedUpdate(scope, feed) {
     scope.item.feed = feed;
     scope.$digest();
+  }
+
+  _onClick(scope) {
+    // dispatch to play the episode.
+    dispatcher.dispatch({
+      actionType: config.actions.FEED_PLAY_EPISODE,
+      episode: scope.item.episode
+    });
   }
 
   _onDelete(scope) {
