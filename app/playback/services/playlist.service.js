@@ -141,11 +141,6 @@ class PlaylistService {
     firebase.authStream.filter(_.isObject).take(1)
       .map(_.bind(this.initListsPath, this))
       .onValue(_.bind(this.initOnValue, this));
-
-    // whether currently authenticated.
-    firebase.onAuth()
-      // not authenticated.
-      .catch(_.partial(this._pushStreamValue, this.errorStream));
   }
 
   initListsPath(authData) {
@@ -155,9 +150,9 @@ class PlaylistService {
 
   initOnValue() {
     // retrieve playlists for the current user.
-    firebase.onValue(this.listsPath)
-      .then(_.partial(this._pushStreamValue, this.listsStream))
-      .catch(_.partial(this._pushStreamValue, this.errorStream));
+    var valueStream = firebase.getValueStream(this.listsPath);
+    valueStream.onValue(_.partial(this._pushStreamValue, this.listsStream));
+    valueStream.onError(_.partial(this._pushStreamValue, this.errorStream));
 
     // whenever playlists changed, sync back to server.
     this.mergedListsProperty.onValue(

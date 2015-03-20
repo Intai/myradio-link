@@ -58,20 +58,31 @@ class FirebaseService {
     });
   }
 
-  onValue(path) {
+  getValueStream(path) {
     if (path instanceof Array) {
       path = path.join('/');
     }
 
-    return new Promise((resolve, reject) => {
-      this.firebase.child(path)
-        .on('value',
-          snapshot => resolve(snapshot.val()),
-          errorObject => reject(errorObject));
+    // stream value from firebase.
+    var valueStream = new Bacon.Bus();
+    // split between success and error.
+    var returnStream = valueStream.flatMap((object) => {
+      return ('value' in object)
+        ? object.value
+        : Bacon.Error(object.error);
     });
+
+    // listen to the firebase path specified.
+    this.firebase.child(path).on('value',
+      snapshot => valueStream.push({
+        value: snapshot.val()}),
+      errorObject => valueStream.push({
+        error: errorObject}));
+
+    return returnStream;
   }
 
-  offValue(path) {
+  offValueStream(path) {
     this.firebase.child(path)
       .off('value');
   }
