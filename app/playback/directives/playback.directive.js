@@ -16,6 +16,7 @@ class Playback {
     this.controllerAs = 'playback';
     this.bindToController = true;
     this.link = PlaybackLink.factory;
+    this.scope = {};
   }
 
   static factory() {

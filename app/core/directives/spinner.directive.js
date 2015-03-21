@@ -12,6 +12,7 @@ class Spinner {
     this.controllerAs = 'spinner';
     this.bindToController = true;
     this.link = SpinnerLink.factory;
+    this.scope = {};
   }
 
   static factory() {
@@ -80,7 +81,7 @@ class SpinnerLink {
 
   _onStateChange(scope, timer, isLoading) {
     if (isLoading) {
-      // delay to avoid flashing the 
+      // delay to avoid flashing the
       // spinner on every route switch.
       clearTimeout(timer.id);
       timer.id = setTimeout(() => {
@@ -99,7 +100,7 @@ class SpinnerLink {
       scope.spinner.show = false;
       scope.$digest();
     }
-    
+
     return timer;
   }
 

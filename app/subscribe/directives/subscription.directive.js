@@ -14,6 +14,7 @@ class Subscription {
     this.controllerAs = 'subscription';
     this.bindToController = true;
     this.link = SubscriptionLink.factory;
+    this.scope = {};
   }
 
   static factory() {

@@ -14,6 +14,7 @@ class Playlist {
     this.controllerAs = 'playlist';
     this.bindToController = true;
     this.link = PlaylistLink.factory;
+    this.scope = {};
   }
 
   static factory() {
