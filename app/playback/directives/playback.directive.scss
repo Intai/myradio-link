@@ -25,6 +25,7 @@
   padding: 0 15px 10px;
   border-top: 1px solid $lightergrey;
   box-sizing: border-box;
+  position: relative;
 
   &.ng-enter {
     @include prefix(animation, playback-slide-in 300ms ease-out);
@@ -33,6 +34,13 @@
   &.ng-leave {
     @include prefix(animation, playback-slide-out 500ms ease-out 1ms);
   }
+}
+
+.playback-info {
+  position: absolute;
+  right: -10px;
+  top:  -21px - font-size(50);
+  border-color: $lightergrey;
 }
 
 .playback-controls {
