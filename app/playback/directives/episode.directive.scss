@@ -39,6 +39,7 @@
   position: relative;
   display: block;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .episode-thumbnail {
@@ -91,4 +92,34 @@
   background-color: $color-alert;
   border-color: $color-background;
   color: $color-background;
+}
+
+@include keyframes-prefix(music-in) {
+  0% { opacity: 0;  @include prefix(transform, scale3d(0, 0, 1)); }
+  75% { opacity: 1; @include prefix(transform, scale3d(1.2, 1.2, 1)); }
+  100% { opacity: 1; @include prefix(transform, scale3d(1, 1, 1)); }
+}
+
+@include keyframes-prefix(music-out) {
+  0% { opacity: 1; @include prefix(transform, scale3d(1, 1, 1)); }
+  100% { opacity: 0; @include prefix(transform, scale3d(0, 0, 1)); }
+}
+
+.episode-playing {
+  position: absolute;
+  right: 0;
+  top: -18px;
+  color: rgba($lightergrey, 0.8);
+  font-size: 100px;
+  margin-right: 10px;
+  z-index: -1;
+
+  &.ng-hide-remove {
+    @include prefix(animation, music-in 300ms ease-out);
+  }
+
+  &.ng-hide-add {
+    @include prefix(animation, music-out 300ms ease-out);
+    display: block !important;
+  }
 }

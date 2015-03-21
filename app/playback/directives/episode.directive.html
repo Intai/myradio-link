@@ -10,6 +10,9 @@
 
     <img class="episode-thumbnail" ng-src="{{item.feed.artworkUrl100}}" />
     <div class="episode-details">
+      <span class="episode-playing fa fa-music"
+        ng-show="item.episode.playing"></span>
+
       <span class="episode-title">{{item.episode.title}}</span>
       <span class="episode-date">{{item.episode.publishedDateObject | date:'short'}}</span>
     </div>
