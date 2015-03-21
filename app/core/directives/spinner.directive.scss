@@ -1,4 +1,5 @@
 .background-spinner-wrap {
+  @include prefix(transform, $unit-matrix);
   pointer-events: none;
   position: fixed;
   left: 25%;

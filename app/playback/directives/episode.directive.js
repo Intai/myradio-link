@@ -29,9 +29,7 @@ class Episode {
 
 class EpisodeController {
 
-  constructor() {
-    // create date object from the published date string.
-    this.episode.publishedDateObject = new Date(this.episode.publishedDate);
+  constructor($scope) {
     // stream out reveal/hide signal.
     this.revealStream = new Bacon.Bus();
 
@@ -39,6 +37,10 @@ class EpisodeController {
     this.feedProperty = subscribe.currentListProperty
       .map(common.findWhere({feedUrl: this.episode.feedUrl}));
     this.feed = common.getBaconPropValue(this.feedProperty);
+
+    // create date object from the published date string.
+    $scope.$watch('item.episode', (episode) =>
+      episode.publishedDateObject = new Date(episode.publishedDate));
   }
 }
 
@@ -163,6 +165,8 @@ class EpisodeLink {
     return new EpisodeLink(...args);
   }
 }
+
+EpisodeController.$inject = ['$scope'];
 
 angular
   .module('app.playback')
