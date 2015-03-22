@@ -1,9 +1,7 @@
 import config from '../../core/services/config.service';
 import common from '../../core/services/common.service';
 import dispatcher from '../../core/services/dispatcher.service';
-import playlist from '../services/playlist.service';
-import module from '../../subscribe/subscribe.module';
-import subscribe from '../../subscribe/services/subscribe.service';
+import playStore from '../services/playback.service';
 
 class Playback {
 
@@ -24,7 +22,28 @@ class Playback {
   }
 }
 
-class PlaybackController {}
+class PlaybackController {
+
+  constructor($scope) {
+    // default to show info button.
+    this.showInfo = !common.getBaconPropValue(playStore.infoProperty);
+
+    // when setting/updating episode being played.
+    $scope.$watchGroup(['playback.episode', 'playback.feed'],
+      _.bind(this._encodeBase64, this));
+  }
+
+  _encodeBase64(values) {
+    var [episode, feed] = values;
+
+    // need episode data and feed info.
+    if (episode && feed) {
+      // encode episode link and feed title to base64 for url.
+      this.episodeLinkBase64 = common.encodeAsciiBase64(episode.link);
+      this.episodeTitleBase64 = common.encodeBase64(feed.trackName);
+    }
+  }
+}
 
 class PlaybackLink {
 
@@ -49,19 +68,6 @@ class PlaybackLink {
      * jQuery element.
      */
     this.el = $(element);
-
-    /**
-     * Stream out the episode being played.
-     * @type {bacon.bus}
-     */
-    this.templateProperty = Bacon.combineTemplate({
-      episode: playlist.playbackProperty,
-      current: playlist.currentProperty.filter(_.isString),
-      feeds: subscribe.currentListProperty.filter(_.isObject)
-    });
-    // return the episode and associated subscription feed.
-    this.episodeProperty = this.templateProperty
-      .map(this._mapToEpisodeFeed);
   }
 
   /**
@@ -69,18 +75,24 @@ class PlaybackLink {
    */
 
   initEvents() {
+    var disposes = [];
+
     this.el
       // stop playback.
       .on('click', '.playback-stop', _.partial(this._onStop, this.scope));
 
     // when playing an episode.
-    var dispose = this.episodeProperty
-      .onValue(_.partial(this._onLoadEpisode, this.scope));
+    disposes.push(playStore.episodeProperty
+      .onValue(_.partial(this._onLoadEpisode, this.scope)));
+
+    // when showing/hiding episode info.
+    disposes.push(playStore.infoStream
+      .onValue(_.partial(this._onShowInfo, this.scope)));
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
       this.el.off();
-      dispose();
+      common.execute(disposes);
     });
   }
 
@@ -89,10 +101,16 @@ class PlaybackLink {
    */
 
   _onLoadEpisode(scope, template) {
-    // update episode being played.
-    scope.playback.listName = template.current;
-    scope.playback.episode = template.episode;
-    scope.playback.feed = template.feed;
+    scope.$evalAsync(() => {
+      // update episode being played.
+      scope.playback.listName = template.current;
+      scope.playback.episode = template.episode;
+      scope.playback.feed = template.feed;
+    });
+  }
+
+  _onShowInfo(scope, showInfo) {
+    scope.playback.showInfo = !showInfo;
     scope.$digest();
   }
 
@@ -102,20 +120,12 @@ class PlaybackLink {
     });
   }
 
-  _mapToEpisodeFeed(template) {
-    if (template.episode) {
-      template.feed = _.findWhere(template.feeds, {
-        feedUrl: template.episode.feedUrl
-      });
-    }
-
-    return template;
-  }
-
   static factory(...args) {
     return new PlaybackLink(...args);
   }
 }
+
+PlaybackController.$inject = ['$scope'];
 
 angular
   .module('app.playback')

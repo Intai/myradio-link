@@ -119,7 +119,7 @@ class PlaylistService {
      * @param {string} url
      */
     this.getEpisodePropertyByUrl = _.partial(common.mapBaconPropArrayWhere,
-      this.currentListProperty.map(_.property('entries')), 'feedUrl');
+      this.currentListProperty.map(_.property('entries')), 'link');
   }
 
   /**

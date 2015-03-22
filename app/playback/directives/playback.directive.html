@@ -2,20 +2,29 @@
   <div class="playback"
     ng-if="playback.episode && playback.feed">
 
-    <a ng-href="/{{playback.listName}}/episode/{{playback.feed.feedUrlBase64}}/{{playback.feed.feedTitleBase64}}">
+    <div class="playback-content" ng-show="playback.showInfo">
+      <div class="playback-controls">
+        <rd-anchor class="playback-rewind" implicit="true"><span class="fa fa-backward"></span></rd-anchor>
+        <rd-anchor class="playback-pause" implicit="true"><span class="fa fa-pause"></span></rd-anchor>
+        <rd-anchor class="playback-stop" implicit="true"><span class="fa fa-stop"></span></rd-anchor>
+        <rd-anchor class="playback-forward" implicit="true"><span class="fa fa-forward"></span></rd-anchor>
+      </div>
+
+      <div class="playback-details">
+        <span class="playback-track">{{playback.feed.trackName}}</span>
+        <span class="playback-title">{{playback.episode.title}}</span>
+      </div>
+    </div>
+
+    <div class="playbck-content playback-controls" ng-hide="playback.showInfo">
+      <rd-anchor class="playback-rewind medium" implicit="true"><span class="fa fa-backward"></span></rd-anchor>
+      <rd-anchor class="playback-pause large" implicit="true"><span class="fa fa-pause"></span></rd-anchor>
+      <rd-anchor class="playback-forward medium" implicit="true"><span class="fa fa-forward"></span></rd-anchor>
+    </div>
+
+    <a class="playback-info-anchor" ng-show="playback.showInfo"
+      ng-href="/{{playback.listName}}/episode/{{playback.episodeLinkBase64}}/{{playback.episodeTitleBase64}}">
       <rd-button-icon class="playback-info" type="info"></rd-button-icon>
     </a>
-
-    <div class="playback-controls">
-      <rd-anchor class="playback-rewind" implicit="true"><span class="fa fa-backward"></span></rd-anchor>
-      <rd-anchor class="playback-pause" implicit="true"><span class="fa fa-pause"></span></rd-anchor>
-      <rd-anchor class="playback-stop" implicit="true"><span class="fa fa-stop"></span></rd-anchor>
-      <rd-anchor class="playback-forward" implicit="true"><span class="fa fa-forward"></span></rd-anchor>
-    </div>
-
-    <div class="playback-details">
-      <span class="playback-track">{{playback.feed.trackName}}</span>
-      <span class="playback-title">{{playback.episode.title}}</span>
-    </div>
   </div>
 </div>

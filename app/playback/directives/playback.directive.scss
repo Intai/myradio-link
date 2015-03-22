@@ -24,6 +24,7 @@
   margin: 0 auto;
   padding: 0 15px 10px;
   border-top: 1px solid $lightergrey;
+  min-height: font-size(345) + 41px;
   box-sizing: border-box;
   position: relative;
 
@@ -47,6 +48,26 @@
   }
 }
 
+.playback-info-anchor,
+.playback-content {
+
+  &.ng-hide-remove {
+    @include prefix(animation, fade-in 300ms ease-out);
+  }
+
+  &.ng-hide-add {
+    @include prefix(animation, fade-out 300ms ease-out);
+    display: block !important;
+  }
+}
+
+.playback-content {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  top: 0;
+}
+
 .playback-controls {
   margin: 10px 0;
   text-align: center;
@@ -59,8 +80,17 @@
 .playback-forward {
   @include font-size(150);
   color: $color-foreground;
+  vertical-align: middle;
   padding: 10px;
   margin: 10px;
+
+  &.medium {
+    @include font-size(250);
+  }
+
+  &.large {
+    @include font-size(345);
+  }
 }
 
 .playback-play,

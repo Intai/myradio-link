@@ -17,7 +17,7 @@ class EpisodeInfo {
     this.bindToController = true;
     this.link = EpisodeInfoLink.factory;
     this.scope = {
-      feedUrl: '@',
+      linkUrl: '@',
       feedTitle: '@'
     };
   }
@@ -30,19 +30,21 @@ class EpisodeInfo {
 class EpisodeInfoController {
 
   constructor($scope, $sce) {
-    // get feed data for the url specified.
+    // get episode data for the url specified.
     this.data = common.getBaconPropValue(
-      playlist.getEpisodePropertyByUrl(this.feedUrl));
+      playlist.getEpisodePropertyByUrl(this.linkUrl));
 
-    // get feed information by url.
-    this.info = common.getBaconPropValue(
-      feed.getInfoPropertyByUrl(this.feedUrl));
+    if (this.data) {
+      // get feed information by url.
+      this.info = common.getBaconPropValue(
+        feed.getInfoPropertyByUrl(this.data.feedUrl));
+    }
 
-    // when setting/updating feed data.
+    // when setting/updating episode data.
     $scope.$watch('episode.data', (data) => {
       if (data) {
         // trust episode content in html.
-        data.contentHtml = $sce.trustAsHtml(data.content)
+        this.contentHtml = $sce.trustAsHtml(data.content);
       }
     });
   }
@@ -56,7 +58,7 @@ class EpisodeInfoLink {
     // setup event bindings.
     this.initEvents();
     // dispatch actions on init.
-    this.dispatchActions(scope);
+    this.dispatchActions();
   }
 
   /**
@@ -64,8 +66,6 @@ class EpisodeInfoLink {
    */
 
   initVars(scope, element) {
-    var ctrl = scope.episode;
-
     /**
      * Angular directive scope.
      */
@@ -75,15 +75,6 @@ class EpisodeInfoLink {
      * jQuery element.
      */
     this.el = $(element);
-
-    /**
-     * Stream out episode data and feed info.
-     * @type {bacon.property}
-     */
-    this.episodeProperty = Bacon.combineTemplate({
-      data: playlist.getEpisodePropertyByUrl(ctrl.feedUrl).filter(_.isObject),
-      info: feed.getInfoPropertyByUrl(ctrl.feedUrl).filter(_.isObject)
-    })
   }
 
   /**
@@ -92,7 +83,7 @@ class EpisodeInfoLink {
 
   initEvents() {
     var ctrl = this.scope.episode,
-        disposes = [];
+        dispose = () => {};
 
     this.el
       // click on external anchor.
@@ -100,18 +91,18 @@ class EpisodeInfoLink {
 
     // if either feed data or info is not ready.
     if (!ctrl.data || !ctrl.info) {
-      // update template when both are ready.
-      var dispose = this.episodeProperty
-        .onValue(_.partial(this._onLoadFeed,
-          this.scope));
-
-      disposes.push(dispose);
+      // load episode data then feed info.
+      dispose = playlist.getEpisodePropertyByUrl(ctrl.linkUrl)
+        .filter(_.isObject)
+        .flatMap(_.partial(this._onLoadData, this.scope))
+        .onValue(_.partial(this._onLoadFeed, this.scope));
     }
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
+      this._dispatchHideInfo(this.scope);
       this.el.off();
-      common.execute(disposes);
+      dispose();
     });
   }
 
@@ -119,21 +110,19 @@ class EpisodeInfoLink {
    * Dispatch Actions
    */
 
-  dispatchActions(scope) {
-    var ctrl = scope.episode;
+  dispatchActions() {
+    var ctrl = this.scope.episode;
+
+    // dispatch to indicate showing info.
+    dispatcher.dispatch({
+      actionType: config.actions.PLAYBACK_SHOW_INFO,
+      episode: ctrl.data
+    });
 
     if (!ctrl.data || !ctrl.info) {
       // dispatch to indicate loading.
       dispatcher.dispatch({
         actionType: config.actions.FEED_LOAD
-      });
-    }
-
-    if (!ctrl.data) {
-      // dispatch to retrieve the feed data.
-      dispatcher.dispatch({
-        actionType: config.actions.FEED_LOAD_DATA,
-        url: ctrl.feedUrl
       });
     }
 
@@ -150,20 +139,39 @@ class EpisodeInfoLink {
    * Private
    */
 
-  _onLoadFeed(scope, template) {
+  _onLoadData(scope, data) {
+    // update episode data.
+    scope.episode.data = data;
+    // return a property of feed info by url.
+    return feed.getInfoPropertyByUrl(data.feedUrl)
+      .filter(_.isObject);
+  }
+
+  _onLoadFeed(scope, info) {
     // dispatch the feed data and info loaded.
     dispatcher.dispatch({
       actionType: config.actions.FEED_LOAD_RESULTS,
-      results: template
+      results: {
+        data: scope.episode.data,
+        info: info
+      }
     });
 
-    // update feed data and information.
-    scope.episode.data = template.data;
-    scope.episode.info = template.info;
+    // update feed information.
+    scope.episode.info = info;
     scope.$digest();
   }
 
+  _dispatchHideInfo(scope) {
+    // dispatch on disposing the directive.
+    dispatcher.dispatch({
+      actionType: config.actions.PLAYBACK_HIDE_INFO,
+      episode: scope.episode.data
+    });
+  }
+
   _onClick(e) {
+    // open external link in new tab.
     window.open(e.target.href, '_blank');
     e.preventDefault();
   }

@@ -130,6 +130,11 @@ a:visited {
 
 .page-main {
   padding: 15px 0;
+
+  // todo
+  // dont wanna hard code margin here
+  // replace with ticky placeholder
+  margin-bottom: font-size(345) + 41px;
 }
 
 @import "core/core.module";
