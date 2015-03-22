@@ -45,7 +45,9 @@ class SubscribeService {
      * @type {bacon.bus}
      */
     this.subscriptionsStream = new Bacon.Bus();
-    this.subscriptionsProperty = this.subscriptionsStream.scan(null, common.accumulateInObject);
+    this.subscriptionsProperty = this.subscriptionsStream
+      .skipDuplicates(_.isEqual)
+      .scan(null, common.accumulateInObject);
     this.subscriptionsProperty.onValue();
 
     /**

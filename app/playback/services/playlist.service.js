@@ -38,7 +38,9 @@ class PlaylistService {
      * @type {bacon.bus}
      */
     this.listsStream = new Bacon.Bus();
-    this.listsProperty = this.listsStream.scan(null, common.accumulateInObject);
+    this.listsProperty = this.listsStream
+      .skipDuplicates(_.isEqual)
+      .scan(null, common.accumulateInObject);
     this.listsProperty.onValue();
 
     /**
@@ -209,10 +211,15 @@ class PlaylistService {
 
   _playEpisodeActionHandler(playingStream, payload) {
     playingStream.push({episode: payload.episode});
+
+    // avoid multiple devices trying to set
+    // different episodes as playing endlessly.
+    playingStream.push(null);
   }
 
   _stopEpisodeActionHandler(playingStream) {
     playingStream.push({episode: null});
+    playingStream.push(null);
   }
 
   _accumulateEpisodes(object, data) {
