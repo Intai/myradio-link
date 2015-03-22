@@ -1,0 +1,15 @@
+<div class="episode-info">
+  <div class="episode-info-inner" ng-if="episode.data && episode.info">
+    <img class="episode-info-image" ng-src="{{episode.info.artworkUrl600}}"></img>
+    <div class="episode-info-brief">
+      <span class="episode-info-track">{{episode.info.trackName}}</span>
+      <span class="episode-info-artist">{{episode.info.artistName}}</span>
+      <rd-anchor class="episode-info-link" href="{{episode.data.link}}" target="_blank">
+        {{episode.data.link}}
+      </rd-anchor>
+    </div>
+
+    <div class="episode-info-description"
+      ng-bind-html="episode.data.contentHtml"></div>
+  </div>
+</div>

@@ -64,6 +64,19 @@ var routes = ($routeProvider, $locationProvider) => {
           googleApi.loadFeedsApi(), '/error')
       }
     })
+    .when('/:list?/episode/:tokenUrl/:tokenTitle', {
+      templateUrl: '/playback/views/episode.html',
+      controller: 'EpisodeController',
+      controllerAs: 'vm',
+      resolve: {
+        playlistName:
+          routeResolveCurrentPlaylist,
+        firebase: routeResolve(() =>
+          firebase.onAuth(), '/login'),
+        google: routeResolve(() =>
+          googleApi.loadFeedsApi(), '/error')
+      }
+    })
     .when('/:list?', {
       templateUrl: '/playback/views/list.html',
       controller: 'PlaylistController',
@@ -106,7 +119,7 @@ function routeSuccess($rootScope) {
 
 function routeError($rootScope, $location) {
   $rootScope.$on('$routeChangeError', (e, current, previous, rejection) => {
-    // notify about finishing the routing. 
+    // notify about finishing the routing.
     // e.g. hide loading spinner.
     dispatcher.dispatch({
       actionType: config.actions.ROUTE_COMPLETE

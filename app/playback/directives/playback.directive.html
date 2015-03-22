@@ -1,7 +1,10 @@
 <div class="playback-wrap">
   <div class="playback"
     ng-if="playback.episode && playback.feed">
-    <rd-button-icon class="playback-info" type="info"></rd-button-icon>
+
+    <a ng-href="/{{playback.listName}}/episode/{{playback.feed.feedUrlBase64}}/{{playback.feed.feedTitleBase64}}">
+      <rd-button-icon class="playback-info" type="info"></rd-button-icon>
+    </a>
 
     <div class="playback-controls">
       <rd-anchor class="playback-rewind" implicit="true"><span class="fa fa-backward"></span></rd-anchor>

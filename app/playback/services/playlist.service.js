@@ -113,6 +113,13 @@ class PlaylistService {
      */
     this.addList = common.chainable(_.partial(this._addList,
       this.listsStream));
+
+    /**
+     * Get a bacon property of episode for the specified url.
+     * @param {string} url
+     */
+    this.getEpisodePropertyByUrl = _.partial(common.mapBaconPropArrayWhere,
+      this.currentListProperty.map(_.property('entries')), 'feedUrl');
   }
 
   /**

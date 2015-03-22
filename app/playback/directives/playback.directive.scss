@@ -41,6 +41,10 @@
   right: -10px;
   top:  -21px - font-size(50);
   border-color: $lightergrey;
+
+  &.btn-icon-state-down {
+    border-color: $color-off-foreground;
+  }
 }
 
 .playback-controls {

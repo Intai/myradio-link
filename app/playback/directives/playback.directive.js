@@ -56,6 +56,7 @@ class PlaybackLink {
      */
     this.templateProperty = Bacon.combineTemplate({
       episode: playlist.playbackProperty,
+      current: playlist.currentProperty.filter(_.isString),
       feeds: subscribe.currentListProperty.filter(_.isObject)
     });
     // return the episode and associated subscription feed.
@@ -89,6 +90,7 @@ class PlaybackLink {
 
   _onLoadEpisode(scope, template) {
     // update episode being played.
+    scope.playback.listName = template.current;
     scope.playback.episode = template.episode;
     scope.playback.feed = template.feed;
     scope.$digest();
