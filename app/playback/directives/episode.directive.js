@@ -3,7 +3,7 @@ import common from '../../core/services/common.service';
 import browser from '../../core/services/browser.service';
 import dispatcher from '../../core/services/dispatcher.service';
 import module from '../../subscribe/subscribe.module';
-import subscribe from '../../subscribe/services/subscribe.service';
+import feed from '../../subscribe/services/feed.service';
 
 class Episode {
 
@@ -34,8 +34,7 @@ class EpisodeController {
     this.revealStream = new Bacon.Bus();
 
     // find the assocaited subscription feed.
-    this.feedProperty = subscribe.currentListProperty
-      .map(common.findWhere({feedUrl: this.episode.feedUrl}));
+    this.feedProperty = feed.getInfoPropertyByUrl(this.episode.feedUrl);
     this.feed = common.getBaconPropValue(this.feedProperty);
 
     // create date object from the published date string.
@@ -51,6 +50,8 @@ class EpisodeLink {
     this.initVars(scope, element, animate);
     // setup event bindings.
     this.initEvents();
+    // dispatch actions on init.
+    this.dispatchActions();
   }
 
   /**
@@ -113,6 +114,20 @@ class EpisodeLink {
       this.el.off();
       dispose();
     });
+  }
+
+  /**
+  * Dispatch Actions
+  */
+
+  dispatchActions() {
+    if (!this.scope.item.feed) {
+      // dispatch to retrieve feed info.
+      dispatcher.dispatch({
+        actionType: config.actions.FEED_LOAD_INFO,
+        title: this.scope.item.episode.feedTitle
+      });
+    }
   }
 
   /**

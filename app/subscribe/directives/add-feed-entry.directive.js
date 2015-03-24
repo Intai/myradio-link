@@ -18,7 +18,8 @@ class AddFeedEntry {
     this.link = AddFeedEntryLink.factory;
     this.scope = {
       episode: '=',
-      feedUrl: '@'
+      feedUrl: '@',
+      feedTitle: '@'
     };
   }
 
@@ -34,6 +35,7 @@ class AddFeedEntryController {
     this.episode.publishedDateObject = new Date(this.episode.publishedDate);
     // link to the associated subscription.
     this.episode.feedUrl = this.feedUrl;
+    this.episode.feedTitle = this.feedTitle;
 
     // whether the episode is in the current playlist.
     this.addedProperty = playlist.currentListProperty

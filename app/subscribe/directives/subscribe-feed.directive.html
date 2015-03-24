@@ -18,7 +18,9 @@
 
     <ul class="episodes">
       <rd-add-feed-entry ng-repeat="episode in feed.data.entries track by episode.link"
-        episode="episode" feed-url="{{feed.data.feedUrl}}"></rd-add-feed-entry>
+        episode="episode"
+        feed-url="{{feed.data.feedUrl}}"
+        feed-title="{{feed.info.trackName}}"></rd-add-feed-entry>
     </ul>
   </div>
 </div>

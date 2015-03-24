@@ -101,6 +101,14 @@ class PlaybackLink {
    */
 
   _onLoadEpisode(scope, template) {
+    if (!template.feed) {
+      // dispatch to retrieve feed info.
+      dispatcher.dispatch({
+        actionType: config.actions.FEED_LOAD_INFO,
+        title: template.episode.feedTitle
+      });
+    }
+
     scope.$evalAsync(() => {
       // update episode being played.
       scope.playback.listName = template.current;

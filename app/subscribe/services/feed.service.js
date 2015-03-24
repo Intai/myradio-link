@@ -3,6 +3,7 @@ import googleApi from '../../core/services/google.service';
 import appleApi from '../../core/services/apple.service';
 import common from '../../core/services/common.service';
 import config from '../../core/services/config.service';
+import subscribe from './subscribe.service';
 
 class FeedService {
 
@@ -36,6 +37,7 @@ class FeedService {
      */
     this.infoStream = new Bacon.Bus();
     this.infoProperty = this.infoStream
+      .merge(subscribe.currentListProperty.changes())
       .scan([], common.accumulateInArray);
     this.infoProperty.onValue();
   }

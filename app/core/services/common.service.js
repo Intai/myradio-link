@@ -141,7 +141,7 @@ class CommonService {
 
     // accumulate feed data into an array.
     if (_.isArray(data)) {
-      array.splice(0, array.length, ...data);
+      array.splice(0, 0, ...data);
     } else {
       array.push(data);
     }

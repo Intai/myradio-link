@@ -3,7 +3,7 @@ import common from '../../core/services/common.service';
 import config from '../../core/services/config.service';
 import playlist from './playlist.service';
 import module from '../../subscribe/subscribe.module';
-import subscribe from '../../subscribe/services/subscribe.service';
+import feed from '../../subscribe/services/feed.service';
 
 class PlaybackService {
 
@@ -26,7 +26,7 @@ class PlaybackService {
     this.templateProperty = Bacon.combineTemplate({
       episode: playlist.playbackProperty,
       current: playlist.currentProperty.filter(_.isString),
-      feeds: subscribe.currentListProperty.filter(_.isObject)
+      feeds: feed.infoProperty.filter(_.isArray)
     });
     // return the episode and associated subscription feed.
     this.episodeProperty = this.templateProperty
