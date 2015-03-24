@@ -101,7 +101,7 @@ class PlaybackLink {
    */
 
   _onLoadEpisode(scope, template) {
-    if (!template.feed) {
+    if (!template.feed && template.episode) {
       // dispatch to retrieve feed info.
       dispatcher.dispatch({
         actionType: config.actions.FEED_LOAD_INFO,
