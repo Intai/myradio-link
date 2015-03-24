@@ -1,7 +1,12 @@
-<rd-nav title="Search" 
-  enable-default-back="vm.enableDefaultBack" 
-  default-back-href="/{{vm.listName}}/subscription" 
-  default-back-title="Subscription"></rd-nav>
+<rd-nav title="Search"
+  enable-default-back="vm.enableDefaultBack"
+  default-back-href="/{{vm.listName}}/subscription"
+  default-back-title="Subscription">
+
+  <a ng-href="/{{vm.listName}}">
+    <rd-button-icon type="list-ul"></rd-button-icon>
+  </a>
+</rd-nav>
 
 <div class="page-main">
   <rd-search-form></rd-search-form>

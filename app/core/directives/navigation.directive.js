@@ -16,6 +16,7 @@ class Navigation {
     this.link = NavigationLink.factory;
     this.scope = {
       title: '@',
+      disableHistoryBack: '&',
       enableDefaultBack: '&',
       defaultBackHref: '@',
       defaultBackTitle: '@'
@@ -32,8 +33,11 @@ class NavigationController {
   constructor($location) {
     // current url path.
     this.href = $location.path();
-    // get the previous url and title.
-    this.back = common.getBaconPropValue(navigate.backProperty);
+
+    if (!this.disableHistoryBack()) {
+      // get the previous url and title.
+      this.back = common.getBaconPropValue(navigate.backProperty);
+    }
 
     // if there is no previous url and title.
     if (this.enableDefaultBack() && !this.back && this.defaultBackHref) {
