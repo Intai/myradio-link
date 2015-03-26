@@ -10,6 +10,7 @@ import icon from './directives/button-icon.directive';
 import spinner from './directives/spinner.directive';
 import dialogue from './directives/message.directive';
 import textinput from './directives/text-input.directive';
+import pageTitle from './directives/page-title.directive';
 import nav from './directives/navigation.directive';
 import animate from './behaviours/animate.directive';
 import matrixApply from './behaviours/matrix.directive';

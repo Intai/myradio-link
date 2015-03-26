@@ -1,0 +1,23 @@
+.page-title {
+  @include font-size(170);
+  text-transform: uppercase;
+  font-family: $sansserif;
+  font-weight: bold;
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 640px;
+  color: $lightgrey;
+  text-align: center;
+}
+
+.page-title-shadow {
+  @include prefix(transform, $unit-matrix);
+  @include prefix(box-shadow, 0 -0.3em 0.3em 0.3em rgba($white, 0.7));
+  @include font-size(170);
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 640px;
+  height: 1px;
+}
