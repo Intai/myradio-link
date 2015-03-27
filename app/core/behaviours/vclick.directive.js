@@ -31,6 +31,12 @@ class VClickController {
 
   initPublicFuncs($scope, $location, $attrs) {
     /**
+    * Whether href is external.
+    */
+    this.isExternal = _.partial(this._isExternal,
+      $attrs);
+
+    /**
      * Redirect to href.
      */
     this.setPath = _.partial(this._setPath,
@@ -40,6 +46,11 @@ class VClickController {
   /**
    * Private
    */
+
+  _isExternal($attrs) {
+    return ($attrs.href
+      && (/^(http:|https:)?\/\//i).test($attrs.href));
+  }
 
   _setPath($scope, $location, $attrs) {
     if ($attrs.href) {
@@ -156,7 +167,8 @@ class VClickLink {
   }
 
   _onTouchEnd(scope, el, state, e) {
-    if (!state.hasMoved) {
+    // if clicking and not anchoring to external url.
+    if (!state.hasMoved && !scope.vclick.isExternal()) {
       // update location path to href.
       scope.vclick.setPath();
       // trigger vclick event for js binding.
