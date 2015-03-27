@@ -70,7 +70,7 @@ class AddFeedEntryLink {
      * jQuery element.
      * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
 
     /**
      * Animate directive controller.
@@ -90,7 +90,7 @@ class AddFeedEntryLink {
       // up state.
       .on('mouseup dragend touchend', _.partial(this._onUp, this.animate))
       // when selecting the episode.
-      .on('click', _.partial(this._onClick, this.scope));
+      .on('click vclick', _.partial(this._onClick, this.scope));
 
     // whether the episode has been added or removed from playlist.
     var dispose = this.scope.item.addedProperty.changes()

@@ -88,7 +88,8 @@ class VClickLink {
        */
       prevTouchId: false,
       startPoint: Vec.create(),
-      hasMoved: false
+      hasMoved: false,
+      disableClick: false
     };
   }
 
@@ -103,21 +104,23 @@ class VClickLink {
       this._onTouchStart, this.state);
     var onTouchMove = _.partial(
       this._onTouchMove, this.state);
-    var onTouchEnd = _.partial(
-      this._onTouchEnd, this.scope, this.el, this.state);
+    var onTouchEnd = _.bind(_.partial(
+      this._onTouchEnd, this.scope, this.el, this.state), this);
+    var onClick = _.partial(
+      this._onClick, this.state);
 
     // listen to touch events.
     element.addEventListener('touchstart', onTouchStart, false);
     element.addEventListener('touchmove', onTouchMove, false);
-    element.addEventListener('touchleave', onTouchEnd, false);
     element.addEventListener('touchend', onTouchEnd, false);
+    element.addEventListener('click', onClick, false);
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
       element.removeEventListener('touchstart', onTouchStart);
       element.removeEventListener('touchmove', onTouchMove);
-      element.removeEventListener('touchleave', onTouchEnd);
       element.removeEventListener('touchend', onTouchEnd);
+      element.removeEventListener('click', onClick);
     });
   }
 
@@ -140,7 +143,7 @@ class VClickLink {
         touchIdentifier = touch.identifier;
 
     // make sure it's still the same touch.
-    if (!state.hasMoved && (state.prevTouchId === false 
+    if (!state.hasMoved && (state.prevTouchId === false
         || state.prevTouchId === touchIdentifier)) {
       // calculate the difference to the start point.
       var diff = Vec
@@ -161,7 +164,22 @@ class VClickLink {
 
       // avoid click event.
       e.preventDefault();
+      // disable click event for 500ms.
+      this._disableClick(state);
     }
+  }
+
+  _onClick(state, e) {
+    if (state.disableClick) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+    }
+  }
+
+  _disableClick(state) {
+    state.disableClick = true;
+    _.delay(() => state.disableClick = false,
+      IDLE_AFTER_VCLICK);
   }
 
   static factory(...args) {

@@ -60,7 +60,7 @@ class SearchItemLink {
      * jQuery element.
      * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
 
     /**
      * Animate directive controller.
@@ -80,7 +80,7 @@ class SearchItemLink {
       // up state.
       .on('mouseup dragend touchend', _.partial(this._onUp, this.animate))
       // when selecting the podcast feed.
-      .on('click', _.partial(this._onClick, this.scope));
+      .on('click vclick', _.partial(this._onClick, this.scope));
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => this.el.off());

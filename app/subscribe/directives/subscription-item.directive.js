@@ -82,7 +82,7 @@ class SubscriptionItemLink {
       .on('mouseup dragend touchend', '.subscription-item-anchor',
         _.partial(this._onUp, this.animate))
       // select the podcast feed.
-      .on('click', '.subscription-item-anchor',
+      .on('click vclick', '.subscription-item-anchor',
         _.partial(this._onClick, this.scope))
       // unsubscribe.
       .on('click', '.subscription-delete',

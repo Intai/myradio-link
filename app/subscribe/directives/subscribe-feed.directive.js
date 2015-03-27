@@ -83,7 +83,7 @@ class SubscribeFeedLink {
 
     this.el
       // on confirmation of the feed subscription.
-      .on('click.feed', '.feed-subscribe', _.partial(this._onSubscribe,
+      .on('click vclick', '.feed-subscribe', _.partial(this._onSubscribe,
         this.scope));
 
     // whether the episode has been added or removed from playlist.
@@ -105,7 +105,7 @@ class SubscribeFeedLink {
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
-      this.el.off('click.feed');
+      this.el.off();
       common.execute(disposes);
     });
   }

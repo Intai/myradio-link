@@ -68,7 +68,7 @@ class MessageLink {
 
   initEvents() {
     // on okay button click.
-    this.el.on('click', '.message-button.okay',
+    this.el.on('click vclick', '.message-button.okay',
       _.partial(this._onOkay, this.scope));
 
     // when showing or closing a message.
