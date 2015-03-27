@@ -126,6 +126,7 @@ a:visited {
 
   &.ng-leave {
     @include prefix(animation, fade-out 300ms ease-out);
+    pointer-events: none;
   }
 }
 
