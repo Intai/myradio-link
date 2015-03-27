@@ -79,7 +79,7 @@ class PlaybackLink {
 
     this.el
       // stop playback.
-      .on('click', '.playback-stop', _.partial(this._onStop, this.scope));
+      .on('click vclick', '.playback-stop', _.partial(this._onStop, this.scope));
 
     // when playing an episode.
     disposes.push(playStore.episodeProperty

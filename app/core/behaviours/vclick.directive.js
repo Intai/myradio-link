@@ -1,3 +1,8 @@
+import Vec from '../libs/math/vector';
+
+var MIN_MOVE_DIST = 5,
+    IDLE_AFTER_VCLICK = 500;
+
 class VClick {
 
   constructor() {
@@ -82,7 +87,8 @@ class VClickLink {
        * Track touch events.
        */
       prevTouchId: false,
-      cntMoves: 0
+      startPoint: Vec.create(),
+      hasMoved: false
     };
   }
 
@@ -101,14 +107,16 @@ class VClickLink {
       this._onTouchEnd, this.scope, this.el, this.state);
 
     // listen to touch events.
-    element.addEventListener('mousedown', onTouchStart, false);
+    element.addEventListener('touchstart', onTouchStart, false);
     element.addEventListener('touchmove', onTouchMove, false);
+    element.addEventListener('touchleave', onTouchEnd, false);
     element.addEventListener('touchend', onTouchEnd, false);
 
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
       element.removeEventListener('touchstart', onTouchStart);
       element.removeEventListener('touchmove', onTouchMove);
+      element.removeEventListener('touchleave', onTouchEnd);
       element.removeEventListener('touchend', onTouchEnd);
     });
   }
@@ -122,21 +130,34 @@ class VClickLink {
         touchIdentifier = touch.identifier;
 
     // reset on touch start.
+    state.startPoint.set([touch.clientX, touch.clientY]);
     state.prevTouchId = touchIdentifier;
-    state.cntMoves = 0;
+    state.hasMoved = false;
   }
 
   _onTouchMove(state, e) {
-    state.cntMoves ++;
+    var touch = e.touches[0],
+        touchIdentifier = touch.identifier;
+
+    // make sure it's still the same touch.
+    if (!state.hasMoved && (state.prevTouchId === false 
+        || state.prevTouchId === touchIdentifier)) {
+      // calculate the difference to the start point.
+      var diff = Vec
+        .create([touch.clientX, touch.clientY])
+        .substract(state.startPoint);
+
+      // whether considered as moved.
+      state.hasMoved = (diff.length() > MIN_MOVE_DIST);
+    }
   }
 
   _onTouchEnd(scope, el, state, e) {
-    if (state.cntMoves <= 0) {
+    if (!state.hasMoved) {
       // update location path to href.
-      if (!scope.vclick.setPath()) {
-        // if there is no href, trigger vclick event.
-        el.trigger('vclick');
-      }
+      scope.vclick.setPath();
+      // trigger vclick event for js binding.
+      el.trigger('vclick');
 
       // avoid click event.
       e.preventDefault();

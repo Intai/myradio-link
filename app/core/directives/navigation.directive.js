@@ -85,12 +85,10 @@ class NavigationLink {
   initEvents() {
     this.el
       // navigate back in history.
-      .on('click.navigation', '.nav-back', this._onBack);
+      .on('click vclick', '.nav-back', this._onBack);
 
     // unbind on destroy.
-    this.scope.$on('$destroy', () => {
-      this.el.off('click.navigation');
-    });
+    this.scope.$on('$destroy', () => this.el.off());
   }
 
   /**

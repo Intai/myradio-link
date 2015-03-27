@@ -91,10 +91,10 @@ class EpisodeLink {
       .on('mouseup dragend touchend', '.episode-play',
         _.partial(this._onUp, this.animate))
       // play the podcast episode.
-      .on('click', '.episode-play',
+      .on('click vclick', '.episode-play',
         _.partial(this._onClick, this.scope))
       // remove the episode.
-      .on('click', '.episode-delete',
+      .on('click vclick', '.episode-delete',
         _.partial(this._onDelete, this.scope));
 
     if (!browser.supportTouch()) {

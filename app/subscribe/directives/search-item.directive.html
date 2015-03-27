@@ -1,5 +1,7 @@
 <li class="search-item" rd-animate keyframes="search-item-state-up, search-item-state-down">
-  <a class="search-item-anchor" ng-href="{{item.addFeedPath}}/{{item.feed.feedUrlBase64}}/{{item.feed.feedTitleBase64}}">
+  <a class="search-item-anchor" rd-vclick
+    ng-href="{{item.addFeedPath}}/{{item.feed.feedUrlBase64}}/{{item.feed.feedTitleBase64}}">
+    
     <img class="search-item-thumbnail" ng-src="{{item.feed.artworkUrl100}}" />
     <div class="search-item-details">
       <span class="search-item-track">{{item.feed.trackName}}</span>

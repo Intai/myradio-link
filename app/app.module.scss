@@ -121,6 +121,7 @@ a:visited {
 
   &.ng-enter {
     @include prefix(animation, fade-in 300ms ease-out);
+    pointer-events: none;
   }
 
   &.ng-leave {
