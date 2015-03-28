@@ -75,9 +75,8 @@
 }
 
 .playback-rewind,
-.playback-play,
 .playback-stop,
-.playback-pause,
+.playback-pause-play,
 .playback-forward {
   @include font-size(150);
   color: $color-foreground;
@@ -94,9 +93,12 @@
   }
 }
 
-.playback-play,
-.playback-pause {
+.playback-pause-play {
   color: $color-off-foreground;
+}
+
+.playback-icon {
+  width: 1em;
 }
 
 .playback-track,

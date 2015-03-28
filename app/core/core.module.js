@@ -12,6 +12,7 @@ import dialogue from './directives/message.directive';
 import textinput from './directives/text-input.directive';
 import pageTitle from './directives/page-title.directive';
 import nav from './directives/navigation.directive';
+import audio from './directives/audio.directive';
 import animate from './behaviours/animate.directive';
 import matrixApply from './behaviours/matrix.directive';
 import group from './behaviours/group.directive';
@@ -31,5 +32,6 @@ import loading from './services/loading.service';
 import message from './services/message.service';
 import groups from './services/group.service';
 import navigate from './services/navigation.service';
+import audioPlay from './services/audio.service';
 
 export default core;
