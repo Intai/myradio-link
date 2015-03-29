@@ -26,16 +26,27 @@ class Audio {
 
 class AudioController {
 
-  constructor($scope, $element, $sce) {
+  constructor($scope, $element, $timeout, $sce) {
     // when setting/updating audio source.
     $scope.$watch('audio.source', (url) => {
       // trust audio source as url.
       this.sourceUrl = (url) ? $sce.trustAsResourceUrl(url) : '';
+      // switching audio source while playing.
+      if (this.play) {
+        // reset the audio source before playing again. 
+        $timeout(_.partial(this.resetPlay, $element));
+      }
     });
 
     // when playing/pausing the source.
     $scope.$watch('audio.play',
       _.partial(this.updatePlay, $element));
+  }
+
+  resetPlay($element) {
+    var element = $element[0];
+    element.load();
+    element.play();
   }
 
   updatePlay($element, play) {
@@ -100,7 +111,7 @@ class AudioLink {
   }
 }
 
-AudioController.$inject = ['$scope', '$element', '$sce'];
+AudioController.$inject = ['$scope', '$element', '$timeout', '$sce'];
 
 angular
   .module('app.core')
