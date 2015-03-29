@@ -26,7 +26,7 @@ class PlaybackController {
 
   constructor($scope) {
     // paused by default.
-    this.paused = true;
+    this.paused = common.getBaconPropValue(playStore.pauseProperty);
     // default to show info button.
     this.showInfo = !common.getBaconPropValue(playStore.infoProperty);
 
@@ -94,6 +94,10 @@ class PlaybackLink {
     disposes.push(playStore.infoStream
       .onValue(_.partial(this._onShowInfo, this.scope)));
 
+    // when pause/resume playback.
+    disposes.push(playStore.pauseStream
+      .onValue(_.partial(this._onPause, this.scope)));
+
     // unbind on destroy.
     this.scope.$on('$destroy', () => {
       this.el.off();
@@ -128,8 +132,18 @@ class PlaybackLink {
   }
 
   _onPausePlay(scope) {
+    var actionType = (scope.playback.paused)
+      ? config.actions.PLAYBACK_PLAY
+      : config.actions.PLAYBACK_PAUSE;
+
     // toggle play/pause.
-    scope.playback.paused = !scope.playback.paused;
+    dispatcher.dispatch({
+      actionType: actionType
+    });
+  }
+
+  _onPause(scope, paused) {
+    scope.playback.paused = paused;
     scope.$digest();
   }
 

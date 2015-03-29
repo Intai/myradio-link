@@ -39,6 +39,13 @@ class PlaybackService {
     this.infoStream = new Bacon.Bus();
     this.infoProperty = this.infoStream.toProperty(false);
     this.infoProperty.onValue();
+
+    /**
+     * Stream out whether playback is currently paused.
+     */
+    this.pauseStream = new Bacon.Bus();
+    this.pauseProperty = this.pauseStream.toProperty(true);
+    this.pauseProperty.onValue();
   }
 
   /**
@@ -51,10 +58,25 @@ class PlaybackService {
       _.partial(this._showInfoActionHandler,
         this.infoStream));
 
-    // action to remove an espisode.
+    // action to remove an episode.
     dispatcher.register(config.actions.PLAYBACK_HIDE_INFO,
       _.partial(this._hideInfoActionHandler,
         this.infoStream));
+
+    // action to play the current episode.
+    dispatcher.register(config.actions.PLAYBACK_PLAY,
+      _.partial(this._playActionHandler,
+        this.pauseStream));
+
+    // action to pause the current episode.
+    dispatcher.register(config.actions.PLAYBACK_PAUSE,
+      _.partial(this._pauseActionHandler,
+        this.pauseStream));
+
+    // action to choose an episode.
+    dispatcher.register(config.actions.FEED_PLAY_EPISODE,
+      _.partial(this._playEpisodeActionHandler,
+        this.pauseStream));
   }
 
   /**
@@ -77,6 +99,18 @@ class PlaybackService {
 
   _hideInfoActionHandler(infoStream) {
     infoStream.push(false);
+  }
+
+  _playActionHandler(pauseStream) {
+    pauseStream.push(false);
+  }
+
+  _pauseActionHandler(pauseStream) {
+    pauseStream.push(true);
+  }
+
+  _playEpisodeActionHandler(pauseStream) {
+    pauseStream.push(false);
   }
 
   static factory() {
