@@ -26,7 +26,7 @@ class Audio {
 
 class AudioController {
 
-  constructor($scope, $sce) {
+  constructor($scope, $element, $sce) {
     // when setting/updating audio source.
     $scope.$watch('audio.source', (url) => {
       // trust audio source as url.
@@ -34,15 +34,27 @@ class AudioController {
     });
 
     // when playing/pausing the source.
-    $scope.$watch('audio.play', (play) => {
-      let actionType = (play)
-        ? config.actions.AUDIO_PLAY
-        : config.actions.AUDIO_PAUSE;
+    $scope.$watch('audio.play',
+      _.partial(this.updatePlay, $element));
+  }
 
-      // notify audio service to pause/resume the current source.
-      dispatcher.dispatch({
-        actionType: actionType
-      });
+  updatePlay($element, play) {
+    var element = $element[0];
+    var actionType = (play)
+      ? config.actions.AUDIO_PLAY
+      : config.actions.AUDIO_PAUSE;
+
+    // ios requires audio control in
+    // event triggered by user action.
+    if (play) {
+      element.play();
+    } else {
+      element.pause();
+    }
+
+    // notify audio service to pause/resume the current source.
+    dispatcher.dispatch({
+      actionType: actionType
     });
   }
 }
@@ -88,7 +100,7 @@ class AudioLink {
   }
 }
 
-AudioController.$inject = ['$scope', '$sce'];
+AudioController.$inject = ['$scope', '$element', '$sce'];
 
 angular
   .module('app.core')
