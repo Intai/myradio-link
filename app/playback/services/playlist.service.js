@@ -156,8 +156,8 @@ class PlaylistService {
   initActionHandlers() {
     // action from dispatcher to add an espisode.
     dispatcher.register(config.actions.FEED_ADD_EPISODE,
-      _.partial(this._addEpisodeActionHandler,
-        this.episodesStream));
+      _.bind(_.partial(this._addEpisodeActionHandler,
+        this.episodesStream), this));
 
     // action to remove an espisode.
     dispatcher.register(config.actions.FEED_REMOVE_EPISODE,
@@ -208,7 +208,25 @@ class PlaylistService {
     stream.push(value);
   }
 
+  _processXmlNode(episode) {
+    // if there is xml node associated.
+    if (episode.xmlNode) {
+      // find enclosure tag.
+      let url = $(episode.xmlNode)
+        .find('enclosure').attr('url');
+
+      if (url) {
+        // store the episode enclosure url.
+        episode.enclosureUrl = url;
+      }
+
+      // don't store the xml node into firebase.
+      delete episode.xmlNode;
+    }
+  }
+
   _addEpisodeActionHandler(episodesStream, payload) {
+    this._processXmlNode(payload.episode);
     episodesStream.push({add: payload.episode});
   }
 

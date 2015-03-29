@@ -21,6 +21,8 @@ class GoogleService {
       var feed = new google.feeds.Feed(url);
       // set maximum number of feed entreies.
       feed.setNumEntries(config.numbers.FEED_MAX_ENTRIES);
+      // get both json and xml back.
+      feed.setResultFormat(google.feeds.Feed.MIXED_FORMAT);
       // load the feed through google api.
       feed.load((result) => {
         if (result.error) {

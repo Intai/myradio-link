@@ -2,7 +2,7 @@
   <div class="playback"
     ng-if="playback.episode && playback.feed">
 
-    <rd-audio source="playback.episode.link"
+    <rd-audio source="playback.episode.enclosureUrl"
       play="!playback.paused"></rd-audio>
 
     <div class="playback-content" ng-show="playback.showInfo">
