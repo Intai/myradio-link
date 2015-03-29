@@ -14,7 +14,8 @@ class Audio {
     this.bindToController = true;
     this.link = AudioLink.factory;
     this.scope = {
-      source: '@'
+      source: '@',
+      play: '='
     };
   }
 
@@ -26,12 +27,21 @@ class Audio {
 class AudioController {
 
   constructor($scope, $sce) {
+    if (this.source) {
+      // trust audio source as url.
+      this.sourceUrl = $sce.trustAsResourceUrl(this.source);
+    }
+
     // when setting/updating audio source.
-    $scope.$watch('audio.source', (url) => {
-      if (url) {
-        // trust audio source as url.
-        this.sourceUrl = $sce.trustAsResourceUrl(url);
-      }
+    $scope.$watch('audio.play', (play) => {
+      let actionType = (play)
+        ? config.actions.AUDIO_PLAY
+        : config.actions.AUDIO_PAUSE;
+
+      // notify audio service to pause/resume the current source.
+      dispatcher.dispatch({
+        actionType: actionType
+      });
     });
   }
 }

@@ -25,8 +25,8 @@ class Playback {
 class PlaybackController {
 
   constructor($scope) {
-    // start playing by default.
-    this.playing = true;
+    // paused by default.
+    this.paused = true;
     // default to show info button.
     this.showInfo = !common.getBaconPropValue(playStore.infoProperty);
 
@@ -128,32 +128,8 @@ class PlaybackLink {
   }
 
   _onPausePlay(scope) {
-    if (scope.playback.playing) {
-      this._onPause(scope);
-    } else {
-      this._onPlay(scope);
-    }
-  }
-
-  _onPause(scope) {
-    // notify audio service to pause the current source.
-    dispatcher.dispatch({
-      actionType: config.actions.PLAYBACK_PAUSE
-    });
-
-    // toggle play to pause.
-    scope.playback.playing = false;
-    scope.$digest();
-  }
-
-  _onPlay(scope) {
-    // notify audio service to resume playing.
-    dispatcher.dispatch({
-      actionType: config.actions.PLAYBACK_PLAY
-    });
-
-    // toggle pause to play.
-    scope.playback.playing = true;
+    // toggle play/pause.
+    scope.playback.paused = !scope.playback.paused;
     scope.$digest();
   }
 

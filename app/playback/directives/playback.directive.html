@@ -2,15 +2,16 @@
   <div class="playback"
     ng-if="playback.episode && playback.feed">
 
-    <rd-audio source="{{playback.episode.link}}"></rd-audio>
+    <rd-audio source="{{playback.episode.link}}"
+      play="!playback.paused"></rd-audio>
 
     <div class="playback-content" ng-show="playback.showInfo">
       <div class="playback-controls">
         <rd-anchor class="playback-rewind" implicit="true"><span class="fa fa-backward"></span></rd-anchor>
         <rd-anchor class="playback-pause-play" implicit="true"><span ng-class="{
           'playback-icon': true,
-          'fa fa-pause': playback.playing,
-          'fa fa-play': !playback.playing}"></span></rd-anchor>
+          'fa fa-pause': !playback.paused,
+          'fa fa-play': playback.paused}"></span></rd-anchor>
         <rd-anchor class="playback-stop" implicit="true"><span class="fa fa-stop"></span></rd-anchor>
         <rd-anchor class="playback-forward" implicit="true"><span class="fa fa-forward"></span></rd-anchor>
       </div>
@@ -25,8 +26,8 @@
       <rd-anchor class="playback-rewind medium" implicit="true"><span class="fa fa-backward"></span></rd-anchor>
       <rd-anchor class="playback-pause-play large" implicit="true"><span ng-class="{
         'playback-icon': true,
-        'fa fa-pause': playback.playing,
-        'fa fa-play': !playback.playing}"></span></rd-anchor>
+        'fa fa-pause': !playback.paused,
+        'fa fa-play': playback.paused}"></span></rd-anchor>
       <rd-anchor class="playback-forward medium" implicit="true"><span class="fa fa-forward"></span></rd-anchor>
     </div>
 

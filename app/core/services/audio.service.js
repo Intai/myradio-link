@@ -35,9 +35,9 @@ class AudioService {
       _.partial(this._onLoad, this.audioStream));
 
     // register action type to play/pause the current audio source.
-    dispatcher.register(config.actions.PLAYBACK_PLAY,
+    dispatcher.register(config.actions.AUDIO_PLAY,
       _.bind(_.partial(this._onPlay, this.audioProperty), this));
-    dispatcher.register(config.actions.PLAYBACK_PAUSE,
+    dispatcher.register(config.actions.AUDIO_PAUSE,
       _.bind(_.partial(this._onPause, this.audioProperty), this));
   }
 
@@ -55,7 +55,6 @@ class AudioService {
 
   _onLoad(stream, payload) {
     stream.push(payload.source);
-    payload.source.play();
   }
 
   _onPlay(property) {
