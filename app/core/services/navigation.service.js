@@ -22,7 +22,7 @@ class NavigationService {
     this.historyStream = new Bacon.Bus();
     this.backProperty = this.historyStream
       .scan([], this._accumulate)
-      .map(this._last);
+      .map(this._prev);
     this.backProperty.onValue();
   }
 
@@ -49,30 +49,36 @@ class NavigationService {
   _accumulate(history, to) {
     // when getting a navigation object.
     if (typeof(to) === 'object' && to.href) {
-      var prev = (history.length > 0)
-        ? history[history.length-1]
-        : null;
+      // if repeating the one before the previous navigation object.
+      if (history.length > 1
+          && history[history.length-2].href === to.href) {
+        // e.g. after browser history back.
+        history.pop();
+      }
+      else {
+        var prev = (history.length > 0)
+          ? history[history.length-1] : null;
 
-      // if not duplicating the previous navigation object.
-      if (!prev || prev.href !== to.href) {
-        // accumulate into history.
-        history.push(to);
+        // if not duplicating the previous navigation object.
+        if (!prev || prev.href !== to.href) {
+          // accumulate into history.
+          history.push(to);
+        }
       }
     }
     // when negative one is streamed.
     else {
       // go back in history.
       history.pop();
-      history.pop();
     }
 
     return history;
   }
 
-  _last(history) {
-    if (history.length > 0) {
+  _prev(history) {
+    if (history.length > 1) {
       // the last navigation object.
-      return history[history.length - 1];
+      return history[history.length - 2];
     }
 
     return null;

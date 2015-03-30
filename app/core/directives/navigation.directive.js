@@ -34,13 +34,8 @@ class NavigationController {
     // current url path.
     this.href = $location.path();
 
-    if (!this.disableHistoryBack()) {
-      // get the previous url and title.
-      this.back = common.getBaconPropValue(navigate.backProperty);
-    }
-
     // if there is no previous url and title.
-    if (this.enableDefaultBack() && !this.back && this.defaultBackHref) {
+    if (this.enableDefaultBack() && this.defaultBackHref) {
       // setup default back anchor.
       this.back = {
         href: this.defaultBackHref,
@@ -83,12 +78,25 @@ class NavigationLink {
    */
 
   initEvents() {
+    var dispose = null;
+
     this.el
       // navigate back in history.
       .on('click vclick', '.nav-back', this._onBack);
 
+    if (!this.scope.nav.disableHistoryBack()) {
+      // get the previous url and title.
+      dispose = navigate.backProperty.changes().take(1)
+        .onValue(_.partial(this._onUpdateBack, this.scope));
+    }
+
     // unbind on destroy.
-    this.scope.$on('$destroy', () => this.el.off());
+    this.scope.$on('$destroy', () => {
+      this.el.off();
+      if (dispose) {
+        dispose();
+      }
+    });
   }
 
   /**
@@ -110,12 +118,19 @@ class NavigationLink {
    * Private
    */
 
-   _onBack() {
-     // dispatch to navigate back in history.
-     dispatcher.dispatch({
-       actionType: config.actions.NAVIGATE_BACK
-     });
-   }
+  _onUpdateBack(scope, back) {
+    if (back) {
+      scope.nav.back = back;
+      scope.$digest();
+    }
+  }
+
+  _onBack() {
+    // dispatch to navigate back in history.
+    dispatcher.dispatch({
+      actionType: config.actions.NAVIGATE_BACK
+    });
+  }
 
   static factory(...args) {
     return new NavigationLink(...args);
