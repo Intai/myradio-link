@@ -142,7 +142,15 @@ function routeResolve(func, redirect) {
       // if rejected.
       .catch(() => {
         // redirect to a fallback url.
-        $location.path(common.buildUrl(redirect, $route.current.pathParams));
+        $location.path(common.buildUrl(redirect, $route.current.pathParams))
+          // replace otherwise history back can end up looping.
+          .replace();
+
+        // dispatch to navigate back in history.
+        dispatcher.dispatch({
+          actionType: config.actions.NAVIGATE_BACK
+        });
+
         // reject with a specific message to
         // skip redirection in $routeChangeError.
         reject('resolved.redirect');
