@@ -80,7 +80,7 @@ class SubscribeService {
      * @type {bacon.bus}
      */
     this.templateProperty = Bacon.combineTemplate({
-      subscriptions: this.subscriptionsProperty.filter(_.isObject),
+      subscriptions: this.subscriptionsProperty.skip(1),
       current: this.currentProperty.filter(_.isString),
       feeds: this.feedsProperty
     });
@@ -216,7 +216,7 @@ class SubscribeService {
   }
 
   _mergeFeeds(template) {
-    var lists = template.subscriptions,
+    var lists = template.subscriptions || {},
         name = template.current,
         feeds = template.feeds,
         list = (name in lists) ? lists[name] : [];
@@ -236,8 +236,11 @@ class SubscribeService {
   }
 
   _mapToCurrent(template) {
+    var lists = template.subscriptions || {},
+        name = template.current;
+
     // return the current subscription list or an empty array.
-    return template.subscriptions[template.current] || [];
+    return lists[name] || [];
   }
 
   _update(url) {
