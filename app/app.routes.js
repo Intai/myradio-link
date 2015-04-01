@@ -134,17 +134,29 @@ function routeError($rootScope, $location) {
   });
 }
 
+function routeRedirect($rootScope, $location, url) {
+  // redirect to the url specified.
+  $location.path(url)
+    // replace otherwise history back can end up looping.
+    .replace();
+
+  dispatcher.dispatch({
+    actionType: config.actions.ROUTE_COMPLETE
+  });
+
+  $rootScope.$apply();
+}
+
 function routeResolve(func, redirect) {
   // eavesdrop the promise result.
-  var channelResolve = function($location, $route) {
+  var channelResolve = function($rootScope, $location, $route) {
     return new Promise((resolve, reject) => {
       func().then(resolve)
       // if rejected.
       .catch(() => {
         // redirect to a fallback url.
-        $location.path(common.buildUrl(redirect, $route.current.pathParams))
-          // replace otherwise history back can end up looping.
-          .replace();
+        routeRedirect($rootScope, $location,
+          common.buildUrl(redirect, $route.current.pathParams));
 
         // reject with a specific message to
         // skip redirection in $routeChangeError.
@@ -153,7 +165,7 @@ function routeResolve(func, redirect) {
     });
   };
 
-  channelResolve.$inject = ['$location', '$route'];
+  channelResolve.$inject = ['$rootScope', '$location', '$route'];
 
   return channelResolve;
 }
