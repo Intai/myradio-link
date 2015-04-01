@@ -70,6 +70,7 @@ class NavigationService {
     else {
       // go back in history.
       history.pop();
+      history.pop();
     }
 
     return history;
