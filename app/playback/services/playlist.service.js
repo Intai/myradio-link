@@ -81,7 +81,7 @@ class PlaylistService {
      * @type {bacon.bus}
      */
     this.templateProperty = Bacon.combineTemplate({
-      lists: this.listsProperty.filter(_.isObject),
+      lists: this.listsProperty.skip(1),
       current: this.currentProperty.filter(_.isString),
       playing: this.playingProperty,
       episodes: this.episodesProperty
@@ -309,6 +309,12 @@ class PlaylistService {
         return !_.findWhere(episodes.remove, {link: episode.link});
       });
     }
+
+    // if the list is empty.
+    if (list.entries.length <= 0) {
+      // keeping an empty array confuses firebase.
+      delete lists[name];
+    }
   }
 
   _mapToLists(template) {
@@ -346,9 +352,8 @@ class PlaylistService {
   }
 
   _sync(listsPath, lists) {
-    if (!_.isEmpty(lists)) {
-      firebase.setData(listsPath, lists);
-    }
+    // empty object confuses firebase. set null to be clear.
+    firebase.setData(listsPath, (_.isEmpty(lists)) ? null : lists);
   }
 
   static factory() {
