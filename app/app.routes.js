@@ -111,7 +111,7 @@ function routeStart($rootScope) {
 
 function routeSuccess($rootScope) {
   $rootScope.$on('$routeChangeSuccess', () => {
-     dispatcher.dispatch({
+    dispatcher.dispatch({
       actionType: config.actions.ROUTE_COMPLETE
     });
   });
@@ -145,11 +145,6 @@ function routeResolve(func, redirect) {
         $location.path(common.buildUrl(redirect, $route.current.pathParams))
           // replace otherwise history back can end up looping.
           .replace();
-
-        // dispatch to navigate back in history.
-        dispatcher.dispatch({
-          actionType: config.actions.NAVIGATE_BACK
-        });
 
         // reject with a specific message to
         // skip redirection in $routeChangeError.
