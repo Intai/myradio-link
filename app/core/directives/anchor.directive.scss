@@ -1,5 +1,6 @@
 .anchor {
   @include prefix(transition, opacity 100ms ease-out);
+  color: $color-foreground;
   cursor: pointer;
   opacity: 1;
 

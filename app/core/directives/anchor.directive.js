@@ -9,7 +9,7 @@ class Anchor {
     this.controllerAs = 'anchor';
     this.bindToController = true;
     this.require = 'rdAnimate';
-    this.link = AnchorLink.factory;
+    this.compile = AnchorCompile.factory;
     this.scope = {
         href: '@',
         implicit: '&'
@@ -22,6 +22,22 @@ class Anchor {
 }
 
 class AnchorController {}
+
+class AnchorCompile {
+
+  constructor(element, attrs, transclude) {
+    // merge ng-class objects.
+    attrs.ngClass = attrs.ngClass.replace(/}\s*{/g, ', ');
+
+    return {
+      post: AnchorLink.factory
+    };
+  }
+
+  static factory(...args) {
+    return new AnchorCompile(...args);
+  }
+}
 
 class AnchorLink {
 
@@ -89,4 +105,4 @@ angular
   .directive('rdAnchor', Anchor.factory);
 
 export default Anchor;
-export {AnchorController, AnchorLink};
+export {AnchorController, AnchorCompile, AnchorLink};

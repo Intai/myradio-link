@@ -40,13 +40,37 @@
   padding: 10px 15px;
   margin: 0;
 
-  &.has-icon {
+  &.has-icon,
+  &.has-clear-icon {
     box-sizing: border-box;
     padding-right: font-size(100) + 45px;
   }
 
+  &.has-icon.has-clear-icon {
+    padding-right: font-size(200) + 55px;
+  }
+
   &::-webkit-search-cancel-button {
     display: none;
+  }
+}
+
+.text-input-clear {
+  @include prefix(transition, opacity 200ms ease-out);
+  color: $lightgrey;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 10px 15px;
+  margin: 0;
+  opacity: 0;
+
+  &.has-icon {
+    right: font-size(100) + 30px;
+  }
+
+  &.has-value {
+    opacity: 1;
   }
 }
 

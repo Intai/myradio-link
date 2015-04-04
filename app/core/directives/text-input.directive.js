@@ -17,6 +17,7 @@ class TextInput {
       required: '@',
       placeholder: '@',
       autocomplete: '@',
+      clearIcon: '@',
       icon: '@'
     };
   }
@@ -40,7 +41,7 @@ class TextInputLink {
 
   constructor(scope, element, attrs, animate) {
     // setup class variables.
-    this.initVars(element, animate);
+    this.initVars(scope, element, animate);
     // setup event bindings.
     this.initEvents();
   }
@@ -49,16 +50,19 @@ class TextInputLink {
    * Class Variables
    */
 
-  initVars(element, animate) {
+  initVars(scope, element, animate) {
+    /**
+     * Angular directive scope.
+     */
+    this.scope = scope;
+
     /**
      * jQuery element to be aniamted.
-     * @type {object}
      */
-    this.el = element;
+    this.el = $(element);
 
     /**
      * Animate directive controller.
-     * @type {object}
      */
     this.animate = animate;
   }
@@ -68,33 +72,50 @@ class TextInputLink {
    */
 
   initEvents() {
-    this.el.find('input')
+    var input = this.el.find('input');
+
+    input
       // focus state.
-      .on('focus', _.partial(this._onFocus, this.animate))
+      .on('focus', _.partial(this._onFocus, this.animate, input))
       // lose focus.
-      .on('blur', _.partial(this._onBlur, this.animate));
+      .on('blur', _.partial(this._onBlur, this.animate, input));
+
+    // clear the text input.
+    this.el.on('click', '.text-input-clear',
+      _.partial(this._onClear, input));
+
+    // unbind on destroy.
+    this.scope.$on('$destroy', () => {
+      input.off();
+      this.el.off();
+    });
   }
 
   /**
    * Private
    */
 
-  _onFocus(animate) {
+  _onFocus(animate, input) {
     animate
       .reset(0)
       .setReverse(false)
       .restart();
+
+    input.siblings('.text-input-clear')
+      .removeClass('has-value');
   }
 
-  _onBlur(animate, e) {
-    var input = $(e.target);
-
+  _onBlur(animate, input) {
     animate
       .setReverse(true)
       .start();
 
-    input.siblings('label')
+    input.siblings('label, .text-input-clear')
       .toggleClass('has-value', input.val() !== '');
+  }
+
+  _onClear(input) {
+    input.val('').focus();
   }
 
   static factory(...args) {

@@ -7,10 +7,21 @@
     id="{{input.name}}"
     name="{{input.name}}"
     value="{{input.value}}"
-    ng-class="{'text-input':true, 'has-icon':input.icon}"
+    ng-class="{
+      'text-input': true,
+      'has-icon': input.icon,
+      'has-clear-icon': input.clearIcon}"
     ng-required="{{input.required}}"
     placeholder="{{input.placeholder}}"
     autocomplete="{{input.autocomplete}}" />
+
+  <a ng-if="input.clearIcon"
+    ng-class="{
+      'text-input-clear': true,
+      'has-icon': input.icon,
+      'has-value': input.value}">
+    <span class="fa fa-{{input.clearIcon}}"></span>
+  </a>
 
   <rd-button ng-if="input.icon" class="text-input-icon">
     <span class="fa fa-{{input.icon}}"></span>
