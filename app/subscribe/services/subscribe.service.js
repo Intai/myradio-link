@@ -80,7 +80,7 @@ class SubscribeService {
      * @type {bacon.bus}
      */
     this.templateProperty = Bacon.combineTemplate({
-      subscriptions: this.subscriptionsProperty.skip(1),
+      subscriptions: this.subscriptionsProperty.filter(_.isObject),
       current: this.currentProperty.filter(_.isString),
       feeds: this.feedsProperty
     });
@@ -119,7 +119,7 @@ class SubscribeService {
 
   initOnValue() {
     // retrieve playlists for the current user.
-    var valueStream = firebase.getValueStream(this.listsPath);
+    var valueStream = firebase.getValueStream(this.listsPath, {});
     valueStream.onValue(_.partial(this._pushStreamValue, this.subscriptionsStream));
     valueStream.onError(_.partial(this._pushStreamValue, this.errorStream));
 

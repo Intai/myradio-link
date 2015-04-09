@@ -81,7 +81,7 @@ class PlaylistService {
      * @type {bacon.bus}
      */
     this.templateProperty = Bacon.combineTemplate({
-      lists: this.listsProperty.skip(1),
+      lists: this.listsProperty.filter(_.isObject),
       current: this.currentProperty.filter(_.isString),
       playing: this.playingProperty,
       episodes: this.episodesProperty
@@ -140,7 +140,7 @@ class PlaylistService {
 
   initOnValue() {
     // retrieve playlists for the current user.
-    var valueStream = firebase.getValueStream(this.listsPath);
+    var valueStream = firebase.getValueStream(this.listsPath, {});
     valueStream.onValue(_.partial(this._pushStreamValue, this.listsStream));
     valueStream.onError(_.partial(this._pushStreamValue, this.errorStream));
 

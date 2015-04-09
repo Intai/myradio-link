@@ -58,7 +58,7 @@ class FirebaseService {
     });
   }
 
-  getValueStream(path) {
+  getValueStream(path, defaultValue) {
     if (path instanceof Array) {
       path = path.join('/');
     }
@@ -67,9 +67,13 @@ class FirebaseService {
     var valueStream = new Bacon.Bus();
     // split between success and error.
     var returnStream = valueStream.flatMap((object) => {
-      return ('value' in object)
-        ? object.value
-        : Bacon.Error(object.error);
+      if ('value' in object) {
+        return (object.value)
+          ? object.value : defaultValue;
+      }
+      else {
+        return Bacon.Error(object.error);
+      }
     });
 
     // listen to the firebase path specified.
