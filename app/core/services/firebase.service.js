@@ -69,7 +69,7 @@ class FirebaseService {
     var returnStream = valueStream.flatMap((object) => {
       if ('value' in object) {
         return (object.value)
-          ? object.value : defaultValue;
+          ? object.value : _.clone(defaultValue);
       }
       else {
         return Bacon.Error(object.error);

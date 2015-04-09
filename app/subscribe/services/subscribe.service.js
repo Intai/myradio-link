@@ -71,8 +71,11 @@ class SubscribeService {
      * @type {bacon.bus}
      */
     this.feedsStream = new Bacon.Bus();
-    this.feedsProperty = this.feedsStream.scan(
-      {add: [], remove: []}, _.bind(this._accumulateFeeds, this));
+    this.feedsProperty = Bacon.when(
+      // reset when getting update to subscription lists.
+      [this.subscriptionsStream], () => null,
+      [this.feedsStream], (feeds) => feeds)
+      .scan({add: [], remove: []}, _.bind(this._accumulateFeeds, this));
     this.feedsProperty.onValue();
 
     /**
@@ -194,8 +197,13 @@ class SubscribeService {
   }
 
   _accumulateFeeds(object, data) {
-    object = this._accumulateFeedsTo('add', object, data);
-    object = this._accumulateFeedsTo('remove', object, data);
+    if (data) {
+      object = this._accumulateFeedsTo('add', object, data);
+      object = this._accumulateFeedsTo('remove', object, data);
+    } else {
+      object.add = [];
+      object.remove = [];
+    }
 
     return object;
   }

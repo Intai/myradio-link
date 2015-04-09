@@ -40,7 +40,7 @@ class PlaylistService {
     this.listsStream = new Bacon.Bus();
     this.listsProperty = this.listsStream
       .skipDuplicates(_.isEqual)
-      .scan(null, common.accumulateInObject);
+      .toProperty(null);
     this.listsProperty.onValue();
 
     /**
@@ -72,8 +72,11 @@ class PlaylistService {
      * @type {bacon.bus}
      */
     this.episodesStream = new Bacon.Bus();
-    this.episodesProperty = this.episodesStream.scan(
-      {add: [], remove: []}, _.bind(this._accumulateEpisodes, this));
+    this.episodesProperty = Bacon.when(
+      // reset when getting update to playlists.
+      [this.listsStream], () => null,
+      [this.episodesStream], (episodes) => episodes)
+      .scan({add: [], remove: []}, _.bind(this._accumulateEpisodes, this));
     this.episodesProperty.onValue();
 
     /**
@@ -248,8 +251,13 @@ class PlaylistService {
   }
 
   _accumulateEpisodes(object, data) {
-    object = this._accumulateEpisodesTo('add', object, data);
-    object = this._accumulateEpisodesTo('remove', object, data);
+    if (data) {
+      object = this._accumulateEpisodesTo('add', object, data);
+      object = this._accumulateEpisodesTo('remove', object, data);
+    } else {
+      object.add = [];
+      object.remove = [];
+    }
 
     return object;
   }
