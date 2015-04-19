@@ -26,13 +26,13 @@ class VClickController {
   }
 
   /**
-  * Public
-  */
+   * Public
+   */
 
   initPublicFuncs($scope, $location, $attrs) {
     /**
-    * Whether href is external.
-    */
+     * Whether href is external.
+     */
     this.isExternal = _.partial(this._isExternal,
       $attrs);
 
