@@ -38,6 +38,11 @@ gulp.task('font', function() {
     .pipe(gulp.dest('build/fonts'));
 });
 
+gulp.task('image', function() {
+  return gulp.src('./images/**/*.{jpg,png}')
+    .pipe(gulp.dest('build/images'));
+});
+
 gulp.task('traceur', function () {
   return gulp.src([files + '.js', '!*.js'])
     .pipe($.sourcemaps.init())
@@ -148,4 +153,4 @@ gulp.task('watch', ['connect', 'serve'], function () {
   });
 });
 
-gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'sass', 'font', 'traceur'], 'browserify', 'templates', 'concat', 'watch'));
+gulp.task('default', $.sequence('clean', ['csslint', 'jshint', 'sass', 'font', 'image', 'traceur'], 'browserify', 'templates', 'concat', 'watch'));
