@@ -1,3 +1,5 @@
+import config from '../services/config.service';
+
 class Placeholder {
 
   constructor() {
@@ -25,42 +27,35 @@ class PlaceholderController {
    * Public
    */
 
-  initPublicFuncs($element, $timeout) {
-    var el = $($element);
-
+  initPublicFuncs($element, $attrs) {
     /**
      * Update placeholder dimensions.
      */
-    this.update = _.partial(this._update, el);
-
-    /**
-     * Defer update after inserted into dom.
-     */
-    this.deferUpdate = _.partial(this._deferUpdate,
-      $timeout, this.update);
+    this.update = _.partial(this._update, 
+      $($element), $attrs);
   }
 
   /**
    * Private
    */
 
-  _deferUpdate($timeout, update) {
-    $timeout(update);
-  }
-
-  _update(el) {
-    var placeholder = el.prev('.placeholder'),
+  _update(el, $attrs) {
+    var type = $attrs.holderType,
         height = el.outerHeight();
 
-    if (el.prev().css('position') !== 'absolute') {
-      placeholder = $('<div class="placeholder" />')
-        .insertBefore(el);
-    }
-
-    if (placeholder.length > 0) {
-      placeholder.height(height);
-    } else {
+    // use padding to create the space.
+    if (type === config.attrs.HOLDER_TYPE_PADDING) {
       el.prev().css('padding-bottom', height);
+    }
+    else {
+      // use a div element.
+      var placeholder = el.prev('.placeholder');
+      if (placeholder.length <= 0) {
+        placeholder = $('<div class="placeholder" />')
+          .insertBefore(el);
+      }
+
+      placeholder.height(height);
     }
   }
 }
@@ -70,7 +65,7 @@ class PlaceholderLink {
   constructor(scope, element, attrs, controllers) {
     // setup class variables.
     this.initVars(...controllers);
-    // setup placeholder div before the element.
+    // setup placeholder before the element.
     this.initPlaceholder();
   }
 
@@ -90,7 +85,8 @@ class PlaceholderLink {
    */
 
   initPlaceholder() {
-    this.placeholder.deferUpdate();
+    // update with the target element's initial height. 
+    this.placeholder.update();
   }
 
   static factory(...args) {
@@ -98,7 +94,7 @@ class PlaceholderLink {
   }
 }
 
-PlaceholderController.$inject = ['$element', '$timeout'];
+PlaceholderController.$inject = ['$element', '$attrs'];
 
 angular
   .module('app.core')

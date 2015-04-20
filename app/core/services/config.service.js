@@ -29,6 +29,14 @@ class ConfigService {
     };
 
     /**
+     * Html Attributes.
+     */
+    this.attrs = {
+      HOLDER_TYPE_DIV: 'div',
+      HOLDER_TYPE_PADDING: 'padding'
+    };
+
+    /**
      * Urls.
      */
     this.urls = {
