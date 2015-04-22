@@ -13,6 +13,7 @@ class Playback {
     this.controller = PlaybackController;
     this.controllerAs = 'playback';
     this.bindToController = true;
+    this.require = ['?rdPlaceholder'];
     this.link = PlaybackLink.factory;
     this.scope = {};
   }
@@ -49,9 +50,9 @@ class PlaybackController {
 
 class PlaybackLink {
 
-  constructor(scope, element, attrs) {
+  constructor(scope, element, attrs, controllers) {
     // setup class variables.
-    this.initVars(scope, element);
+    this.initVars(scope, element, ...controllers);
     // setup event bindings.
     this.initEvents();
   }
@@ -60,7 +61,7 @@ class PlaybackLink {
    * Class Variables
    */
 
-  initVars(scope, element) {
+  initVars(scope, element, placeholder) {
     /**
      * Angular directive scope.
      */
@@ -70,6 +71,11 @@ class PlaybackLink {
      * jQuery element.
      */
     this.el = $(element);
+
+    /**
+     * Placeholder controller.
+     */
+    this.placeholder = placeholder;
   }
 
   /**
@@ -88,7 +94,7 @@ class PlaybackLink {
 
     // when playing an episode.
     disposes.push(playStore.episodeProperty
-      .onValue(_.partial(this._onLoadEpisode, this.scope)));
+      .onValue(_.partial(this._onLoadEpisode, this.scope, this.placeholder)));
 
     // when showing/hiding episode info.
     disposes.push(playStore.infoStream
@@ -109,7 +115,7 @@ class PlaybackLink {
    * Private
    */
 
-  _onLoadEpisode(scope, template) {
+  _onLoadEpisode(scope, placeholder, template) {
     if (!template.feed && template.episode) {
       // dispatch to retrieve feed info.
       dispatcher.dispatch({
@@ -123,6 +129,11 @@ class PlaybackLink {
       scope.playback.listName = template.current;
       scope.playback.episode = template.episode;
       scope.playback.feed = template.feed;
+
+      if (placeholder) {
+        // update the associated placeholder.
+        placeholder.update();
+      }
     });
   }
 

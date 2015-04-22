@@ -182,6 +182,14 @@ class CommonService {
       _.findWhere(array, {[attr]: value}));
   }
 
+  now() {
+    return Math.floor((new Date()).getTime() / 1000);
+  }
+
+  nowMs() {
+    return (new Date()).getTime();
+  }
+
   static factory() {
     return new CommonService();
   }

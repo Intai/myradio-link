@@ -1,4 +1,5 @@
 import config from '../services/config.service';
+import common from '../services/common.service';
 
 class Placeholder {
 
@@ -27,21 +28,27 @@ class PlaceholderController {
    * Public
    */
 
-  initPublicFuncs($element, $attrs) {
+  initPublicFuncs(element, $attrs, $timeout) {
     /**
      * Update placeholder dimensions.
      */
-    this.update = _.partial(this._update, 
-      $($element), $attrs);
+    this.update = _.partial(this._update,
+      $(element), $attrs, $timeout);
   }
 
   /**
    * Private
    */
 
-  _update(el, $attrs) {
+  _update(el, $attrs, $timeout, expiry) {
     var type = $attrs.holderType,
-        height = el.outerHeight();
+        height = el.outerHeight(),
+        now = common.nowMs();
+
+    if (_.isUndefined(expiry)) {
+      // default to keep updating for a second.
+      expiry = now + config.numbers.PLACEHOLDER_UPDATE_DURATION;
+    }
 
     // use padding to create the space.
     if (type === config.attrs.HOLDER_TYPE_PADDING) {
@@ -56,6 +63,13 @@ class PlaceholderController {
       }
 
       placeholder.height(height);
+    }
+
+    // loop recursively because 
+    // the height could be changing.
+    if (now < expiry) {
+      $timeout(_.bind(this._update, this,
+        el, $attrs, $timeout, expiry), 200);
     }
   }
 }
@@ -94,7 +108,7 @@ class PlaceholderLink {
   }
 }
 
-PlaceholderController.$inject = ['$element', '$attrs'];
+PlaceholderController.$inject = ['$element', '$attrs', '$timeout'];
 
 angular
   .module('app.core')

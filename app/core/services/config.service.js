@@ -13,6 +13,7 @@ class ConfigService {
      * Constant numbers.
      */
     this.numbers = {
+      PLACEHOLDER_UPDATE_DURATION: 1000,
       ANIMATE_MIN_DURATION: 50,
       FEED_MAX_ENTRIES: 10,
       SPINNER_DELAY: 100
