@@ -55,8 +55,8 @@ class PlaceholderController {
     /**
      * Update placeholder dimensions.
      */
-    this.update = _.partial(this._update,
-      this.el, this.type, $timeout);
+    this.update = _.partial(this._whenFixed,
+      this._update, this.el, this.type, $timeout);
 
     /**
      * Update placeholder height.
@@ -86,6 +86,12 @@ class PlaceholderController {
    * Private
    */
 
+  _whenFixed(callback, ...args) {
+    if (args[0].css('position') === 'fixed') {
+      callback.apply(this, args)
+    }
+  }
+
   _update(el, type, $timeout, expiry) {
     var height = el.outerHeight(),
         now = common.nowMs();
@@ -98,7 +104,7 @@ class PlaceholderController {
     // update either padding or a div element.
     this.updateHeight(height);
 
-    // loop recursively because 
+    // loop recursively because
     // the height could be changing.
     if (now < expiry) {
       $timeout(_.bind(this._update, this,
@@ -156,7 +162,7 @@ class PlaceholderLink {
    */
 
   initPlaceholder() {
-    // update with the target element's initial height. 
+    // update with the target element's initial height.
     this.placeholder.update();
   }
 

@@ -8,6 +8,10 @@
   height: font-size(100) + 35px;
   background: $white;
   z-index: 100;
+
+  @media (max-height: 460px) {
+    position: relative;
+  }
 }
 
 .nav {

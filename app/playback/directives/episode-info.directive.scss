@@ -21,7 +21,7 @@
   float: left;
   margin-right: 15px;
 
-  @media (max-width: 460px) {
+  @media (max-width: 460px), (max-height: 460px) {
     width: 80px;
     height: 80px;
   }
