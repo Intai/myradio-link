@@ -1,9 +1,11 @@
-<nav class="nav">
-  <rd-anchor class="nav-back" implicit="true"
-    ng-if="nav.back" href="{{nav.back.href}}">
-    <span class="fa fa-chevron-left"></span>
-    {{nav.back.title}}
-  </rd-anchor>
+<div class="nav-wrap" rd-placeholder>
+  <nav class="nav">
+    <rd-anchor class="nav-back" implicit="true"
+      ng-if="nav.back" href="{{nav.back.href}}">
+      <span class="fa fa-chevron-left"></span>
+      {{nav.back.title}}
+    </rd-anchor>
 
-  <div class="nav-next" ng-transclude></div>
-</nav>
+    <div class="nav-next" ng-transclude></div>
+  </nav>
+</div>
