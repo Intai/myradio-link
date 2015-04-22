@@ -20,29 +20,74 @@ class Placeholder {
 class PlaceholderController {
 
   constructor(...args) {
+    var [$element, $attrs, $timeout] = args;
+
+    // setup class variables.
+    this.initVars($element, $attrs);
     // setup public functions.
-    this.initPublicFuncs(...args);
+    this.initPublicFuncs($timeout);
+    // setup a style block for padding.
+    this.initStyleBlock();
+  }
+
+  /**
+   * Class Variables
+   */
+
+  initVars(element, $attrs) {
+    /**
+     * jQuery element.
+     */
+    this.el = $(element);
+
+    /**
+     * Placeholder type.
+     * @type {string}
+     */
+    this.type = $attrs.holderType;
   }
 
   /**
    * Public
    */
 
-  initPublicFuncs(element, $attrs, $timeout) {
+  initPublicFuncs($timeout) {
     /**
      * Update placeholder dimensions.
      */
     this.update = _.partial(this._update,
-      $(element), $attrs, $timeout);
+      this.el, this.type, $timeout);
+
+    /**
+     * Update placeholder height.
+     * @param {object} element
+     * @param {integer} height
+     */
+    this.updateHeight = (this.type === config.attrs.HOLDER_TYPE_PADDING)
+      // use padding to create the space.
+      ? _.partial(this._updatePadding, this.el)
+      // use a div element.
+      : _.partial(this._updateDiv, this.el);
+  }
+
+  /**
+   * Style Sheet Block
+   */
+
+  initStyleBlock() {
+    if (this.type === config.attrs.HOLDER_TYPE_PADDING) {
+      // create a style block in html head.
+      this.styleBlock = $('<style type="text/css"></style>')
+        .appendTo('head');
+    }
   }
 
   /**
    * Private
    */
 
-  _update(el, $attrs, $timeout, expiry) {
-    var type = $attrs.holderType,
-        height = el.outerHeight(),
+  _update(el, type, $timeout, expiry) {
+    var height = el.outerHeight(),
         now = common.nowMs();
 
     if (_.isUndefined(expiry)) {
@@ -50,27 +95,39 @@ class PlaceholderController {
       expiry = now + config.numbers.PLACEHOLDER_UPDATE_DURATION;
     }
 
-    // use padding to create the space.
-    if (type === config.attrs.HOLDER_TYPE_PADDING) {
-      el.prev().css('padding-bottom', height);
-    }
-    else {
-      // use a div element.
-      var placeholder = el.prev('.placeholder');
-      if (placeholder.length <= 0) {
-        placeholder = $('<div class="placeholder" />')
-          .insertBefore(el);
-      }
-
-      placeholder.height(height);
-    }
+    // update either padding or a div element.
+    this.updateHeight(height);
 
     // loop recursively because 
     // the height could be changing.
     if (now < expiry) {
       $timeout(_.bind(this._update, this,
-        el, $attrs, $timeout, expiry), 200);
+        el, type, $timeout, expiry), 200);
     }
+  }
+
+  _updatePadding(el, height) {
+    var className = el.prev().attr('class');
+
+    if (className) {
+      className = className
+        .split(' ').join('.') ;
+
+      // update the padding in html head.
+      this.styleBlock
+        .html(`.${className}{ padding-bottom: ${height}px }`);
+    }
+  }
+
+  _updateDiv(el, height) {
+    var placeholder = el.prev('.placeholder');
+
+    if (placeholder.length <= 0) {
+      placeholder = $('<div class="placeholder" />')
+        .insertBefore(el);
+    }
+
+    placeholder.height(height);
   }
 }
 
