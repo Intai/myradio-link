@@ -24,10 +24,10 @@ class PlaceholderController {
 
     // setup class variables.
     this.initVars($element, $attrs);
-    // setup public functions.
-    this.initPublicFuncs($timeout);
     // setup a style block for padding.
     this.initStyleBlock();
+    // setup public functions.
+    this.initPublicFuncs($timeout);
   }
 
   /**
@@ -48,10 +48,31 @@ class PlaceholderController {
   }
 
   /**
+   * Style Sheet Block
+   */
+
+  initStyleBlock() {
+    if (this.type === config.attrs.HOLDER_TYPE_PADDING) {
+      // create a style block in html head.
+      this.styleBlock = $('<style type="text/css"></style>')
+        .appendTo('head');
+    }
+    else {
+      this.styleBlock = $();
+    }
+  }
+
+  /**
    * Public
    */
 
   initPublicFuncs($timeout) {
+    /**
+     * Remove the placeholder.
+     */
+    this.reset = _.partial(this._reset,
+      this.styleBlock, this.el);
+
     /**
      * Update placeholder dimensions.
      */
@@ -65,21 +86,9 @@ class PlaceholderController {
      */
     this.updateHeight = (this.type === config.attrs.HOLDER_TYPE_PADDING)
       // use padding to create the space.
-      ? _.partial(this._updatePadding, this.el)
+      ? _.partial(this._updatePadding, this.styleBlock, this.el)
       // use a div element.
       : _.partial(this._updateDiv, this.el);
-  }
-
-  /**
-   * Style Sheet Block
-   */
-
-  initStyleBlock() {
-    if (this.type === config.attrs.HOLDER_TYPE_PADDING) {
-      // create a style block in html head.
-      this.styleBlock = $('<style type="text/css"></style>')
-        .appendTo('head');
-    }
   }
 
   /**
@@ -88,7 +97,7 @@ class PlaceholderController {
 
   _whenFixed(callback, ...args) {
     if (args[0].css('position') === 'fixed') {
-      callback.apply(this, args)
+      callback.apply(this, args);
     }
   }
 
@@ -112,7 +121,7 @@ class PlaceholderController {
     }
   }
 
-  _updatePadding(el, height) {
+  _updatePadding(style, el, height) {
     var className = el.prev().attr('class');
 
     if (className) {
@@ -120,8 +129,7 @@ class PlaceholderController {
         .split(' ').join('.') ;
 
       // update the padding in html head.
-      this.styleBlock
-        .html(`.${className}{ padding-bottom: ${height}px }`);
+      style.html(`.${className}{ padding-bottom: ${height}px }`);
     }
   }
 
@@ -135,13 +143,20 @@ class PlaceholderController {
 
     placeholder.height(height);
   }
+
+  _reset(style, el) {
+    style.html('');
+    el.prev('.placeholder').remove();
+  }
 }
 
 class PlaceholderLink {
 
   constructor(scope, element, attrs, controllers) {
     // setup class variables.
-    this.initVars(...controllers);
+    this.initVars(scope, ...controllers);
+    // setup event bindings.
+    this.initEvents();
     // setup placeholder before the element.
     this.initPlaceholder();
   }
@@ -150,11 +165,34 @@ class PlaceholderLink {
    * Class Variables
    */
 
-  initVars(placeholder) {
+  initVars(scope, placeholder) {
+    /**
+     * Angular directive scope.
+     */
+    this.scope = scope;
+
     /**
      * Placeholder controller.
      */
     this.placeholder = placeholder;
+  }
+
+  /**
+   * Event Bindings
+   */
+
+  initEvents() {
+    var refresh = _.bind(_.compose(
+      this.placeholder.update,
+      this.placeholder.reset),
+      this.placeholder);
+
+    // refresh on browser resize.
+    var $window = $(window).on('resize', refresh);
+
+    // unbind on destroy.
+    this.scope.$on('$destroy', () =>
+      $window.off('resize', refresh));
   }
 
   /**
