@@ -10,6 +10,9 @@ class BrowserService {
     // css prefixes.
     this.prefixes = ['', '-webkit-', '-moz-', '-ms-', '-o-'];
     this.properties = {};
+
+    // for scroll position animation.
+    this.scrollBody = $('html, body');
   }
 
   supportTouch() {
@@ -113,6 +116,16 @@ class BrowserService {
     return (this.supportTranslate3d())
       ? `scale3d(${scale},${scale},1)`
       : `scale(${scale},${scale})`;
+  }
+
+  animateScrollTo(ypos, time) {
+    if (!time) {
+      time = 300;
+    }
+
+    this.scrollBody.stop().animate({
+      scrollTop: ypos
+    }, time);
   }
 
   static factory() {

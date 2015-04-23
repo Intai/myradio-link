@@ -1,5 +1,6 @@
 import dispatcher from '../services/dispatcher.service';
 import config from '../services/config.service';
+import browser from '../services/browser.service';
 
 class ScrollPosService {
 
@@ -29,10 +30,18 @@ class ScrollPosService {
    */
 
   initActionHandlers() {
-    // register action type to keep scroll positions.
+    // register action type to keep scroll position.
     dispatcher.register(config.actions.KEEP_SCROLL_TOP,
       _.partial(this._keepActionHandler,
         this.posStream));
+
+    // register action type to restore scroll position.
+    dispatcher.register(config.actions.KEEP_SCROLL_RESTORE,
+      this._restoreActionHandler);
+
+    // scroll back to top on route complete.
+    dispatcher.register(config.actions.ROUTE_COMPLETE,
+      this._resetActionHandler);
   }
 
   /**
@@ -46,6 +55,14 @@ class ScrollPosService {
 
   _keepActionHandler(posStream, payload) {
     posStream.push(payload);
+  }
+
+  _restoreActionHandler(payload) {
+    browser.animateScrollTo(payload.scrollTop);
+  }
+
+  _resetActionHandler() {
+    browser.animateScrollTo(0);
   }
 
   static factory() {

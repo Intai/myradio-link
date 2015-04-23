@@ -83,8 +83,11 @@ class KeepScrollLink {
       common.mapBaconPropObjectKey(scrollpos.posProperty, path));
 
     if (ypos) {
-      // scroll to the position.
-      window.scrollTo(0, ypos);
+      // dispatch to restore the position.
+      dispatcher.dispatch({
+        actionType: config.actions.KEEP_SCROLL_RESTORE,
+        scrollTop: ypos
+      });
     }
   }
 
