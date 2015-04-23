@@ -6,7 +6,7 @@
     </rd-text-input>
   </div>
 
-  <ul class="search-items">
+  <ul class="search-items" rd-keep-scroll>
     <rd-search-item ng-repeat="feed in form.feeds track by feed.feedUrl"
       feed="feed"></rd-search-item>
   </ul>

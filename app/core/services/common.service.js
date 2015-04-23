@@ -182,6 +182,15 @@ class CommonService {
       _.findWhere(array, {[attr]: value}));
   }
 
+  /**
+   * Map a bacon property to get value out of object by key.
+   * @param {bacon.property} property
+   * @param {string} key
+   */
+  mapBaconPropObjectKey(property, key) {
+    return property.map(_.property(key));
+  }
+
   now() {
     return Math.floor((new Date()).getTime() / 1000);
   }

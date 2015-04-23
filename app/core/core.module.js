@@ -18,6 +18,7 @@ import matrixApply from './behaviours/matrix.directive';
 import group from './behaviours/group.directive';
 import pan from './behaviours/pan.directive';
 import vclick from './behaviours/vclick.directive';
+import keepscroll from './behaviours/keep-scroll.directive';
 import placeholder from './behaviours/placeholder.directive';
 import slideReveal from './behaviours/slide-reveal.directive';
 import dispatcher from './services/dispatcher.service';
@@ -32,6 +33,7 @@ import facebookApi from './services/facebook.service';
 import loading from './services/loading.service';
 import message from './services/message.service';
 import groups from './services/group.service';
+import scrollpos from './services/scrollpos.service';
 import navigate from './services/navigation.service';
 import audioPlay from './services/audio.service';
 
