@@ -10,17 +10,18 @@
   padding: 10px;
   margin: 10px;
   width: 1em;
-  cursor: pointer;
+  line-height: 1em;
   box-sizing: content-box;
   text-align: center;
   text-decoration: none;
+  cursor: pointer;
 
   &:focus {
     outline: 0;
   }
 
   &.large {
-    @include font-size(150);
+    @include font-size(140);
     padding: 15px;
   }
 }

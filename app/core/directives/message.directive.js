@@ -15,6 +15,7 @@ class Message {
     this.link = MessageLink.factory;
     this.scope = {
       show: '&',
+      type: '@',
       icon: '@',
       text: '@',
       label: '@'

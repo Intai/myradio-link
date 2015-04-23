@@ -15,6 +15,12 @@
     @include prefix(animation, fade-out 200ms ease-out);
     display: block !important;
   }
+
+  &.type-login {
+    background: url("/images/background.jpg");
+    background-position: center;
+    background-size: cover;
+  }
 }
 
 .message-icon-wrap {

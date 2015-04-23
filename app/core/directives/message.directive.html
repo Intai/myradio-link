@@ -1,4 +1,7 @@
-<div class="message" ng-show="message.show">
+<div ng-show="message.show" ng-class="{
+  'message': true,
+  'type-{{message.type}}': message.type}">
+
   <span class="message-icon-wrap">
     <span ng-class="{
       'message-icon': true, 'fa': true,
