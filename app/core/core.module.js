@@ -19,6 +19,7 @@ import group from './behaviours/group.directive';
 import pan from './behaviours/pan.directive';
 import vclick from './behaviours/vclick.directive';
 import keepscroll from './behaviours/keep-scroll.directive';
+import resetscroll from './behaviours/reset-scroll.directive';
 import placeholder from './behaviours/placeholder.directive';
 import slideReveal from './behaviours/slide-reveal.directive';
 import dispatcher from './services/dispatcher.service';

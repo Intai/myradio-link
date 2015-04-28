@@ -30,10 +30,13 @@ class ScrollPosService {
    */
 
   initActionHandlers() {
-    // register action type to keep scroll position.
-    dispatcher.register(config.actions.KEEP_SCROLL_TOP,
-      _.partial(this._keepActionHandler,
-        this.posStream));
+    var keepActionTypes = [
+      config.actions.KEEP_SCROLL_TOP,
+      config.actions.KEEP_SCROLL_CLEAR];
+
+    // register action type to keep/clear scroll position.
+    dispatcher.register(keepActionTypes,
+      _.partial(this._keepActionHandler, this.posStream));
 
     // register action type to restore scroll position.
     dispatcher.register(config.actions.KEEP_SCROLL_RESTORE,
@@ -49,7 +52,14 @@ class ScrollPosService {
    */
 
   _accumulatePos(accum, payload) {
-    accum[payload.path] = payload.scrollTop;
+    if (payload.path) {
+      if (payload.scrollTop) {
+        accum[payload.path] = payload.scrollTop;
+      } else {
+        delete accum[payload.path];
+      }
+    }
+
     return accum;
   }
 
