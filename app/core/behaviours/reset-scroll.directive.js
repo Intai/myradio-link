@@ -53,21 +53,21 @@ class ResetScrollLink {
    */
 
   initEvents() {
-    this.el.on('click vclick', _.partial(
-      this._onClearScroll, this.attrs));
+    var dispose = this.attrs
+      .$observe('href', this._onClearScroll);
 
     // unbind on destroy.
-    this.scope.$on('$destroy', () => this.el.off());
+    this.scope.$on('$destroy', dispose);
   }
 
   /**
    * Private
    */
 
-  _onClearScroll(attrs) {
+  _onClearScroll(href) {
     dispatcher.dispatch({
       actionType: config.actions.KEEP_SCROLL_CLEAR,
-      path: attrs.href
+      path: href
     });
   }
 
