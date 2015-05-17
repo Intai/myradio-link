@@ -117,7 +117,7 @@ gulp.task('connect', function () {
   var app = express()
     .use(livereload({
       port: 35729 }))
-    .use(serveStatic('.'))
+    .use(serveStatic('./build'))
     .use(function(req, res) {
       res.sendFile(__dirname + '/app/index.html');
     });

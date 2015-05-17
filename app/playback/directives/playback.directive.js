@@ -90,7 +90,11 @@ class PlaybackLink {
       .on('click vclick', '.playback-pause-play',
         _.bind(_.partial(this._onPausePlay, this.scope), this))
       // stop playback.
-      .on('click vclick', '.playback-stop', this._onStop);
+      .on('click vclick', '.playback-stop', this._onStop)
+      // rewind 60s.
+      .on('click vclick', '.playback-rewind', this._onRewind)
+      // fast forward 60s.
+      .on('click vclick', '.playback-forward', this._onForward);
 
     // when playing an episode.
     disposes.push(playStore.episodeProperty
@@ -161,6 +165,18 @@ class PlaybackLink {
   _onStop() {
     dispatcher.dispatch({
       actionType: config.actions.PLAYBACK_STOP
+    });
+  }
+
+  _onRewind() {
+    dispatcher.dispatch({
+      actionType: config.actions.PLAYBACK_REWIND
+    });
+  }
+
+  _onForward() {
+    dispatcher.dispatch({
+      actionType: config.actions.PLAYBACK_FORWARD
     });
   }
 

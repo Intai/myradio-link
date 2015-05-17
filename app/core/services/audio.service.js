@@ -36,9 +36,13 @@ class AudioService {
 
     // register action type to play/pause the current audio source.
     dispatcher.register(config.actions.AUDIO_PLAY,
-      _.bind(_.partial(this._onPlay, this.audioProperty), this));
+      _.bind(this._onPlay, this));
     dispatcher.register(config.actions.AUDIO_PAUSE,
-      _.bind(_.partial(this._onPause, this.audioProperty), this));
+      _.bind(this._onPause, this));
+    dispatcher.register(config.actions.PLAYBACK_REWIND,
+      _.bind(this._onRewind, this));
+    dispatcher.register(config.actions.PLAYBACK_FORWARD,
+      _.bind(this._onForward, this));
   }
 
   /**
@@ -57,17 +61,31 @@ class AudioService {
     stream.push(payload.source);
   }
 
-  _onPlay(property) {
+  _onPlay() {
     var source = this.source;
     if (source) {
       source.play();
     }
   }
 
-  _onPause(property) {
+  _onPause() {
     var source = this.source;
     if (source) {
       source.pause();
+    }
+  }
+
+  _onRewind() {
+    var source = this.source;
+    if (source) {
+      source.currentTime -= 60;
+    }
+  }
+
+  _onForward() {
+    var source = this.source;
+    if (source) {
+      source.currentTime += 60;
     }
   }
 
